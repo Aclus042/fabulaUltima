@@ -124,9 +124,9 @@ const Renderer = (() => {
         <div class="derived-icon">${item.icon}</div>
         <div class="derived-info">
           <div class="derived-label">${item.label}</div>
-          <div class="derived-value">${item.value}</div>
           <div class="derived-formula">${item.formula}</div>
         </div>
+        <div class="derived-value">${item.value}</div>
       `;
       container.appendChild(card);
     });
@@ -146,10 +146,7 @@ const Renderer = (() => {
 
     CLASSES.forEach(cls => {
       const isSelected = selectedClasses.includes(cls.id);
-      const isDisabled = !isSelected && selectedClasses.length >= MAX_CLASSES;
-      const skillCount = cls.habilidades.length;
-
-      const card = _create('div', `class-card${isSelected ? ' selected' : ''}${isDisabled ? ' disabled' : ''}`);
+      const card = _create('div', `class-card${isSelected ? ' selected' : ''}`);
       card.style.setProperty('--class-color', cls.cor);
       card.dataset.classId = cls.id;
 
@@ -157,7 +154,7 @@ const Renderer = (() => {
       card.innerHTML = `
         <div class="class-card-top">
           <div class="class-icon">${_classIconImg(cls, 28, 'class-icon-img')}</div>
-          ${isSelected ? `<span class="class-selected-badge">ATIVA</span>` : ''}
+          ${isSelected ? `<span class="class-selected-check">✔</span>` : ''}
         </div>
         <div class="class-card-info">
           <div class="class-card-name">${cls.nome}</div>
@@ -261,12 +258,17 @@ const Renderer = (() => {
     skillsEmpty.style.display = 'none';
     filterBar.style.display   = '';
 
-    // Renderizar filtros
-    const allBtn = _create('button', `filter-btn${filterClassId === 'all' ? ' active' : ''}`);
-    allBtn.textContent = '✦ Todas';
-    allBtn.dataset.filterClass = 'all';
-    filterBar.appendChild(allBtn);
+    // Side panel title
+    const sideTitle = _create('div', 'skills-side-title');
+    sideTitle.textContent = 'Classes';
+    filterBar.appendChild(sideTitle);
 
+    // Default to first class if current filter is 'all' or invalid
+    if (filterClassId === 'all' || !selectedClasses.includes(filterClassId)) {
+      filterClassId = selectedClasses[0];
+    }
+
+    // Renderizar filtros
     selectedClasses.forEach(classId => {
       const cls = getClassById(classId);
       if (!cls) return;
@@ -277,7 +279,7 @@ const Renderer = (() => {
     });
 
     // Coletar skills a exibir
-    const classesToShow = filterClassId === 'all' ? selectedClasses : [filterClassId];
+    const classesToShow = [filterClassId];
     const skillsToShow  = [];
 
     classesToShow.forEach(classId => {
@@ -573,7 +575,7 @@ const Renderer = (() => {
 
         Modal.open(content, '■ Classe');
     const isSelected = selected.includes(classId);
-    const canSelect  = !isSelected && selected.length < MAX_CLASSES;
+    const canSelect  = !isSelected;
 
     const skillsList = cls.habilidades.map(skillId => {
       const skill = getSkillById(skillId);
@@ -606,9 +608,7 @@ const Renderer = (() => {
       <div class="modal-footer">
         ${isSelected
           ? `<button class="btn-danger" data-modal-action="removeClass" data-target-class="${classId}">Remover Classe</button>`
-          : canSelect
-            ? `<button class="btn-primary" data-modal-action="addClass" data-target-class="${classId}">Selecionar Classe</button>`
-            : `<span class="text-muted text-sm" style="font-style:italic">Máximo de ${MAX_CLASSES} classes atingido.</span>`
+          : `<button class="btn-primary" data-modal-action="addClass" data-target-class="${classId}">Selecionar Classe</button>`
         }
         <button class="btn-secondary" data-modal-action="close">Fechar</button>
       </div>

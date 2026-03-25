@@ -218,10 +218,6 @@ function _registerClassEvents() {
       State.set('classes', selected.filter(id => id !== classId));
       Toast.show(`Classe "${getClassById(classId)?.nome}" removida.`, 'warning');
     } else {
-      if (selected.length >= MAX_CLASSES) {
-        Toast.show(`Máximo de ${MAX_CLASSES} classes atingido.`, 'danger');
-        return;
-      }
       // Adiciona
       State.set('classes', [...selected, classId]);
       Toast.show(`Classe "${getClassById(classId)?.nome}" selecionada!`, 'success');
@@ -430,7 +426,7 @@ function _registerModalDelegation() {
       case 'addClass': {
         const classId  = actionEl.dataset.targetClass;
         const selected = State.get('classes');
-        if (!selected.includes(classId) && selected.length < MAX_CLASSES) {
+        if (!selected.includes(classId)) {
           State.set('classes', [...selected, classId]);
           Toast.show(`Classe "${getClassById(classId)?.nome}" selecionada!`, 'success');
           Renderer.renderClasses();

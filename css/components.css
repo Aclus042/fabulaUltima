@@ -260,8 +260,9 @@
 .attr-card {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0;
-  padding: var(--sp-3) var(--sp-4);
+  padding: var(--sp-2) var(--sp-3);
   border-bottom: 1px solid rgba(58,84,144,0.3);
   position: relative;
   transition: background var(--transition-fast);
@@ -299,13 +300,14 @@
 
 /* Dot leaders */
 .attr-dots {
-  flex: 1;
+  width: 60px;
+  flex-shrink: 0;
   font-family: var(--font-ui);
   font-size: var(--vt-xs);
   color: rgba(58,84,144,0.6);
   overflow: hidden;
   white-space: nowrap;
-  padding: 0 var(--sp-2);
+  padding: 0 var(--sp-1);
 }
 .attr-dots::after {
   content: '...............................................';
@@ -325,7 +327,7 @@
   display: flex;
   align-items: center;
   gap: var(--sp-1);
-  margin-left: var(--sp-3);
+  margin-left: var(--sp-2);
 }
 
 .attr-btn {
@@ -355,7 +357,7 @@
   font-family: var(--font-pixel);
   font-size: 0.5rem;
   color: var(--color-gold);
-  padding: var(--sp-2) var(--sp-4);
+  padding: var(--sp-2) var(--sp-3);
   background: var(--color-panel-title);
   border-bottom: 2px solid var(--color-panel-border);
   letter-spacing: 0.15em;
@@ -376,8 +378,8 @@
 .derived-card {
   display: flex;
   align-items: center;
-  gap: var(--sp-3);
-  padding: var(--sp-3) var(--sp-4);
+  gap: var(--sp-4);
+  padding: var(--sp-2) var(--sp-3);
   border-bottom: 1px solid rgba(58,84,144,0.25);
   transition: background var(--transition-fast);
 }
@@ -392,7 +394,7 @@
   text-align: center;
 }
 
-.derived-info { flex: 1; }
+.derived-info { flex: 1; min-width: 0; }
 
 .derived-label {
   font-family: var(--font-ui);
@@ -406,7 +408,8 @@
   font-family: var(--font-ui);
   font-size: var(--vt-base);
   color: var(--color-text-value);
-  margin-top: 1px;
+  flex-shrink: 0;
+  text-align: right;
 }
 
 .derived-formula {
@@ -422,7 +425,7 @@
   font-family: var(--font-pixel);
   font-size: 0.5rem;
   color: var(--color-cyan);
-  padding: var(--sp-2) var(--sp-4);
+  padding: var(--sp-2) var(--sp-3);
   background: var(--color-panel-title);
   border-bottom: 2px solid var(--color-border);
   letter-spacing: 0.15em;
@@ -533,13 +536,14 @@
 }
 
 .class-selected-badge {
-  background: rgba(240,192,64,0.2);
+  display: none;
+}
+
+.class-selected-check {
   color: var(--color-gold);
-  font-family: var(--font-ui);
-  font-size: var(--vt-xs);
-  padding: 2px var(--sp-2);
-  border: 1px solid var(--color-gold-dim);
+  font-size: var(--vt-sm);
   flex-shrink: 0;
+  filter: drop-shadow(0 0 4px rgba(240,192,64,0.5));
 }
 
 .class-view-btn {
@@ -687,6 +691,18 @@
   display: none; /* Hidden for cleaner list view */
 }
 
+/* Skills side panel title */
+.skills-side-title {
+  font-family: var(--font-pixel);
+  font-size: 0.5rem;
+  color: var(--color-cyan);
+  padding: var(--sp-2) var(--sp-3);
+  background: var(--color-panel-title);
+  border-bottom: 2px solid var(--color-border);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
 /* Skills panel title */
 .skills-panel-title {
   font-family: var(--font-pixel);
@@ -706,10 +722,10 @@
    FILTER BUTTON — JRPG toggle
 ───────────────────────────────────────────────── */
 .filter-btn {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: var(--sp-1);
-  padding: var(--sp-2) var(--sp-4);
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
   background: var(--color-panel-title);
   border: 1px solid var(--color-border);
   font-family: var(--font-ui);
@@ -718,6 +734,8 @@
   cursor: pointer;
   transition: all var(--transition-fast);
   letter-spacing: 0.05em;
+  width: 100%;
+  text-align: left;
 }
 .filter-class-icon {
   width: 14px;

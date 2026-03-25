@@ -95,24 +95,24 @@
   --font-mono:    'Courier New', monospace;
 
   /* ── Font Sizes ── */
-  --fs-px:   0.6rem;
-  --fs-xs:   0.72rem;
-  --fs-sm:   0.86rem;
-  --fs-base: 1rem;
-  --fs-md:   1.16rem;
-  --fs-lg:   1.42rem;
-  --fs-xl:   1.76rem;
-  --fs-2xl:  2.18rem;
-  --fs-3xl:  2.6rem;
+  --fs-px:   0.7rem;
+  --fs-xs:   0.84rem;
+  --fs-sm:   1rem;
+  --fs-base: 1.14rem;
+  --fs-md:   1.32rem;
+  --fs-lg:   1.6rem;
+  --fs-xl:   2rem;
+  --fs-2xl:  2.44rem;
+  --fs-3xl:  2.9rem;
 
   /* ── VT323 is large at same rem — scale factors ── */
-  --vt-xs:   1.02rem;
-  --vt-sm:   1.2rem;
-  --vt-base: 1.42rem;
-  --vt-md:   1.68rem;
-  --vt-lg:   2rem;
-  --vt-xl:   2.38rem;
-  --vt-2xl:  3rem;
+  --vt-xs:   1.18rem;
+  --vt-sm:   1.38rem;
+  --vt-base: 1.6rem;
+  --vt-md:   1.9rem;
+  --vt-lg:   2.26rem;
+  --vt-xl:   2.68rem;
+  --vt-2xl:  3.4rem;
 
   /* ── Spacing ── */
   --sp-1:  0.25rem;
