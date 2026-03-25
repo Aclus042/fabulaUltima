@@ -139,8 +139,6 @@ const Renderer = (() => {
   function renderClasses() {
     const selectedClasses = State.get('classes');
     const grid            = _el('classesGrid');
-    const detailBody      = _el('classDetailBody');
-    const detailEmpty     = _el('classDetailPanel')?.querySelector('.class-detail-empty');
 
     grid.innerHTML = '';
 
@@ -150,7 +148,6 @@ const Renderer = (() => {
       card.style.setProperty('--class-color', cls.cor);
       card.dataset.classId = cls.id;
 
-      // Compact JRPG card for dense desktop grid
       card.innerHTML = `
         <div class="class-card-top">
           <div class="class-icon">${_classIconImg(cls, 28, 'class-icon-img')}</div>
@@ -163,16 +160,6 @@ const Renderer = (() => {
 
       grid.appendChild(card);
     });
-
-    if (detailBody && detailEmpty) {
-      const focusClass = getClassById(selectedClasses[0]) || CLASSES[0] || null;
-      if (focusClass) {
-        renderClassDetailPanel(focusClass.id);
-      } else {
-        detailBody.style.display = 'none';
-        detailEmpty.style.display = '';
-      }
-    }
 
     renderSelectedClassesTags();
   }
@@ -390,8 +377,6 @@ const Renderer = (() => {
     RESOURCE_CONFIG.forEach(res => {
       const atual    = recursos[res.id]?.atual ?? 0;
       const max      = maxMap[res.id] || recursos[res.id]?.max || 0;
-      const percent  = max > 0 ? Math.max(0, Math.min(100, (atual / max) * 100)) : 0;
-      const isLow    = percent > 0 && percent <= 25;
 
       const card = _create('div', 'resource-card');
       card.style.setProperty('--res-color',   res.color);
@@ -407,30 +392,16 @@ const Renderer = (() => {
             <div class="resource-title">${res.label}</div>
           </div>
         </div>
-        <div class="resource-display">
+        <div class="resource-inline-controls">
+          <button class="resource-big-btn" data-res="${res.id}" data-res-dir="-5" title="-5">−−</button>
+          <button class="resource-big-btn" data-res="${res.id}" data-res-dir="-1" title="-1">−</button>
           <div class="resource-ratio">
             <span class="resource-current" id="res-atual-${res.id}">${atual}</span>
             <span class="resource-separator">/</span>
             <span class="resource-max" id="res-max-${res.id}">${max}</span>
           </div>
-        </div>
-        <div class="resource-bar-wrap">
-          <div class="resource-bar-fill${isLow ? ' low' : ''}" id="res-bar-${res.id}" style="width:${percent}%"></div>
-        </div>
-        <div class="resource-controls">
-          <button class="resource-big-btn" data-res="${res.id}" data-res-dir="-5" title="-5">−−</button>
-          <button class="resource-big-btn" data-res="${res.id}" data-res-dir="-1" title="-1">−</button>
-          <button class="resource-big-btn" data-res="${res.id}" data-res-dir="1"  title="+1">+</button>
-          <button class="resource-big-btn" data-res="${res.id}" data-res-dir="5"  title="+5">++</button>
-        </div>
-        <div class="resource-max-control">
-          <span class="resource-max-label">Máximo:</span>
-          <div class="number-control" style="width:auto">
-            <button class="num-btn" data-res-max="${res.id}" data-res-max-dir="-1">−</button>
-            <input type="number" class="field-number" id="res-max-input-${res.id}"
-              value="${max}" min="0" max="999" style="width:60px;" />
-            <button class="num-btn" data-res-max="${res.id}" data-res-max-dir="1">+</button>
-          </div>
+          <button class="resource-big-btn" data-res="${res.id}" data-res-dir="1" title="+1">+</button>
+          <button class="resource-big-btn" data-res="${res.id}" data-res-dir="5" title="+5">++</button>
         </div>
       `;
 
@@ -447,21 +418,12 @@ const Renderer = (() => {
 
     const atual   = recursos[resId]?.atual ?? 0;
     const max     = maxMap[resId] || recursos[resId]?.max || 0;
-    const percent = max > 0 ? Math.max(0, Math.min(100, (atual / max) * 100)) : 0;
-    const isLow   = percent > 0 && percent <= 25;
 
     const atualEl = _el(`res-atual-${resId}`);
     const maxEl   = _el(`res-max-${resId}`);
-    const barEl   = _el(`res-bar-${resId}`);
-    const maxInp  = _el(`res-max-input-${resId}`);
 
     if (atualEl) atualEl.textContent = atual;
     if (maxEl)   maxEl.textContent   = max;
-    if (barEl) {
-      barEl.style.width = `${percent}%`;
-      barEl.classList.toggle('low', isLow);
-    }
-    if (maxInp) maxInp.value = max;
   }
 
   // ─────────────────────────────────────────────────
@@ -573,7 +535,7 @@ const Renderer = (() => {
     const cls      = getClassById(classId);
     if (!cls) return;
 
-        Modal.open(content, '■ Classe');
+    const selected   = State.get('classes');
     const isSelected = selected.includes(classId);
     const canSelect  = !isSelected;
 

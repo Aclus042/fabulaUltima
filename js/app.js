@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 5. Registra todos os event listeners
   _registerNavEvents();
+  _registerMobileMenuEvents();
   _registerIdentityEvents();
   _registerAttributeEvents();
   _registerClassEvents();
@@ -65,8 +66,60 @@ function _navigateTo(sectionId) {
     sec.classList.toggle('active', sec.id === `section-${sectionId}`);
   });
 
+  // Atualiza mobile topbar label
+  const sectionNames = {
+    identidade: 'Identidade',
+    atributos: 'Atributos',
+    classes: 'Classes',
+    habilidades: 'Habilidades',
+    recursos: 'Recursos',
+    inventario: 'Inventário',
+  };
+  const labelEl = document.getElementById('mobileCurrentSection');
+  if (labelEl) labelEl.textContent = sectionNames[sectionId] || sectionId;
+
+  // Close mobile sidebar when navigating
+  _closeMobileSidebar();
+
   // Scroll para o topo do conteúdo
   document.getElementById('mainContent').scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ════════════════════════════════════════════════════════════
+// MOBILE MENU
+// ════════════════════════════════════════════════════════════
+
+function _registerMobileMenuEvents() {
+  const menuBtn  = document.getElementById('mobileMenuBtn');
+  const backdrop = document.getElementById('sidebarBackdrop');
+
+  if (menuBtn) {
+    menuBtn.addEventListener('click', _toggleMobileSidebar);
+  }
+  if (backdrop) {
+    backdrop.addEventListener('click', _closeMobileSidebar);
+  }
+}
+
+function _toggleMobileSidebar() {
+  const sidebar  = document.getElementById('shellSidebar');
+  const backdrop = document.getElementById('sidebarBackdrop');
+  if (!sidebar) return;
+
+  const isOpen = sidebar.classList.contains('sidebar-open');
+  if (isOpen) {
+    _closeMobileSidebar();
+  } else {
+    sidebar.classList.add('sidebar-open');
+    if (backdrop) backdrop.classList.add('active');
+  }
+}
+
+function _closeMobileSidebar() {
+  const sidebar  = document.getElementById('shellSidebar');
+  const backdrop = document.getElementById('sidebarBackdrop');
+  if (sidebar)  sidebar.classList.remove('sidebar-open');
+  if (backdrop) backdrop.classList.remove('active');
 }
 
 // ════════════════════════════════════════════════════════════
@@ -196,13 +249,51 @@ function _syncDerivedMaxes() {
 function _registerClassEvents() {
   const classesGrid = document.getElementById('classesGrid');
 
+  // ── Long-press (mobile) para abrir detalhes ──
+  let _longPressTimer = null;
+  let _longPressFired = false;
+  let _touchStartPos  = null;
+
+  classesGrid.addEventListener('touchstart', e => {
+    const card = e.target.closest('.class-card');
+    if (!card) return;
+
+    _longPressFired = false;
+    const touch = e.touches[0];
+    _touchStartPos = { x: touch.clientX, y: touch.clientY };
+
+    _longPressTimer = setTimeout(() => {
+      _longPressFired = true;
+      Renderer.openClassModal(card.dataset.classId);
+    }, 500);
+  }, { passive: true });
+
+  classesGrid.addEventListener('touchmove', e => {
+    if (!_longPressTimer) return;
+    const touch = e.touches[0];
+    const dx = touch.clientX - _touchStartPos.x;
+    const dy = touch.clientY - _touchStartPos.y;
+    if (dx * dx + dy * dy > 100) {          // deslocou > ~10px
+      clearTimeout(_longPressTimer);
+      _longPressTimer = null;
+    }
+  }, { passive: true });
+
+  classesGrid.addEventListener('touchend', () => {
+    clearTimeout(_longPressTimer);
+    _longPressTimer = null;
+  }, { passive: true });
+
+  classesGrid.addEventListener('touchcancel', () => {
+    clearTimeout(_longPressTimer);
+    _longPressTimer = null;
+  }, { passive: true });
+
   classesGrid.addEventListener('click', e => {
-    // Botão "Ver detalhes"
-    const detailBtn = e.target.closest('[data-class-detail]');
-    if (detailBtn) {
-      e.stopPropagation();
-      Renderer.renderClassDetailPanel(detailBtn.dataset.classDetail);
-      Renderer.openClassModal(detailBtn.dataset.classDetail);
+    // Se o long-press acabou de disparar, ignora o click
+    if (_longPressFired) {
+      _longPressFired = false;
+      e.preventDefault();
       return;
     }
 
@@ -238,9 +329,13 @@ function _registerClassEvents() {
     State.set('classes', selected.filter(id => id !== classId));
     Toast.show(`Classe "${getClassById(classId)?.nome}" removida.`, 'warning');
     Renderer.renderClasses();
-    const nextClass = State.get('classes')[0];
-    if (nextClass) Renderer.renderClassDetailPanel(nextClass);
     Renderer.renderSkills();
+
+    // Mostra próxima classe no painel de detalhes
+    const remaining = State.get('classes');
+    if (remaining.length > 0) {
+      Renderer.renderClassDetailPanel(remaining[remaining.length - 1]);
+    }
   });
 }
 
@@ -288,38 +383,6 @@ function _registerResourceEvents() {
       Renderer.renderIdentitySummary();
       return;
     }
-
-    // Botões +/- do máximo
-    const resMaxBtn = e.target.closest('[data-res-max][data-res-max-dir]');
-    if (resMaxBtn) {
-      const resId  = resMaxBtn.dataset.resMax;
-      const dir    = parseInt(resMaxBtn.dataset.resMaxDir);
-      const curMax = State.get(`recursos.${resId}.max`) ?? 0;
-      const newMax = Math.max(0, curMax + dir);
-      State.set(`recursos.${resId}.max`, newMax);
-
-      // Não deixa atual > novo max
-      const atual = State.get(`recursos.${resId}.atual`) ?? 0;
-      if (atual > newMax) State.set(`recursos.${resId}.atual`, newMax);
-
-      Renderer.updateResourceDisplay(resId);
-      return;
-    }
-  });
-
-  // Input direto do máximo
-  grid.addEventListener('change', e => {
-    const inp = e.target;
-    if (!inp.id?.startsWith('res-max-input-')) return;
-
-    const resId  = inp.id.replace('res-max-input-', '');
-    const newMax = Math.max(0, parseInt(inp.value) || 0);
-    State.set(`recursos.${resId}.max`, newMax);
-
-    const atual = State.get(`recursos.${resId}.atual`) ?? 0;
-    if (atual > newMax) State.set(`recursos.${resId}.atual`, newMax);
-
-    Renderer.updateResourceDisplay(resId);
   });
 }
 

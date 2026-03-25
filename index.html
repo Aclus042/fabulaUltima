@@ -19,7 +19,18 @@
   <main class="main-content crt-viewport" id="mainContent">
     <div class="crt-screen">
     <div class="app-shell">
-      <aside class="shell-sidebar">
+
+      <!-- Mobile top bar (hidden on desktop) -->
+      <div class="mobile-topbar" id="mobileTopbar">
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Abrir menu">☰</button>
+        <span class="mobile-topbar-title">Fabula Ultima</span>
+        <span class="mobile-topbar-section" id="mobileCurrentSection">Identidade</span>
+      </div>
+
+      <!-- Sidebar backdrop for mobile -->
+      <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+      <aside class="shell-sidebar" id="shellSidebar">
         <div class="sidebar-panel sidebar-summary-panel" id="globalSummaryPanel">
           <div class="summary-title">Status</div>
           <div class="summary-stat"><span class="summary-label">Nome:</span><span class="summary-value" id="sumName">—</span></div>
@@ -152,9 +163,12 @@
             <!-- Renderizado via JS -->
           </div>
         </div>
+
         <aside class="class-detail-panel" id="classDetailPanel">
-          <div class="class-detail-title">Classe em Foco</div>
-          <div class="class-detail-empty">Selecione ou inspecione uma classe para ver detalhes rápidos aqui.</div>
+          <div class="rpg-panel-title">Detalhes da Classe</div>
+          <div class="class-detail-empty" id="classDetailEmpty">
+            <span class="text-muted font-vt">Selecione uma classe para ver os detalhes</span>
+          </div>
           <div class="class-detail-body" id="classDetailBody" style="display:none;"></div>
         </aside>
       </div>
