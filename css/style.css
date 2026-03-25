@@ -589,6 +589,7 @@ em { font-style: italic; }
   body {
     height: auto;
     min-height: 100vh;
+    min-height: 100dvh;
     overflow-x: hidden;
     overflow-y: auto;
   }
@@ -614,6 +615,23 @@ em { font-style: italic; }
 
   body::before {
     opacity: 0.5;
+  }
+}
+
+@media (max-width: 360px) {
+  :root {
+    --crt-scanline-opacity: 0;
+    --crt-vignette-opacity: 0;
+    --crt-glow-opacity: 0;
+  }
+
+  html {
+    font-size: 14px;
+  }
+
+  body::before,
+  body::after {
+    display: none;
   }
 }
 

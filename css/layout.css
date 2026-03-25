@@ -588,7 +588,9 @@
 @media (max-width: 900px) {
 	.main-content {
 		width: 100vw;
-		height: 100vh;
+		height: auto;
+		min-height: 100vh;
+		min-height: 100dvh;
 		margin: 0;
 		padding: var(--sp-2);
 		border: none;
@@ -603,13 +605,15 @@
 		grid-template-rows: auto 1fr;
 		height: auto;
 		min-height: 100%;
+		gap: var(--sp-2);
 	}
 	.shell-sidebar {
 		position: fixed;
 		top: 0;
 		left: 0;
-		width: 280px;
+		width: min(280px, 85vw);
 		height: 100vh;
+		height: 100dvh;
 		z-index: 200;
 		background: var(--color-bg);
 		border-right: 2px solid var(--color-panel-border);
@@ -639,13 +643,13 @@
 	}
 
 	/* Grid collapses */
-	.attributes-layout   { grid-template-columns: 1fr; }
+	.attributes-layout   { grid-template-columns: 1fr; gap: var(--sp-3); }
 	.skills-layout       { grid-template-columns: 1fr; }
-	.resources-layout    { grid-template-columns: 1fr; }
-	.inventory-layout    { grid-template-columns: 1fr; }
+	.resources-layout    { grid-template-columns: 1fr; gap: var(--sp-3); }
+	.inventory-layout    { grid-template-columns: 1fr; gap: var(--sp-3); }
 	.classes-layout      { grid-template-columns: 1fr; }
-	.resources-grid      { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-	.classes-grid        { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+	.resources-grid      { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-3); padding: var(--sp-3); }
+	.classes-grid        { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sp-2); }
 
 	/* Hide detail panel on mobile — modal via long-press */
 	.class-detail-panel  { display: none; }
@@ -666,61 +670,137 @@
 	}
 	.skills-side-title   { width: 100%; }
 
+	/* Conditions grid — shrink minmax for small screens */
+	.conditions-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: var(--sp-2); }
+
 	/* Section headers compact */
 	.section-header      { padding: var(--sp-2) var(--sp-4); margin-bottom: var(--sp-3); }
 	.section-desc        { display: none; }
+
+	/* Identity card compact */
+	.identity-card       { padding: var(--sp-4); gap: var(--sp-4); }
 }
 
 /* ── Phone landscape / small tablets ── */
 @media (max-width: 680px) {
-	.main-content        { padding: var(--sp-2); }
+	.main-content        { padding: var(--sp-1); }
 
 	.identity-card {
 		flex-direction: column;
 		align-items: center;
-		padding: var(--sp-4);
+		padding: var(--sp-3);
+		gap: var(--sp-3);
 	}
 	.avatar-wrapper {
 		flex-direction: row;
 		justify-content: center;
 		gap: var(--sp-3);
 	}
-	.identity-fields     { width: 100%; }
+	.avatar-circle       { width: 64px; height: 64px; font-size: 1.4rem; }
+	.identity-fields     { width: 100%; gap: var(--sp-3); }
 
-	.section-title       { font-size: 0.45rem; }
+	.section-title       { font-size: 0.42rem; }
 	.section-header::after { display: none; }
 
-	.resources-grid      { grid-template-columns: 1fr; }
+	.resources-grid      { grid-template-columns: 1fr; gap: var(--sp-2); padding: var(--sp-2); }
 	.classes-grid        { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-	.classes-grid-panel   { max-height: 45vh; }
+	.classes-grid-panel  { max-height: 45vh; }
 
 	.field-row           { flex-direction: column; gap: var(--sp-2); }
 	.field-row > *       { width: 100%; }
 
-	.classes-selected-bar { flex-direction: column; align-items: flex-start; gap: var(--sp-2); }
+	.classes-selected-bar { flex-direction: column; align-items: flex-start; gap: var(--sp-2); padding: var(--sp-2) var(--sp-3); }
+
+	/* Conditions 2-col on phones */
+	.conditions-grid     { grid-template-columns: repeat(2, 1fr); gap: var(--sp-2); }
 }
 
 /* ── Phone portrait ── */
 @media (max-width: 480px) {
-	.main-content        { padding: var(--sp-1); }
+	.main-content        { padding: 2px; }
+
+	.app-shell           { gap: var(--sp-1); }
+
+	.identity-card       { padding: var(--sp-2); gap: var(--sp-2); }
+	.avatar-circle       { width: 52px; height: 52px; font-size: 1.1rem; }
 
 	.classes-grid        { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-1); }
 
-	.section-header      { padding: var(--sp-2) var(--sp-3); margin-bottom: var(--sp-2); gap: var(--sp-2); }
+	.section-header      { padding: var(--sp-1) var(--sp-2); margin-bottom: var(--sp-1); gap: var(--sp-2); }
 	.section-header::before { display: none; }
+	.section-title       { font-size: 0.38rem; }
 
-	.conditions-grid     { grid-template-columns: repeat(2, 1fr); }
-	.resources-grid      { gap: var(--sp-3); }
+	.conditions-grid     { grid-template-columns: repeat(2, 1fr); gap: var(--sp-1); }
+	.resources-grid      { gap: var(--sp-2); padding: var(--sp-1); }
 
 	.inventory-toolbar   { gap: var(--sp-2); padding: var(--sp-2); }
 
-	.skills-filter-bar   { padding: var(--sp-2); gap: var(--sp-1); }
+	.skills-filter-bar   { padding: var(--sp-1); gap: var(--sp-1); }
+
+	.classes-selected-bar { padding: var(--sp-2); margin-bottom: var(--sp-2); }
+	.classes-grid-panel  { max-height: 40vh; }
+
+	/* Ensure all panels fit */
+	.attributes-layout,
+	.resources-layout,
+	.inventory-layout    { gap: var(--sp-2); }
+
+	/* Reduce box-shadows that eat horizontal space */
+	.sidebar-panel,
+	.classes-grid-panel,
+	.skills-side-panel,
+	.skills-main-panel,
+	.resources-main-panel,
+	.status-panel,
+	.inventory-side-panel,
+	.inventory-main-panel {
+		box-shadow:
+			0 0 0 1px #0a0e1a,
+			0 0 0 2px var(--color-panel-border),
+			2px 2px 0 rgba(0,0,0,0.4);
+	}
+	.section-header {
+		box-shadow:
+			0 0 0 1px #0a0e1a,
+			0 0 0 2px var(--color-panel-border),
+			2px 2px 0 rgba(0,0,0,0.4);
+	}
+	.identity-card {
+		box-shadow:
+			0 0 0 1px #0a0e1a,
+			0 0 0 2px var(--color-panel-border),
+			2px 2px 0 rgba(0,0,0,0.4);
+	}
 }
 
 /* ── Very small phones ── */
 @media (max-width: 360px) {
+	.main-content        { padding: 1px; }
 	.classes-grid        { grid-template-columns: 1fr; }
 	.conditions-grid     { grid-template-columns: 1fr; }
+	.resources-grid      { padding: var(--sp-1); gap: var(--sp-1); }
+	.section-header      { padding: var(--sp-1); gap: var(--sp-1); box-shadow: none; border-width: 1px; }
+	.section-title       { font-size: 0.35rem; letter-spacing: 0.08em; }
+	.identity-card       { padding: var(--sp-1); box-shadow: none; border-width: 1px; }
+	.avatar-circle       { width: 44px; height: 44px; font-size: 1rem; }
+
+	/* Remove all decorative shadows on tiny screens */
+	.sidebar-panel,
+	.classes-grid-panel,
+	.skills-side-panel,
+	.skills-main-panel,
+	.resources-main-panel,
+	.status-panel,
+	.inventory-side-panel,
+	.inventory-main-panel {
+		box-shadow: none;
+		border-width: 1px;
+	}
+
+	.mobile-topbar {
+		box-shadow: none;
+		border-width: 1px;
+	}
 }
 
 /* Sidebar backdrop — hidden everywhere, shown only when active on mobile */
