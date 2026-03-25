@@ -1,0 +1,612 @@
+/* ═══════════════════════════════════════════════════════════════
+   style.css — JRPG Classic Menu Theme
+   Fabula Ultima – Ficha de Personagem
+   Inspired by: Final Fantasy (SNES/PS1), Chrono Trigger, Dragon Quest
+═══════════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────
+   CSS CUSTOM PROPERTIES — JRPG PALETTE
+───────────────────────────────────────────────── */
+:root {
+  /* ── Core Background ── */
+  --color-bg:          #0a0e1a;
+  --color-bg-alt:      #0d1220;
+  --color-bg-panel:    #121828;
+  --color-bg-panel-dk: #0c1018;
+  --color-bg-overlay:  rgba(0, 0, 16, 0.82);
+  --color-bg-input:    #080c16;
+
+  /* ── Panel / Window Colors ── */
+  --color-panel-bg:     #192038;
+  --color-panel-border: #5a7fc0;
+  --color-panel-inner:  #142040;
+  --color-panel-title:  #0c1830;
+
+  /* ── Gold / Yellow accent ── */
+  --color-gold:        #f0c040;
+  --color-gold-light:  #ffe066;
+  --color-gold-dark:   #c09010;
+  --color-gold-dim:    #806820;
+
+  /* ── Cyan accent ── */
+  --color-cyan:        #40d0f8;
+  --color-cyan-light:  #80e8ff;
+  --color-cyan-dark:   #1890c0;
+  --color-cyan-dim:    #1460a0;
+
+  /* ── HP / Red ── */
+  --color-hp:          #f03050;
+  --color-hp-light:    #ff6080;
+  --color-hp-dark:     #a01030;
+  --color-hp-bar:      #e82040;
+
+  /* ── MP / Blue ── */
+  --color-mp:          #4090f8;
+  --color-mp-light:    #70b8ff;
+  --color-mp-dark:     #1050c0;
+  --color-mp-bar:      #3070e0;
+
+  /* ── IP / Yellow-green ── */
+  --color-ip:          #a0e040;
+  --color-ip-light:    #c0f060;
+  --color-ip-dark:     #608010;
+  --color-ip-bar:      #80c020;
+
+  /* ── Text ── */
+  --color-text:        #e8eaf8;
+  --color-text-bright: #ffffff;
+  --color-text-muted:  #8090b8;
+  --color-text-light:  #5868a0;
+  --color-text-label:  #a0b0d8;
+  --color-text-value:  #f0f4ff;
+
+  /* ── Status Colors ── */
+  --color-green:       #40c870;
+  --color-green-light: #60e890;
+  --color-green-dark:  #208040;
+  --color-green-bg:    rgba(40, 160, 80, 0.15);
+
+  --color-purple:      #c060f0;
+  --color-purple-light:#e080ff;
+  --color-purple-bg:   rgba(160, 60, 200, 0.15);
+
+  --color-danger:      #f02020;
+  --color-danger-light:#ff4040;
+  --color-danger-bg:   rgba(200, 20, 20, 0.15);
+
+  --color-orange:      #f08020;
+  --color-orange-bg:   rgba(200, 100, 20, 0.15);
+
+  /* ── Borders ── */
+  --color-border:       #3a5490;
+  --color-border-light: #2a3a68;
+  --color-border-glow:  #6090d8;
+
+  /* ── Pixel border pieces (used for box-shadow pixel borders) ── */
+  --pixel-border-color: #5a7fc0;
+  --pixel-corner-color: #3a5490;
+  --pixel-inner-color:  #4a6aa8;
+
+  /* ── Fonts ── */
+  --font-pixel:   'Press Start 2P', 'Courier New', monospace;
+  --font-heading: 'Press Start 2P', 'Courier New', monospace;
+  --font-ui:      'VT323', 'Courier New', monospace;
+  --font-body:    'Open Sans', system-ui, sans-serif;
+  --font-mono:    'Courier New', monospace;
+
+  /* ── Font Sizes ── */
+  --fs-px:   0.6rem;
+  --fs-xs:   0.72rem;
+  --fs-sm:   0.86rem;
+  --fs-base: 1rem;
+  --fs-md:   1.16rem;
+  --fs-lg:   1.42rem;
+  --fs-xl:   1.76rem;
+  --fs-2xl:  2.18rem;
+  --fs-3xl:  2.6rem;
+
+  /* ── VT323 is large at same rem — scale factors ── */
+  --vt-xs:   1.02rem;
+  --vt-sm:   1.2rem;
+  --vt-base: 1.42rem;
+  --vt-md:   1.68rem;
+  --vt-lg:   2rem;
+  --vt-xl:   2.38rem;
+  --vt-2xl:  3rem;
+
+  /* ── Spacing ── */
+  --sp-1:  0.25rem;
+  --sp-2:  0.5rem;
+  --sp-3:  0.75rem;
+  --sp-4:  1rem;
+  --sp-5:  1.25rem;
+  --sp-6:  1.5rem;
+  --sp-8:  2rem;
+  --sp-10: 2.5rem;
+  --sp-12: 3rem;
+
+  /* ── Borders/Radius (minimal for JRPG) ── */
+  --radius-sm:   2px;
+  --radius-md:   4px;
+  --radius-lg:   4px;
+  --radius-xl:   6px;
+  --radius-full: 2px;
+
+  /* ── Shadows ── */
+  --shadow-sm:   0 2px 8px rgba(0,0,0,0.6);
+  --shadow-md:   0 4px 16px rgba(0,0,0,0.7);
+  --shadow-lg:   0 8px 32px rgba(0,0,0,0.8);
+  --shadow-xl:   0 16px 60px rgba(0,0,0,0.9);
+  --shadow-glow: 0 0 12px rgba(90, 127, 192, 0.5);
+  --shadow-gold: 0 0 10px rgba(240, 192, 64, 0.4);
+  --shadow-inset: inset 0 2px 8px rgba(0,0,0,0.5);
+
+  /* ── Transitions ── */
+  --transition-fast:   0.1s steps(2);
+  --transition-normal: 0.15s ease;
+  --transition-slow:   0.3s ease;
+
+  /* ── Layout ── */
+  --header-height: 0px;
+  --nav-height:    0px;
+
+  /* ── JRPG pixel-border mixin values ── */
+  --pb-size: 3px; /* pixel border thickness */
+
+  /* ── CRT overlay tuning ── */
+  --crt-scanline-opacity: 0.08;
+  --crt-vignette-opacity: 0.22;
+  --crt-glow-opacity: 0.04;
+  --crt-curvature-scale-x: 1.008;
+  --crt-curvature-scale-y: 1.014;
+}
+
+/* ─────────────────────────────────────────────────
+   GOOGLE FONTS — pixel/retro
+   (loaded in HTML head)
+───────────────────────────────────────────────── */
+
+/* ─────────────────────────────────────────────────
+   RESET & BASE
+───────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  image-rendering: pixelated;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--fs-base);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  /* Subtle scanline texture */
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.08) 2px,
+      rgba(0,0,0,0.08) 4px
+    ),
+    radial-gradient(ellipse at 30% 20%, rgba(20,40,120,0.5) 0%, transparent 70%),
+    radial-gradient(ellipse at 70% 80%, rgba(10,20,60,0.6) 0%, transparent 60%);
+  background-attachment: fixed;
+  height: 100vh;
+  min-height: 100vh;
+  line-height: 1.5;
+  -webkit-font-smoothing: none;
+  image-rendering: pixelated;
+  position: relative;
+  overflow: hidden;
+}
+
+body::before,
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 20;
+}
+
+body::before {
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(255,255,255,var(--crt-scanline-opacity)) 0px,
+      rgba(255,255,255,var(--crt-scanline-opacity)) 1px,
+      rgba(0,0,0,0) 1px,
+      rgba(0,0,0,0) 4px
+    ),
+    linear-gradient(
+      115deg,
+      rgba(255,255,255,0.035) 0%,
+      rgba(255,255,255,0.012) 18%,
+      rgba(255,255,255,0) 34%,
+      rgba(255,255,255,0.015) 56%,
+      rgba(255,255,255,0) 100%
+    );
+  mix-blend-mode: screen;
+  opacity: 0.9;
+}
+
+body::after {
+  background:
+    radial-gradient(circle at center, rgba(255,255,255,var(--crt-glow-opacity)) 0%, rgba(255,255,255,0.012) 14%, rgba(255,255,255,0) 36%),
+    radial-gradient(circle at center, rgba(0,0,0,0) 58%, rgba(0,0,0,0.12) 78%, rgba(0,0,0,var(--crt-vignette-opacity)) 100%);
+}
+
+.crt-viewport {
+  position: relative;
+  isolation: isolate;
+}
+
+.crt-screen {
+  position: relative;
+  transform: perspective(1800px) scaleX(var(--crt-curvature-scale-x)) scaleY(var(--crt-curvature-scale-y));
+  transform-origin: center center;
+  filter: none;
+}
+
+.crt-screen::before,
+.crt-screen::after {
+  content: '';
+  position: absolute;
+  inset: -12px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.crt-screen::before {
+  background:
+    radial-gradient(circle at 50% 44%, rgba(255,255,255,0.018), rgba(255,255,255,0.006) 14%, rgba(255,255,255,0) 38%),
+    radial-gradient(circle at 50% 50%, rgba(64,208,248,0.006), rgba(64,208,248,0) 42%);
+  mix-blend-mode: screen;
+}
+
+.crt-screen::after {
+  box-shadow:
+    inset 0 0 12px rgba(0,0,0,0.08),
+    inset 0 0 24px rgba(0,0,0,0.025);
+  border-radius: 18px;
+}
+
+img { max-width: 100%; display: block; image-rendering: pixelated; }
+a { color: inherit; text-decoration: none; }
+ul, ol { list-style: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+input, textarea, select { font-family: inherit; }
+
+/* ─────────────────────────────────────────────────
+   TIPOGRAFIA GLOBAL
+───────────────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-pixel);
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--color-text-bright);
+  text-rendering: geometricPrecision;
+}
+
+p {
+  font-family: var(--font-body);
+  line-height: 1.65;
+  color: var(--color-text);
+}
+
+strong { font-weight: 700; }
+em { font-style: italic; }
+
+/* Pixel-font class utilities */
+.font-pixel { font-family: var(--font-pixel) !important; }
+.font-vt    { font-family: var(--font-ui) !important; }
+.font-body  { font-family: var(--font-body) !important; }
+
+/* Text utilities */
+.text-muted   { color: var(--color-text-muted); }
+.text-light   { color: var(--color-text-light); }
+.text-label   { color: var(--color-text-label); }
+.text-gold    { color: var(--color-gold); }
+.text-cyan    { color: var(--color-cyan); }
+.text-green   { color: var(--color-green); }
+.text-danger  { color: var(--color-danger); }
+.text-hp      { color: var(--color-hp); }
+.text-mp      { color: var(--color-mp); }
+.text-center  { text-align: center; }
+.text-right   { text-align: right; }
+.text-sm      { font-size: var(--fs-sm); }
+.text-xs      { font-size: var(--fs-xs); }
+
+/* ─────────────────────────────────────────────────
+   JRPG PIXEL PANEL — core mixin via class
+   Replicates the classic "window box" from FF/CT
+───────────────────────────────────────────────── */
+
+/* The pixel panel uses a layered box-shadow to create
+   the classic JRPG beveled/pixelated window border:
+   outer dark → bright top-left → dark bottom-right → inner fill */
+.rpg-panel {
+  background: var(--color-panel-bg);
+  position: relative;
+  /* Outer pixel border */
+  box-shadow:
+    /* outer dark frame */
+    0 0 0 2px #0a0e1a,
+    /* bright border */
+    0 0 0 4px var(--color-panel-border),
+    /* second outer dark */
+    0 0 0 6px #0a0e1a,
+    /* inner shadow */
+    inset 0 0 0 1px rgba(90, 127, 192, 0.25),
+    /* depth shadow */
+    8px 8px 0 rgba(0,0,0,0.5);
+  /* Inner gradient for depth */
+  background-image:
+    linear-gradient(160deg, rgba(40,60,120,0.35) 0%, transparent 50%),
+    linear-gradient(to bottom, rgba(0,0,0,0.0) 0%, rgba(0,0,0,0.2) 100%);
+}
+
+/* Panel title bar */
+.rpg-panel-title {
+  font-family: var(--font-pixel);
+  font-size: var(--fs-xs);
+  color: var(--color-gold);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: var(--sp-2) var(--sp-4);
+  background: var(--color-panel-title);
+  border-bottom: 2px solid var(--color-panel-border);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  position: relative;
+  overflow: hidden;
+}
+.rpg-panel-title::before {
+  content: '■';
+  font-size: var(--fs-xs);
+  color: var(--color-cyan);
+  flex-shrink: 0;
+}
+.rpg-panel-title::after {
+  content: '';
+  position: absolute;
+  right: var(--sp-4);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40%;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(90,127,192,0.4));
+}
+
+/* Panel body */
+.rpg-panel-body {
+  padding: var(--sp-4);
+}
+
+/* ─────────────────────────────────────────────────
+   JRPG CURSOR (► selector arrow)
+───────────────────────────────────────────────── */
+.rpg-cursor::before {
+  content: '►';
+  color: var(--color-gold);
+  font-family: var(--font-ui);
+  font-size: var(--vt-sm);
+  margin-right: var(--sp-2);
+  animation: cursor-blink 1s steps(1) infinite;
+}
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* ─────────────────────────────────────────────────
+   JRPG LIST ROW (stat rows: "FOR ..... 12")
+───────────────────────────────────────────────── */
+.rpg-stat-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0;
+  padding: var(--sp-2) var(--sp-3);
+  border-bottom: 1px solid rgba(58, 84, 144, 0.3);
+  transition: background var(--transition-fast);
+}
+.rpg-stat-row:hover {
+  background: rgba(90, 127, 192, 0.1);
+}
+.rpg-stat-label {
+  font-family: var(--font-ui);
+  font-size: var(--vt-sm);
+  color: var(--color-text-label);
+  letter-spacing: 0.05em;
+  min-width: 60px;
+}
+.rpg-stat-dots {
+  flex: 1;
+  font-family: var(--font-ui);
+  font-size: var(--vt-sm);
+  color: var(--color-border);
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 0 var(--sp-2);
+  letter-spacing: 0.05em;
+}
+.rpg-stat-dots::after {
+  content: '...................................................';
+}
+.rpg-stat-value {
+  font-family: var(--font-ui);
+  font-size: var(--vt-md);
+  color: var(--color-text-value);
+  text-align: right;
+  min-width: 48px;
+}
+
+/* ─────────────────────────────────────────────────
+   JRPG PIXEL BAR (HP/MP bars)
+───────────────────────────────────────────────── */
+.rpg-bar-wrap {
+  background: #080c18;
+  border: 2px solid #3a5490;
+  height: 14px;
+  position: relative;
+  overflow: visible;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.6), 2px 2px 0 rgba(0,0,0,0.5);
+}
+.rpg-bar-fill {
+  height: 100%;
+  position: relative;
+  transition: width 0.2s ease;
+  min-width: 2px;
+}
+.rpg-bar-fill::after {
+  /* Bright top highlight stripe */
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: rgba(255,255,255,0.2);
+}
+.rpg-bar-fill.bar-hp {
+  background: linear-gradient(to right, var(--color-hp-dark), var(--color-hp-bar), var(--color-hp-light));
+}
+.rpg-bar-fill.bar-mp {
+  background: linear-gradient(to right, var(--color-mp-dark), var(--color-mp-bar), var(--color-mp-light));
+}
+.rpg-bar-fill.bar-ip {
+  background: linear-gradient(to right, var(--color-ip-dark), var(--color-ip-bar), var(--color-ip-light));
+}
+.rpg-bar-fill.bar-low {
+  background: linear-gradient(to right, #600010, #c00020, #ff2040);
+  animation: bar-danger 0.8s steps(2) infinite;
+}
+@keyframes bar-danger {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.7; }
+}
+
+/* ─────────────────────────────────────────────────
+   JRPG SELECTION ROW (menu item)
+───────────────────────────────────────────────── */
+.rpg-menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-4);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+  border-bottom: 1px solid rgba(58, 84, 144, 0.25);
+  position: relative;
+}
+.rpg-menu-item:hover,
+.rpg-menu-item.selected {
+  background: rgba(60, 90, 170, 0.35);
+}
+.rpg-menu-item:hover .rpg-menu-cursor,
+.rpg-menu-item.selected .rpg-menu-cursor {
+  opacity: 1;
+}
+.rpg-menu-cursor {
+  color: var(--color-gold);
+  font-family: var(--font-ui);
+  font-size: var(--vt-sm);
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+  flex-shrink: 0;
+}
+.rpg-menu-item.selected .rpg-menu-cursor {
+  animation: cursor-blink 1s steps(1) infinite;
+  opacity: 1;
+}
+.rpg-menu-name {
+  font-family: var(--font-ui);
+  font-size: var(--vt-base);
+  color: var(--color-text-bright);
+  flex: 1;
+}
+.rpg-menu-sub {
+  font-family: var(--font-ui);
+  font-size: var(--vt-xs);
+  color: var(--color-text-muted);
+}
+.rpg-menu-cost {
+  font-family: var(--font-ui);
+  font-size: var(--vt-sm);
+  color: var(--color-mp-light);
+  text-align: right;
+}
+
+/* ─────────────────────────────────────────────────
+   DECORATIVE DIVIDER
+───────────────────────────────────────────────── */
+.rpg-divider {
+  height: 2px;
+  background: linear-gradient(to right, transparent, var(--color-panel-border), transparent);
+  margin: var(--sp-3) 0;
+}
+
+/* ─────────────────────────────────────────────────
+   SCROLLBAR
+───────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #080c16; border: 1px solid #1a2440; }
+::-webkit-scrollbar-thumb {
+  background: #3a5490;
+  border: 1px solid #5a7fc0;
+}
+::-webkit-scrollbar-thumb:hover { background: #5a7fc0; }
+
+/* ─────────────────────────────────────────────────
+   TEXT SELECTION
+───────────────────────────────────────────────── */
+::selection {
+  background: rgba(90, 127, 192, 0.5);
+  color: #fff;
+}
+
+@media (max-width: 900px) {
+  :root {
+    --crt-scanline-opacity: 0.05;
+    --crt-vignette-opacity: 0.14;
+    --crt-glow-opacity: 0.025;
+    --crt-curvature-scale-x: 1.003;
+    --crt-curvature-scale-y: 1.006;
+  }
+
+  .crt-screen::after {
+    box-shadow:
+      inset 0 0 10px rgba(0,0,0,0.07),
+      inset 0 0 18px rgba(0,0,0,0.02);
+  }
+}
+
+/* ─────────────────────────────────────────────────
+   UTILITY — JRPG badge inline
+───────────────────────────────────────────────── */
+.rpg-badge {
+  display: inline-block;
+  font-family: var(--font-ui);
+  font-size: var(--vt-xs);
+  padding: 1px var(--sp-2);
+  border: 1px solid var(--color-border);
+  background: var(--color-panel-title);
+  color: var(--color-text-label);
+  letter-spacing: 0.05em;
+}
+.rpg-badge-gold   { border-color: var(--color-gold-dim); color: var(--color-gold); background: rgba(160,100,0,0.2); }
+.rpg-badge-cyan   { border-color: var(--color-cyan-dark); color: var(--color-cyan); background: rgba(0,80,160,0.2); }
+.rpg-badge-green  { border-color: var(--color-green-dark); color: var(--color-green); background: rgba(0,100,40,0.2); }
+.rpg-badge-hp     { border-color: var(--color-hp-dark); color: var(--color-hp-light); background: rgba(150,0,20,0.2); }
+.rpg-badge-mp     { border-color: var(--color-mp-dark); color: var(--color-mp-light); background: rgba(0,40,150,0.2); }
+.rpg-badge-purple { border-color: #6020a0; color: var(--color-purple-light); background: rgba(80,0,140,0.2); }
+.rpg-badge-danger { border-color: var(--color-danger); color: var(--color-danger-light); background: var(--color-danger-bg); }

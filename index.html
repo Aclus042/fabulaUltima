@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fabula Ultima – Ficha de Personagem</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/components.css" />
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════
+       MAIN CONTENT
+  ══════════════════════════════════════ -->
+  <main class="main-content crt-viewport" id="mainContent">
+    <div class="crt-screen">
+    <div class="app-shell">
+      <aside class="shell-sidebar">
+        <div class="sidebar-panel sidebar-summary-panel" id="globalSummaryPanel">
+          <div class="summary-title">Status</div>
+          <div class="summary-stat"><span class="summary-label">Nome:</span><span class="summary-value" id="sumName">—</span></div>
+          <div class="summary-stat"><span class="summary-label">Nível:</span><span class="summary-value" id="sumLevel">1</span></div>
+          <div class="summary-stat"><span class="summary-label">Conceito:</span><span class="summary-value" id="sumConcept">—</span></div>
+          <div class="summary-stat"><span class="summary-label">Origem:</span><span class="summary-value" id="sumOrigin">—</span></div>
+          <div class="summary-divider"></div>
+          <div class="summary-stat"><span class="summary-label">Classes:</span><span class="summary-value" id="sumClasses">Nenhuma</span></div>
+          <div class="summary-stat"><span class="summary-label">PV:</span><span class="summary-value" id="sumPV">0</span></div>
+          <div class="summary-stat"><span class="summary-label">PM:</span><span class="summary-value" id="sumPM">0</span></div>
+        </div>
+
+        <div class="sidebar-panel sidebar-nav-panel">
+          <div class="sidebar-panel-title">Acesso Rápido</div>
+          <div class="sidebar-section-links">
+            <button class="sidebar-link active" data-nav="identidade">Identidade</button>
+            <button class="sidebar-link" data-nav="atributos">Atributos</button>
+            <button class="sidebar-link" data-nav="classes">Classes</button>
+            <button class="sidebar-link" data-nav="habilidades">Habilidades</button>
+            <button class="sidebar-link" data-nav="recursos">Recursos</button>
+            <button class="sidebar-link" data-nav="inventario">Inventário</button>
+          </div>
+        </div>
+      </aside>
+
+      <div class="shell-main">
+
+    <!-- ─────────────────────────────────
+         SEÇÃO 1: IDENTIDADE
+    ───────────────────────────────── -->
+    <section class="section active" id="section-identidade">
+      <div class="section-header">
+        <h2 class="section-title"><span class="section-ornament">✦</span> Identidade</h2>
+        <p class="section-desc">As informações fundamentais do seu personagem.</p>
+      </div>
+
+      <div class="identity-grid">
+        <div class="identity-card">
+          <div class="avatar-wrapper">
+            <div class="avatar-circle" id="avatarDisplay">
+              <span class="avatar-initial" id="avatarInitial">?</span>
+            </div>
+            <button class="btn-secondary avatar-btn" id="changeAvatarBtn">Alterar Inicial</button>
+          </div>
+
+          <div class="identity-fields">
+            <div class="field-group">
+              <label class="field-label" for="charName">Nome do Personagem</label>
+              <input type="text" id="charName" class="field-input field-large" placeholder="Ex: Seraphiel Alvarez" />
+            </div>
+
+            <div class="field-row">
+              <div class="field-group">
+                <label class="field-label" for="charLevel">Nível</label>
+                <div class="number-control">
+                  <button class="num-btn" data-action="decrease" data-target="charLevel" data-min="1" data-max="50">−</button>
+                  <input type="number" id="charLevel" class="field-input field-number" value="1" min="1" max="50" />
+                  <button class="num-btn" data-action="increase" data-target="charLevel" data-min="1" data-max="50">+</button>
+                </div>
+              </div>
+              <div class="field-group flex-grow">
+                <label class="field-label" for="charConcept">Conceito</label>
+                <input type="text" id="charConcept" class="field-input" placeholder="Ex: Cavaleiro Errante" />
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label class="field-label" for="charOrigin">Origem</label>
+              <input type="text" id="charOrigin" class="field-input" placeholder="Ex: Nômade das Planícies" />
+            </div>
+
+            <div class="field-group">
+              <label class="field-label" for="charBond">Vínculo</label>
+              <textarea id="charBond" class="field-textarea" rows="2" placeholder="Descreva o vínculo do personagem..."></textarea>
+            </div>
+
+            <div class="field-group">
+              <label class="field-label" for="charNotes">Notas</label>
+              <textarea id="charNotes" class="field-textarea" rows="3" placeholder="Anotações gerais..."></textarea>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────────
+         SEÇÃO 2: ATRIBUTOS
+    ───────────────────────────────── -->
+    <section class="section" id="section-atributos">
+      <div class="section-header">
+        <h2 class="section-title"><span class="section-ornament">✦</span> Atributos</h2>
+        <p class="section-desc">Os dados fundamentais que definem suas capacidades.</p>
+      </div>
+      <div class="attributes-layout">
+        <div class="attributes-panel">
+          <div class="attr-panel-title" id="attrPanelTitle">Atributos Base</div>
+          <div class="attributes-grid" id="attributesGrid">
+            <!-- Renderizado via JS -->
+          </div>
+        </div>
+        <div class="derived-panel">
+          <div class="derived-panel-title" id="derivedPanelTitle">Valores Derivados</div>
+          <div class="attributes-derived" id="attributesDerived">
+            <!-- Renderizado via JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────────
+         SEÇÃO 3: CLASSES
+    ───────────────────────────────── -->
+    <section class="section" id="section-classes">
+      <div class="section-header">
+        <h2 class="section-title"><span class="section-ornament">✦</span> Classes</h2>
+        <p class="section-desc">Escolha até 2 classes para definir as habilidades do seu personagem.</p>
+      </div>
+
+      <div class="classes-selected-bar" id="classesSelectedBar">
+        <span class="selected-label">Classes ativas:</span>
+        <div class="selected-tags" id="selectedTags">
+          <span class="tag-empty">Nenhuma classe selecionada</span>
+        </div>
+      </div>
+
+      <div class="classes-layout">
+        <div class="classes-grid-panel">
+          <div class="classes-grid" id="classesGrid">
+            <!-- Renderizado via JS -->
+          </div>
+        </div>
+        <aside class="class-detail-panel" id="classDetailPanel">
+          <div class="class-detail-title">Classe em Foco</div>
+          <div class="class-detail-empty">Selecione ou inspecione uma classe para ver detalhes rápidos aqui.</div>
+          <div class="class-detail-body" id="classDetailBody" style="display:none;"></div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────────
+         SEÇÃO 4: HABILIDADES
+    ───────────────────────────────── -->
+    <section class="section" id="section-habilidades">
+      <div class="section-header">
+        <h2 class="section-title"><span class="section-ornament">✦</span> Habilidades</h2>
+        <p class="section-desc">Habilidades disponíveis com base nas suas classes escolhidas.</p>
+      </div>
+
+      <div class="skills-layout">
+        <div class="skills-side-panel">
+          <div class="skills-filter-bar" id="skillsFilterBar">
+            <!-- Filtros de classe renderizados via JS -->
+          </div>
+        </div>
+
+        <div class="skills-main-panel">
+          <div class="skills-grid" id="skillsGrid">
+            <!-- Renderizado via JS -->
+          </div>
+        </div>
+      </div>
+
+      <div class="skills-empty" id="skillsEmpty" style="display:none;">
+        <p>Selecione ao menos uma classe na seção <strong>Classes</strong> para ver as habilidades disponíveis.</p>
+        <button class="btn-primary" data-nav="classes">Ir para Classes</button>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────────
+         SEÇÃO 5: RECURSOS
+    ───────────────────────────────── -->
+    <section class="section" id="section-recursos">
+      <div class="section-header">
+        <h2 class="section-title"><span class="section-ornament">✦</span> Recursos</h2>
+        <p class="section-desc">Gerencie os pontos de vida e magia do seu personagem.</p>
+      </div>
+
+      <div class="resources-layout">
+        <div class="resources-main-panel">
+          <div class="resources-grid" id="resourcesGrid">
+            <!-- Renderizado via JS -->
+          </div>
+        </div>
+
+        <div class="status-effects status-panel" id="statusEffects">
+          <h3 class="subsection-title">Condições</h3>
+          <div class="conditions-grid" id="conditionsGrid">
+            <!-- Renderizado via JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────────
+         SEÇÃO 6: INVENTÁRIO
+    ───────────────────────────────── -->
+    <section class="section" id="section-inventario">
+      <div class="section-header">
+        <h2 class="section-title"><span class="section-ornament">✦</span> Inventário</h2>
+        <p class="section-desc">Gerencie os itens e equipamentos do personagem.</p>
+      </div>
+
+      <div class="inventory-layout">
+        <div class="inventory-side-panel">
+          <div class="inventory-toolbar">
+            <button class="btn-primary" id="addItemBtn">
+              <span>+ Adicionar Item</span>
+            </button>
+            <select class="field-select" id="inventoryFilter">
+              <option value="all">Todos os Itens</option>
+              <option value="arma">Armas</option>
+              <option value="armadura">Armaduras</option>
+              <option value="consumivel">Consumíveis</option>
+              <option value="acessorio">Acessórios</option>
+              <option value="misc">Miscelânea</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="inventory-main-panel">
+          <div class="inventory-grid" id="inventoryGrid">
+            <!-- Renderizado via JS -->
+          </div>
+        </div>
+      </div>
+
+      <div class="inventory-empty" id="inventoryEmpty" style="display:none;">
+        <p>Nenhum item no inventário. Adicione itens com o botão acima.</p>
+      </div>
+    </section>
+
+      </div>
+    </div>
+    </div>
+  </main>
+
+  <!-- ══════════════════════════════════════
+       MODAL / POP-UP OVERLAY
+  ══════════════════════════════════════ -->
+  <div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true">
+    <div class="modal-container" id="modalContainer">
+      <div class="modal-titlebar">
+        <span class="modal-titlebar-label font-vt" id="modalTitle" style="font-family:var(--font-ui);font-size:var(--vt-sm);color:var(--color-gold);letter-spacing:0.1em;text-transform:uppercase;">Menu</span>
+        <button class="modal-close" id="modalClose" aria-label="Fechar">&times;</button>
+      </div>
+      <div class="modal-content modal-body" id="modalContent">
+        <!-- Conteúdo dinâmico -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       TOAST NOTIFICATIONS
+  ══════════════════════════════════════ -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- ══════════════════════════════════════
+       SCRIPTS (ordem importa)
+  ══════════════════════════════════════ -->
+  <script src="js/state.js"></script>
+  <script src="js/classes.js"></script>
+  <script src="js/skills.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

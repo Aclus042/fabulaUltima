@@ -1,0 +1,605 @@
+﻿/* ═══════════════════════════════════════════════════════════════
+	 layout.css — JRPG Menu Layout: Header, Nav, Sections
+	 Fabula Ultima – Ficha de Personagem
+═══════════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────
+	 MAIN CONTENT
+───────────────────────────────────────────────── */
+.main-content {
+	width: min(1440px, calc(100vw - 32px));
+	height: min(940px, calc(100vh - 32px));
+	max-width: 1440px;
+	margin: 16px auto;
+	padding: var(--sp-4);
+	min-height: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+	background: rgba(10, 14, 26, 0.78);
+	border: 2px solid var(--color-panel-border);
+	box-shadow:
+		0 0 0 2px #0a0e1a,
+		0 0 0 6px var(--color-panel-border),
+		0 0 0 8px #0a0e1a,
+		18px 18px 40px rgba(0,0,0,0.55);
+}
+
+.app-shell {
+	display: grid;
+	grid-template-columns: 280px minmax(0, 1fr);
+	gap: var(--sp-5);
+	align-items: stretch;
+	width: 100%;
+	height: 100%;
+	min-height: 0;
+}
+
+.shell-sidebar {
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+	gap: var(--sp-4);
+	overflow: hidden;
+}
+
+.shell-main {
+	min-width: 0;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+	gap: var(--sp-4);
+	overflow: hidden;
+}
+
+.sidebar-panel,
+.classes-grid-panel,
+.class-detail-panel,
+.skills-side-panel,
+.skills-main-panel,
+.resources-main-panel,
+.status-panel,
+.inventory-side-panel,
+.inventory-main-panel {
+	background: var(--color-panel-bg);
+	border: 2px solid var(--color-panel-border);
+	box-shadow:
+		0 0 0 2px #0a0e1a,
+		0 0 0 4px var(--color-panel-border),
+		6px 6px 0 rgba(0,0,0,0.5);
+	min-width: 0;
+	min-height: 0;
+	overflow: hidden;
+}
+
+.sidebar-summary-panel {
+	flex: 0 0 auto;
+}
+
+.sidebar-nav-panel {
+	flex: 1 1 auto;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+}
+
+.sidebar-panel-title {
+	font-family: var(--font-pixel);
+	font-size: 0.48rem;
+	color: var(--color-gold);
+	padding: var(--sp-2) var(--sp-4);
+	background: var(--color-panel-title);
+	border-bottom: 2px solid var(--color-panel-border);
+	letter-spacing: 0.15em;
+	text-transform: uppercase;
+}
+
+.sidebar-section-links {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 0;
+	padding: var(--sp-2);
+	overflow-y: auto;
+	min-height: 0;
+}
+
+.sidebar-link {
+	padding: var(--sp-2) var(--sp-3);
+	text-align: left;
+	font-family: var(--font-ui);
+	font-size: var(--vt-sm);
+	color: var(--color-text-muted);
+	background: transparent;
+	border: none;
+	border-bottom: 1px solid rgba(58,84,144,0.25);
+	cursor: pointer;
+	transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.sidebar-link:hover,
+.sidebar-link.active {
+	background: rgba(60,90,170,0.28);
+	color: var(--color-gold);
+}
+
+/* ─────────────────────────────────────────────────
+	 SECTIONS — JRPG Panel Frames
+───────────────────────────────────────────────── */
+.section {
+	display: none;
+	min-height: 0;
+	height: 100%;
+	overflow: hidden;
+}
+.section.active {
+	display: flex;
+	flex-direction: column;
+	animation: jrpg-open 0.18s steps(3) forwards;
+}
+@keyframes jrpg-open {
+	0%   { opacity: 0; transform: scaleY(0.92); }
+	50%  { opacity: 0.6; }
+	100% { opacity: 1; transform: scaleY(1); }
+}
+
+.section-header {
+	margin-bottom: var(--sp-4);
+	padding: var(--sp-3) var(--sp-5);
+	background: var(--color-panel-title);
+	border: 2px solid var(--color-panel-border);
+	border-bottom: 3px solid var(--color-panel-border);
+	box-shadow:
+		0 0 0 2px #0a0e1a,
+		0 0 0 4px var(--color-panel-border),
+		4px 4px 0 rgba(0,0,0,0.5);
+	display: flex;
+	align-items: center;
+	gap: var(--sp-4);
+	flex-wrap: wrap;
+	flex: 0 0 auto;
+}
+.section-header::before {
+	content: '◆';
+	color: var(--color-cyan);
+	font-size: var(--fs-sm);
+	flex-shrink: 0;
+	text-shadow: 0 0 6px rgba(64,208,248,0.7);
+}
+.section-header::after {
+	content: '';
+	flex: 1;
+	height: 1px;
+	background: linear-gradient(to right, rgba(90,127,192,0.5), transparent);
+	min-width: 40px;
+}
+.section-title {
+	font-family: var(--font-pixel);
+	font-size: clamp(0.5rem, 1.5vw, 0.75rem);
+	color: var(--color-text-bright);
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	display: flex;
+	align-items: center;
+	gap: var(--sp-3);
+}
+.section-ornament { display: none; }
+.section-desc {
+	width: 100%;
+	font-family: var(--font-ui);
+	font-size: var(--vt-xs);
+	color: var(--color-text-muted);
+	letter-spacing: 0.08em;
+	padding-top: var(--sp-1);
+}
+.subsection-title {
+	font-family: var(--font-ui);
+	font-size: var(--vt-base);
+	color: var(--color-text-label);
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	margin: var(--sp-6) 0 var(--sp-3);
+	padding-bottom: var(--sp-2);
+	border-bottom: 1px solid rgba(58,84,144,0.45);
+	display: flex;
+	align-items: center;
+	gap: var(--sp-2);
+}
+.subsection-title::before { content: '─'; color: var(--color-border); }
+
+/* ─────────────────────────────────────────────────
+	 IDENTITY LAYOUT
+───────────────────────────────────────────────── */
+.identity-grid {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+	gap: var(--sp-4);
+	align-items: start;
+	min-height: 0;
+	height: 100%;
+}
+.identity-card {
+	display: flex;
+	gap: var(--sp-6);
+	background: var(--color-panel-bg);
+	border: 2px solid var(--color-panel-border);
+	padding: var(--sp-6);
+	box-shadow:
+		0 0 0 2px #0a0e1a,
+		0 0 0 4px var(--color-panel-border),
+		6px 6px 0 rgba(0,0,0,0.5);
+	min-height: 0;
+	height: 100%;
+	overflow: auto;
+}
+.avatar-wrapper {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: var(--sp-3);
+	flex-shrink: 0;
+}
+.avatar-circle {
+	width: 88px;
+	height: 88px;
+	background: linear-gradient(135deg, #1a2840, #0c1828);
+	border: 2px solid var(--color-gold-dim);
+	box-shadow:
+		0 0 0 2px #0a0e1a,
+		0 0 0 4px var(--color-gold-dim),
+		0 0 12px rgba(240,192,64,0.3),
+		inset 0 0 20px rgba(0,0,0,0.4);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-family: var(--font-pixel);
+	font-size: 1.8rem;
+	color: var(--color-gold);
+	text-shadow: 0 0 10px rgba(240,192,64,0.7);
+	transition: box-shadow var(--transition-normal);
+}
+.avatar-circle:hover {
+	box-shadow:
+		0 0 0 2px #0a0e1a,
+		0 0 0 4px var(--color-gold),
+		0 0 20px rgba(240,192,64,0.5),
+		inset 0 0 20px rgba(0,0,0,0.4);
+}
+.identity-fields {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: var(--sp-4);
+	min-height: 0;
+}
+.field-row {
+	display: flex;
+	gap: var(--sp-3);
+	align-items: flex-end;
+}
+.flex-grow { flex: 1; }
+
+.identity-summary { display: none; }
+.summary-title {
+	font-family: var(--font-pixel);
+	font-size: 0.5rem;
+	color: var(--color-gold);
+	text-align: center;
+	padding: var(--sp-3) var(--sp-4);
+	background: var(--color-panel-title);
+	border-bottom: 2px solid var(--color-panel-border);
+	letter-spacing: 0.15em;
+	text-transform: uppercase;
+	text-shadow: 0 0 8px rgba(240,192,64,0.5);
+}
+.summary-stat {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	padding: var(--sp-2) var(--sp-4);
+	border-bottom: 1px solid rgba(58,84,144,0.25);
+}
+.summary-label {
+	font-family: var(--font-ui);
+	font-size: var(--vt-xs);
+	color: var(--color-text-muted);
+	letter-spacing: 0.05em;
+	text-transform: uppercase;
+}
+.summary-value {
+	font-family: var(--font-ui);
+	font-size: var(--vt-sm);
+	color: var(--color-text-value);
+	text-align: right;
+	max-width: 140px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.summary-divider { height: var(--sp-2); }
+
+/* ─────────────────────────────────────────────────
+	 ATTRIBUTES LAYOUT — JRPG Stat Panels
+───────────────────────────────────────────────── */
+.attributes-layout {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: var(--sp-5);
+	align-items: start;
+	min-height: 0;
+	height: 100%;
+}
+.attributes-panel,
+.derived-panel {
+	background: var(--color-panel-bg);
+	border: 2px solid var(--color-panel-border);
+	box-shadow:
+		0 0 0 2px #0a0e1a,
+		0 0 0 4px var(--color-panel-border),
+		6px 6px 0 rgba(0,0,0,0.5);
+	overflow-y: auto;
+}
+.derived-panel {
+	border-color: var(--color-border);
+	box-shadow:
+		0 0 0 2px #0a0e1a,
+		0 0 0 4px rgba(58,84,144,0.5),
+		6px 6px 0 rgba(0,0,0,0.5);
+}
+.attributes-grid   { display: contents; }
+.attributes-derived { display: contents; }
+
+/* ─────────────────────────────────────────────────
+	 CLASSES LAYOUT
+───────────────────────────────────────────────── */
+.classes-selected-bar {
+	display: flex;
+	align-items: center;
+	gap: var(--sp-3);
+	margin-bottom: var(--sp-5);
+	padding: var(--sp-3) var(--sp-5);
+	background: var(--color-panel-title);
+	border: 2px solid var(--color-panel-border);
+	flex-wrap: wrap;
+}
+.selected-label {
+	font-family: var(--font-ui);
+	font-size: var(--vt-xs);
+	color: var(--color-text-label);
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	white-space: nowrap;
+}
+.selected-tags { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.tag-empty {
+	font-family: var(--font-ui);
+	font-size: var(--vt-xs);
+	color: var(--color-text-muted);
+}
+.classes-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+	gap: var(--sp-2);
+	padding: var(--sp-3);
+	background: transparent;
+}
+
+.classes-layout {
+	display: grid;
+	grid-template-columns: minmax(0, 1.35fr) 320px;
+	gap: var(--sp-5);
+	align-items: start;
+	min-height: 0;
+	height: 100%;
+}
+
+.class-detail-panel {
+	overflow-y: auto;
+}
+
+.class-detail-title {
+	font-family: var(--font-pixel);
+	font-size: 0.48rem;
+	color: var(--color-cyan);
+	padding: var(--sp-2) var(--sp-4);
+	background: var(--color-panel-title);
+	border-bottom: 2px solid var(--color-panel-border);
+	letter-spacing: 0.15em;
+	text-transform: uppercase;
+}
+
+.class-detail-empty,
+.class-detail-body {
+	padding: var(--sp-4);
+	font-family: var(--font-ui);
+	font-size: var(--vt-sm);
+	color: var(--color-text-muted);
+	line-height: 1.45;
+}
+
+.class-detail-body {
+	display: flex;
+	flex-direction: column;
+	gap: var(--sp-3);
+}
+
+.class-detail-name {
+	font-family: var(--font-ui);
+	font-size: var(--vt-lg);
+	color: var(--color-text-bright);
+}
+
+.class-detail-tier {
+	font-family: var(--font-ui);
+	font-size: var(--vt-xs);
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	color: var(--color-text-label);
+}
+
+.class-detail-desc {
+	font-family: var(--font-ui);
+	font-size: var(--vt-sm);
+	color: var(--color-text-muted);
+}
+
+.class-detail-skill-list {
+	display: flex;
+	flex-direction: column;
+	gap: 0;
+	border-top: 1px solid rgba(58,84,144,0.25);
+}
+
+.class-detail-skill {
+	display: flex;
+	justify-content: space-between;
+	gap: var(--sp-2);
+	padding: var(--sp-2) 0;
+	border-bottom: 1px solid rgba(58,84,144,0.2);
+	font-family: var(--font-ui);
+	font-size: var(--vt-xs);
+	color: var(--color-text-label);
+}
+
+/* ─────────────────────────────────────────────────
+	 SKILLS LAYOUT
+───────────────────────────────────────────────── */
+.skills-filter-bar {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--sp-2);
+	margin-bottom: var(--sp-5);
+	padding: var(--sp-3) var(--sp-4);
+	background: var(--color-panel-title);
+	border: 1px solid rgba(58,84,144,0.5);
+}
+.skills-grid {
+	background: transparent;
+}
+
+.skills-layout {
+	display: grid;
+	grid-template-columns: 220px minmax(0, 1fr);
+	gap: var(--sp-5);
+	align-items: start;
+	min-height: 0;
+	height: 100%;
+}
+
+.skills-side-panel {
+	padding: var(--sp-3);
+	overflow-y: auto;
+}
+
+.skills-main-panel {
+	padding: 0;
+	overflow-y: auto;
+}
+.skills-empty {
+	text-align: center;
+	padding: var(--sp-10) var(--sp-4);
+	color: var(--color-text-muted);
+	font-family: var(--font-ui);
+	font-size: var(--vt-base);
+	letter-spacing: 0.08em;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: var(--sp-3);
+}
+
+/* ─────────────────────────────────────────────────
+	 RESOURCES LAYOUT
+───────────────────────────────────────────────── */
+.resources-grid {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: var(--sp-5);
+	margin-bottom: 0;
+	padding: var(--sp-4);
+}
+
+.resources-layout {
+	display: grid;
+	grid-template-columns: minmax(0, 1.4fr) 320px;
+	gap: var(--sp-5);
+	align-items: start;
+	min-height: 0;
+	height: 100%;
+}
+.resources-main-panel,
+.status-panel {
+	overflow-y: auto;
+}
+.conditions-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+	gap: var(--sp-3);
+}
+
+/* ─────────────────────────────────────────────────
+	 INVENTORY LAYOUT
+───────────────────────────────────────────────── */
+.inventory-toolbar {
+	display: flex;
+	align-items: stretch;
+	gap: var(--sp-4);
+	margin-bottom: 0;
+	flex-wrap: wrap;
+	padding: var(--sp-4);
+	flex-direction: column;
+}
+.inventory-grid {
+	background: transparent;
+}
+
+.inventory-layout {
+	display: grid;
+	grid-template-columns: 260px minmax(0, 1fr);
+	gap: var(--sp-5);
+	align-items: start;
+	min-height: 0;
+	height: 100%;
+}
+.inventory-side-panel,
+.inventory-main-panel {
+	overflow-y: auto;
+}
+.inventory-empty {
+	text-align: center;
+	padding: var(--sp-10) var(--sp-4);
+	color: var(--color-text-muted);
+	font-family: var(--font-ui);
+	font-size: var(--vt-base);
+	letter-spacing: 0.08em;
+	border: 2px dashed rgba(58,84,144,0.5);
+	background: rgba(6,10,20,0.5);
+}
+
+/* ─────────────────────────────────────────────────
+	 RESPONSIVE
+───────────────────────────────────────────────── */
+@media (max-width: 900px) {
+	.main-content        { width: 100vw; height: 100vh; margin: 0; padding: var(--sp-3); border: none; box-shadow: none; }
+	.app-shell           { grid-template-columns: 1fr; }
+	.shell-sidebar       { overflow-y: auto; }
+	.identity-grid       { grid-template-columns: 1fr; }
+	.attributes-layout   { grid-template-columns: 1fr; }
+	.classes-layout      { grid-template-columns: 1fr; }
+	.skills-layout       { grid-template-columns: 1fr; }
+	.resources-layout    { grid-template-columns: 1fr; }
+	.inventory-layout    { grid-template-columns: 1fr; }
+	.resources-grid      { grid-template-columns: 1fr; }
+	.classes-grid        { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 680px) {
+	.main-content      { padding: var(--sp-2); }
+	.identity-card     { flex-direction: column; align-items: center; padding: var(--sp-5); }
+	.avatar-wrapper    { flex-direction: row; justify-content: center; }
+	.section-title     { font-size: 0.5rem; }
+	.resources-grid    { grid-template-columns: 1fr; }
+	.classes-grid      { grid-template-columns: 1fr; }
+}
+@media (max-width: 400px) {
+	.conditions-grid { grid-template-columns: repeat(2, 1fr); }
+}

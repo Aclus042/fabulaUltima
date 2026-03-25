@@ -1,0 +1,1458 @@
+/* ═══════════════════════════════════════════════════════════════
+   components.css — JRPG Component Library
+   Fabula Ultima – Ficha de Personagem
+═══════════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────
+   BOTÕES — JRPG Square Button Style
+───────────────────────────────────────────────── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-6);
+  background: var(--color-gold-dim);
+  color: #fff;
+  font-family: var(--font-ui);
+  font-size: var(--vt-sm);
+  letter-spacing: 0.06em;
+  border: 2px solid var(--color-gold);
+  box-shadow:
+    0 0 0 1px #0a0e1a,
+    3px 3px 0 rgba(0,0,0,0.5),
+    inset 0 1px 0 rgba(255,255,255,0.1);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+  position: relative;
+  overflow: hidden;
+}
+.btn-primary:hover {
+  background: var(--color-gold);
+  color: #0a0e1a;
+  text-shadow: none;
+  box-shadow:
+    0 0 0 1px #0a0e1a,
+    3px 3px 0 rgba(0,0,0,0.5),
+    0 0 12px rgba(240,192,64,0.5),
+    inset 0 1px 0 rgba(255,255,255,0.2);
+}
+.btn-primary:active {
+  box-shadow: 0 0 0 1px #0a0e1a, 1px 1px 0 rgba(0,0,0,0.5);
+  transform: translate(2px, 2px);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-4);
+  background: var(--color-panel-title);
+  color: var(--color-text-label);
+  font-family: var(--font-ui);
+  font-size: var(--vt-sm);
+  letter-spacing: 0.05em;
+  border: 2px solid var(--color-border);
+  box-shadow: 3px 3px 0 rgba(0,0,0,0.4);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.btn-secondary:hover {
+  border-color: var(--color-panel-border);
+  color: var(--color-text-bright);
+  background: var(--color-panel-bg);
+}
+.btn-secondary:active {
+  box-shadow: 1px 1px 0 rgba(0,0,0,0.4);
+  transform: translate(2px, 2px);
+}
+
+.btn-danger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-4);
+  background: var(--color-danger-bg);
+  color: var(--color-danger-light);
+  font-family: var(--font-ui);
+  font-size: var(--vt-sm);
+  letter-spacing: 0.05em;
+  border: 2px solid var(--color-danger);
+  box-shadow: 3px 3px 0 rgba(0,0,0,0.4);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.btn-danger:hover {
+  background: var(--color-danger);
+  color: #fff;
+}
+.btn-danger:active {
+  box-shadow: 1px 1px 0 rgba(0,0,0,0.4);
+  transform: translate(2px, 2px);
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: var(--sp-1) var(--sp-2);
+  background: none;
+  color: var(--color-text-muted);
+  font-family: var(--font-ui);
+  font-size: var(--vt-xs);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.btn-ghost:hover {
+  color: var(--color-text-label);
+  border-color: var(--color-border);
+  background: rgba(58,84,144,0.15);
+}
+
+/* ─────────────────────────────────────────────────
+   CAMPOS DE INPUT — Dark JRPG Style
+───────────────────────────────────────────────── */
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.field-label {
+  font-family: var(--font-ui);
+  font-size: var(--vt-xs);
+  color: var(--color-text-label);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.field-input {
+  padding: var(--sp-2) var(--sp-3);
+  background: #06080e;
+  border: 2px solid var(--color-border);
+  font-family: var(--font-ui);
+  font-size: var(--vt-sm);
+  color: var(--color-text-bright);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  width: 100%;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+}
+.field-input:focus {
+  outline: none;
+  border-color: var(--color-gold);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.4), 0 0 0 1px var(--color-gold-dim);
+}
+.field-input::placeholder {
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.field-large {
+  font-family: var(--font-ui);
+  font-size: var(--vt-base);
+}
+
+.field-number {
+  width: 60px;
+  text-align: center;
+  font-family: var(--font-ui);
+  font-size: var(--vt-sm);
+  padding: var(--sp-2);
+  -moz-appearance: textfield;
+}
+.field-number::-webkit-inner-spin-button,
+.field-number::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+
+.field-textarea {
+  padding: var(--sp-2) var(--sp-3);
+  background: #06080e;
+  border: 2px solid var(--color-border);
+  font-family: var(--font-ui);
+  font-size: var(--vt-sm);
+  color: var(--color-text-bright);
+  resize: vertical;
+  width: 100%;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+  transition: border-color var(--transition-fast);
+}
+.field-textarea:focus {
+  outline: none;
+  border-color: var(--color-gold);
+}
+
+.field-select {
+  padding: var(--sp-2) var(--sp-3);
+  background: #06080e;
+  border: 2px solid var(--color-border);
+  font-family: var(--font-ui);
+  font-size: var(--vt-sm);
+  color: var(--color-text-bright);
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%235a7fc0' stroke-width='2' fill='none' stroke-linecap='square'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--sp-3) center;
+  padding-right: var(--sp-8);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+}
+.field-select:focus {
+  outline: none;
+  border-color: var(--color-panel-border);
+}
+
+/* ─────────────────────────────────────────────────
+   NUMBER CONTROL (+/-) — JRPG style
+───────────────────────────────────────────────── */
+.number-control {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: #06080e;
+  border: 2px solid var(--color-border);
+  overflow: hidden;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+}
+.number-control .field-number {
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  border-left: 1px solid var(--color-border);
+  border-right: 1px solid var(--color-border);
+}
+.number-control .field-number:focus {
+  box-shadow: none;
+  border: none;
+  border-left: 1px solid var(--color-gold);
+  border-right: 1px solid var(--color-gold);
+}
+
+.num-btn {
+  width: 34px;
+  height: 38px;
+  background: var(--color-panel-title);
+  color: var(--color-text-label);
+  font-family: var(--font-ui);
+  font-size: var(--vt-base);
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.num-btn:hover {
+  background: var(--color-panel-border);
+  color: var(--color-text-bright);
+}
+.num-btn:active {
+  background: var(--color-gold-dim);
+  color: var(--color-gold);
+}
+
+/* ─────────────────────────────────────────────────
+   ATTRIBUTE CARD — JRPG stat row
+   Shows: "DES ......... d8  [−][+]"
+───────────────────────────────────────────────── */
+.attr-card {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: var(--sp-3) var(--sp-4);
+  border-bottom: 1px solid rgba(58,84,144,0.3);
+  position: relative;
+  transition: background var(--transition-fast);
+}
+.attr-card:hover {
+  background: rgba(90,127,192,0.1);
+}
+/* Color accent strip on left */
+.attr-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--attr-color, var(--color-gold-dim));
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+.attr-card:hover::before { opacity: 1; }
+
+.attr-abbreviation {
+  font-family: var(--font-ui);
+  font-size: var(--vt-sm);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--attr-color, var(--color-text-label));
+  width: 44px;
+  flex-shrink: 0;
+}
+
+.attr-name {
+  display: none; /* Hidden in JRPG list view */
+}
+
+/* Dot leaders */
+.attr-dots {
+  flex: 1;
+  font-family: var(--font-ui);
+  font-size: var(--vt-xs);
+  color: rgba(58,84,144,0.6);
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 0 var(--sp-2);
+}
+.attr-dots::after {
+  content: '...............................................';
+  letter-spacing: 0.05em;
+}
+
+.attr-die-display {
+  font-family: var(--font-ui);
+  font-size: var(--vt-md);
+  color: var(--attr-color, var(--color-text-value));
+  min-width: 40px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.attr-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  margin-left: var(--sp-3);
+}
+
+.attr-btn {
+  width: 22px;
+  height: 22px;
+  background: var(--color-panel-title);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  font-family: var(--font-ui);
+  font-size: var(--vt-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.attr-btn:hover {
+  background: var(--attr-color, var(--color-panel-border));
+  border-color: var(--attr-color, var(--color-panel-border));
+  color: #fff;
+}
+
+/* Panel title bar for attr panel */
+.attr-panel-title {
+  font-family: var(--font-pixel);
+  font-size: 0.5rem;
+  color: var(--color-gold);
+  padding: var(--sp-2) var(--sp-4);
+  background: var(--color-panel-title);
+  border-bottom: 2px solid var(--color-panel-border);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.attr-panel-title::before {
+  content: '■';
+  color: var(--color-cyan);
+  font-size: 8px;
+}
+
+/* ─────────────────────────────────────────────────
+   DERIVED STAT CARD — JRPG list row
+───────────────────────────────────────────────── */
+.derived-card {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  border-bottom: 1px solid rgba(58,84,144,0.25);
+  transition: background var(--transition-fast);
+}
+.derived-card:hover {
+  background: rgba(90,127,192,0.08);
+}
+
+.derived-icon {
+  font-size: var(--vt-base);
+  flex-shrink: 0;
+  width: 24px;
+  text-align: center;
+}
+
+.derived-info { flex: 1; }
+
+.derived-label {
+  font-family: var(--font-ui);
+  font-size: var(--vt-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+}
+
+.derived-value {
+  font-family: var(--font-ui);
+  font-size: var(--vt-base);
+  color: var(--color-text-value);
+  margin-top: 1px;
+}
+
+.derived-formula {
+  font-family: var(--font-ui);
+  font-size: var(--vt-xs);
+  color: var(--color-text-muted);
+  font-style: italic;
+  margin-top: 1px;
+}
+
+/* Panel title for derived panel */
+.derived-panel-title {
+  font-family: var(--font-pixel);
+  font-size: 0.5rem;
+  color: var(--color-cyan);
+  padding: var(--sp-2) var(--sp-4);
+  background: var(--color-panel-title);
+  border-bottom: 2px solid var(--color-border);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.derived-panel-title::before {
+  content: '■';
+  color: var(--color-gold);
+  font-size: 8px;
+}
+
+/* ─────────────────────────────────────────────────
+   CLASS CARD — JRPG compact grid card
+───────────────────────────────────────────────── */
+.class-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: var(--sp-2);
+  cursor: pointer;
+  transition: background var(--transition-fast), transform var(--transition-fast), border-color var(--transition-fast);
+  border: 1px solid rgba(58,84,144,0.35);
+  position: relative;
+  min-height: 0;
+  background: linear-gradient(180deg, rgba(18,24,40,0.9), rgba(12,18,30,0.95));
+}
+.class-card:hover {
+  background: linear-gradient(180deg, rgba(28,38,68,0.96), rgba(16,24,40,1));
+  transform: translateY(-2px);
+  border-color: var(--class-color, var(--color-panel-border));
+}
+.class-card.selected {
+  background: linear-gradient(180deg, rgba(48,56,90,0.96), rgba(20,28,48,1));
+  border-color: var(--color-gold);
+  box-shadow: 0 0 0 1px rgba(240,192,64,0.25), inset 0 0 0 1px rgba(240,192,64,0.12);
+}
+
+.class-card.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.class-card.disabled:hover {
+  transform: none;
+}
+
+.class-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+}
+.class-card-bottom {
+  display: none;
+}
+
+.class-icon {
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.class-icon-img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  display: block;
+  filter: drop-shadow(0 0 6px rgba(90,127,192,0.45));
+}
+
+.class-card-info { flex: 0; width: 100%; text-align: center; }
+
+.class-card-name {
+  font-family: var(--font-ui);
+  font-size: var(--vt-sm);
+  color: var(--color-text-bright);
+  line-height: 1.1;
+}
+.class-card.selected .class-card-name {
+  color: var(--color-gold);
+}
+
+.class-card-tier {
+  display: none;
+}
+
+.class-card-desc {
+  display: none; /* Hidden in list view, shown in modal */
+}
+
+.class-card-footer { display: none; }
+.class-card-header { display: contents; } /* flatten */
+
+.class-card-info { flex: 1; }
+
+.class-skill-count {
+  font-family: var(--font-ui);
+  font-size: var(--vt-xs);
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+  text-align: right;
+}
+
+.class-selected-badge {
+  background: rgba(240,192,64,0.2);
+  color: var(--color-gold);
+  font-family: var(--font-ui);
+  font-size: var(--vt-xs);
+  padding: 2px var(--sp-2);
+  border: 1px solid var(--color-gold-dim);
+  flex-shrink: 0;
+}
+
+.class-view-btn {
+  font-family: var(--font-ui);
+  font-size: var(--vt-xs);
+  color: var(--color-cyan);
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 0;
+  flex-shrink: 0;
+  transition: color var(--transition-fast);
+}
+.class-view-btn:hover { color: var(--color-text-bright); }
+
+/* ─────────────────────────────────────────────────
+   SELECTED CLASS TAG
+───────────────────────────────────────────────── */
+.selected-class-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-1) var(--sp-3);
+  background: rgba(60,90,170,0.3);
+  border: 1px solid var(--color-panel-border);
+  font-family: var(--font-ui);
+  font-size: var(--vt-xs);
+  color: var(--color-text-bright);
+  letter-spacing: 0.05em;
+}
+.class-tag-icon {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  display: inline-block;
+}
+.selected-class-tag .tag-remove {
+  width: 16px;
+  height: 16px;
+  background: rgba(58,84,144,0.4);
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-size: var(--vt-xs);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-muted);
+  transition: all var(--transition-fast);
+}
+.selected-class-tag .tag-remove:hover {
+  background: var(--color-danger);
+  border-color: var(--color-danger);
+  color: #fff;
+}
+
+/* ─────────────────────────────────────────────────
+   SKILL CARD — JRPG menu list item
+───────────────────────────────────────────────── */
+.skill-card {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+  border-bottom: 1px solid rgba(58,84,144,0.25);
+  position: relative;
+  min-height: 52px;
+}
+.skill-card:hover {
+  background: rgba(60,90,170,0.25);
+}
+
+/* Left accent color based on skill type */
+.skill-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--skill-color, var(--color-panel-border));
+  opacity: 0.7;
+}
+
+/* Hidden hover tip */
+.skill-card::after { display: none; }
+
+.skill-card-header {
+  display: contents;
+}
+
+/* JRPG cursor */
+.skill-cursor {
+  font-family: var(--font-ui);
+  font-size: var(--vt-sm);
+  color: var(--color-gold);
+  opacity: 0;
+  flex-shrink: 0;
+  width: 14px;
+  transition: opacity var(--transition-fast);
+}
+.skill-card:hover .skill-cursor { opacity: 1; }
+
+.skill-card-name {
+  font-family: var(--font-ui);
+  font-size: var(--vt-sm);
+  color: var(--color-text-bright);
+  flex: 1;
+}
+
+.skill-type-badge {
+  flex-shrink: 0;
+  padding: 1px var(--sp-2);
+  font-family: var(--font-ui);
+  font-size: var(--vt-xs);
+  letter-spacing: 0.05em;
+  background: var(--badge-bg, rgba(58,84,144,0.3));
+  color: var(--badge-color, var(--color-text-muted));
+  border: 1px solid var(--badge-border, var(--color-border));
+}
+
+.skill-card-cost {
+  font-family: var(--font-ui);
+  font-size: var(--vt-sm);
+  color: var(--color-mp-light);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  flex-shrink: 0;
+  min-width: 40px;
+  text-align: right;
+  justify-content: flex-end;
+}
+.skill-cost-icon { font-size: var(--vt-sm); }
+
+.skill-card-desc {
+  display: none; /* Hidden in list; shown in modal */
+}
+
+.skill-class-tag {
+  display: none; /* Hidden for cleaner list view */
+}
+
+/* Skills panel title */
+.skills-panel-title {
+  font-family: var(--font-pixel);
+  font-size: 0.5rem;
+  color: var(--color-gold);
+  padding: var(--sp-2) var(--sp-4);
+  background: var(--color-panel-title);
+  border-bottom: 2px solid var(--color-panel-border);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ─────────────────────────────────────────────────
+   FILTER BUTTON — JRPG toggle
+───────────────────────────────────────────────── */
+.filter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: var(--sp-2) var(--sp-4);
+  background: var(--color-panel-title);
+  border: 1px solid var(--color-border);
+  font-family: var(--font-ui);
+  font-size: var(--vt-xs);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  letter-spacing: 0.05em;
+}
+.filter-class-icon {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  display: inline-block;
+  vertical-align: middle;
+}
+.filter-btn:hover {
+  border-color: var(--color-panel-border);
+  color: var(--color-text-label);
+}
+.filter-btn.active {
+  background: rgba(90,127,192,0.25);
+  border-color: var(--color-panel-border);
+  color: var(--color-text-bright);
+  box-shadow: inset 0 0 0 1px rgba(90,127,192,0.3);
+}
+/* Left marker on active */
+.filter-btn.active::before {
+  content: '■ ';
+  color: var(--color-cyan);
+  font-size: 8px;
+}
+
+/* ─────────────────────────────────────────────────
+   RESOURCE CARD — JRPG HP/MP Panel
+───────────────────────────────────────────────── */
+.resource-card {
+  background: var(--color-panel-bg);
+  border: 2px solid var(--res-border, var(--color-panel-border));
+  box-shadow:
+    0 0 0 2px #0a0e1a,
+    0 0 0 4px var(--res-border, var(--color-panel-border)),
+    6px 6px 0 rgba(0,0,0,0.5);
+  position: relative;
+  overflow: hidden;
+}
+/* Subtle corner gradient */
+.resource-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(var(--res-rgb, 90,127,192),0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+/* Resource title bar */
+.resource-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--sp-2) var(--sp-4);
+  background: var(--color-panel-title);
+  border-bottom: 2px solid var(--res-border, var(--color-panel-border));
+}
+.resource-title-group {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.resource-icon {
+  font-size: var(--vt-base);
+}
+.resource-title {
+  font-family: var(--font-pixel);
+  font-size: 0.5rem;
+  color: var(--res-color, var(--color-text-bright));
+  letter-spacing: 0.15em;
+  text-shadow: 0 0 8px var(--res-glow, transparent);
+}
+.resource-subtitle {
+  display: none;
+}
+
+/* HP/MP display: "120 / 120" */
+.resource-display {
+  text-align: center;
+  padding: var(--sp-4) var(--sp-4) var(--sp-2);
+}
+.resource-ratio {
+  font-family: var(--font-ui);
+  font-size: var(--vt-xl);
+  color: var(--res-color, var(--color-text));
+  line-height: 1;
+  text-shadow: 0 0 12px var(--res-glow, transparent);
+}
+.resource-current {
+  color: var(--res-color, var(--color-text-bright));
+}
+.resource-separator {
+  color: var(--color-text-muted);
+  font-size: var(--vt-lg);
+  margin: 0 var(--sp-1);
+}
+.resource-max {
+  color: var(--color-text-muted);
+  font-size: var(--vt-lg);
+}
+
+/* Pixel progress bar */
+.resource-bar-wrap {
+  height: 12px;
+  background: #050810;
+  border-top: 1px solid rgba(0,0,0,0.5);
+  border-bottom: 1px solid rgba(0,0,0,0.5);
+  position: relative;
+  overflow: hidden;
+  margin: 0 var(--sp-4) var(--sp-3);
+  border: 2px solid rgba(0,0,0,0.4);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.6);
+}
+.resource-bar-fill {
+  height: 100%;
+  background: linear-gradient(to right, var(--res-colordk, #204080), var(--res-color, #5a7fc0), var(--res-colorlt, #a0c0ff));
+  position: relative;
+  transition: width 0.2s ease;
+  min-width: 2px;
+}
+/* Bright stripe */
+.resource-bar-fill::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: rgba(255,255,255,0.15);
+}
+.resource-bar-fill.low {
+  background: linear-gradient(to right, #500010, #c00028, #ff2044);
+  animation: bar-danger-flash 0.8s steps(2) infinite;
+}
+@keyframes bar-danger-flash {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.65; }
+}
+
+/* Controls */
+.resource-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-3);
+  padding: 0 var(--sp-4) var(--sp-3);
+}
+.resource-big-btn {
+  width: 40px;
+  height: 32px;
+  background: var(--color-panel-title);
+  border: 2px solid var(--color-border);
+  color: var(--color-text-label);
+  font-family: var(--font-ui);
+  font-size: var(--vt-lg);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.4);
+}
+.resource-big-btn:hover {
+  background: var(--res-color, var(--color-panel-border));
+  border-color: var(--res-color, var(--color-panel-border));
+  color: #000;
+  box-shadow: 1px 1px 0 rgba(0,0,0,0.4);
+}
+.resource-big-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
+.resource-max-control {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  justify-content: center;
+  padding: var(--sp-2) var(--sp-4) var(--sp-3);
+  border-top: 1px solid rgba(58,84,144,0.3);
+}
+.resource-max-label {
+  font-family: var(--font-ui);
+  font-size: var(--vt-xs);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* ─────────────────────────────────────────────────
+   CONDITION TOGGLE — JRPG checkbox row
+───────────────────────────────────────────────── */
+.condition-item {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-4);
+  background: var(--color-panel-bg);
+  border: 2px solid rgba(58,84,144,0.4);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  user-select: none;
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.4);
+}
+.condition-item:hover {
+  border-color: var(--cond-color, var(--color-panel-border));
+  background: rgba(90,127,192,0.1);
+}
+.condition-item.active {
+  background: rgba(var(--cond-rgb, 90,127,192),0.15);
+  border-color: var(--cond-color, var(--color-panel-border));
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.4), inset 0 0 0 1px rgba(var(--cond-rgb, 90,127,192),0.2);
+}
+
+/* Square checkbox — JRPG style */
+.condition-dot {
+  width: 14px;
+  height: 14px;
+  background: #06080e;
+  border: 2px solid var(--color-border);
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+  position: relative;
+}
+.condition-item.active .condition-dot {
+  background: var(--cond-color, var(--color-panel-border));
+  border-color: var(--cond-color, var(--color-panel-border));
+  box-shadow: 0 0 6px var(--cond-color, var(--color-panel-border));
+}
+/* Checkmark */
+.condition-item.active .condition-dot::after {
+  content: '✓';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  color: #fff;
+  line-height: 12px;
+  text-align: center;
+}
+
+.condition-name {
+  font-family: var(--font-ui);
+  font-size: var(--vt-sm);
+  color: var(--color-text-muted);
+  flex: 1;
+  letter-spacing: 0.05em;
+}
+.condition-item.active .condition-name {
+  color: var(--cond-color, var(--color-text-bright));
+}
+.condition-icon {
+  font-size: var(--vt-sm);
+}
+
+/* ─────────────────────────────────────────────────
+   INVENTORY ITEM CARD — JRPG list row
+───────────────────────────────────────────────── */
+.inventory-card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-5);
+  border-bottom: 1px solid rgba(58,84,144,0.25);
+  transition: background var(--transition-fast);
+  position: relative;
+}
+.inventory-card:hover {
+  background: rgba(60,90,170,0.2);
+}
+
+/* JRPG cursor */
+.inventory-card::before {
+  content: '►';
+  font-family: var(--font-ui);
+  font-size: var(--vt-xs);
+  color: var(--color-gold);
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+  align-self: center;
+  flex-shrink: 0;
+  width: 14px;
+}
+.inventory-card:hover::before { opacity: 1; }
+
+.inventory-card-header { display: contents; }
+
+.item-icon {
+  font-size: var(--vt-base);
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.item-title-group { flex: 1; }
+.item-name {
+  font-family: var(--font-ui);
+  font-size: var(--vt-sm);
+  color: var(--color-text-bright);
+}
+.item-type-tag {
+  font-family: var(--font-ui);
+  font-size: var(--vt-xs);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.item-actions {
+  display: flex;
+  gap: var(--sp-2);
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.item-desc {
+  display: none; /* Shown in modal detail, hidden in list */
+}
+
+.item-meta {
+  display: flex;
+  gap: var(--sp-3);
+  font-family: var(--font-ui);
+  font-size: var(--vt-xs);
+  color: var(--color-text-muted);
+  flex-wrap: wrap;
+  margin-top: 2px;
+}
+.item-meta-entry {
+  display: flex;
+  gap: var(--sp-1);
+  align-items: center;
+}
+
+/* Inventory panel title */
+.inventory-panel-title {
+  font-family: var(--font-pixel);
+  font-size: 0.5rem;
+  color: var(--color-gold);
+  padding: var(--sp-2) var(--sp-4);
+  background: var(--color-panel-title);
+  border-bottom: 2px solid var(--color-panel-border);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ─────────────────────────────────────────────────
+   MODAL — JRPG Dialog Box
+───────────────────────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 240;
+  background: rgba(0,0,0,0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-4);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+.modal-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* Outer pixel frame + inner dialog */
+.modal-container {
+  background: var(--color-panel-bg);
+  border: 3px solid var(--color-panel-border);
+  box-shadow:
+    0 0 0 2px #0a0e1a,
+    0 0 0 5px var(--color-panel-border),
+    0 0 0 7px #0a0e1a,
+    12px 12px 0 rgba(0,0,0,0.7),
+    inset 0 0 0 1px rgba(90,127,192,0.2);
+  max-width: 640px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  transform: scaleY(0.8);
+  transition: transform 0.15s steps(3);
+}
+.modal-overlay.open .modal-container {
+  transform: scaleY(1);
+}
+
+/* Scrollbar inside modal */
+.modal-container::-webkit-scrollbar { width: 6px; }
+.modal-container::-webkit-scrollbar-track { background: #05070e; }
+.modal-container::-webkit-scrollbar-thumb { background: var(--color-border); }
+
+/* Modal title bar */
+.modal-titlebar {
+  background: var(--color-panel-title);
+  border-bottom: 3px solid var(--color-panel-border);
+  padding: var(--sp-3) var(--sp-5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.modal-close {
+  width: 28px;
+  height: 28px;
+  background: rgba(180,40,40,0.3);
+  border: 2px solid var(--color-danger);
+  color: var(--color-danger-light);
+  font-family: var(--font-ui);
+  font-size: var(--vt-base);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+.modal-close:hover {
+  background: var(--color-danger);
+  color: #fff;
+}
+
+/* Modal body padding */
+.modal-body {
+  padding: var(--sp-6);
+}
+
+/* Modal – Class Detail */
+.modal-class-header {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  margin-bottom: var(--sp-5);
+  padding-bottom: var(--sp-4);
+  border-bottom: 2px solid rgba(58,84,144,0.4);
+}
+.modal-class-icon {
+  font-size: var(--vt-2xl);
+  line-height: 1;
+  flex-shrink: 0;
+}
+.modal-class-icon-img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  display: block;
+  filter: drop-shadow(0 0 8px rgba(90,127,192,0.6));
+}
+.modal-class-info {}
+.modal-class-name {
+  font-family: var(--font-ui);
+  font-size: var(--vt-lg);
+  color: var(--color-text-bright);
+}
+.modal-class-tier {
+  font-family: var(--font-ui);
+  font-size: var(--vt-xs);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-top: 2px;
+}
+
+.modal-section-label {
+  font-family: var(--font-ui);
+  font-size: var(--vt-sm);
+  color: var(--color-gold);
+  margin-bottom: var(--sp-3);
+  padding-bottom: var(--sp-2);
+  border-bottom: 1px solid rgba(58,84,144,0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.modal-desc {
+  font-family: var(--font-ui);
+  font-size: var(--vt-sm);
+  color: var(--color-text-muted);
+  line-height: 1.7;
+  margin-bottom: var(--sp-5);
+}
+
+.modal-skills-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: var(--sp-5);
+  border: 1px solid rgba(58,84,144,0.4);
+}
+.modal-skill-item {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-4);
+  background: rgba(6,10,20,0.5);
+  border-bottom: 1px solid rgba(58,84,144,0.25);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+.modal-skill-item:hover {
+  background: rgba(60,90,170,0.25);
+}
+.modal-skill-item:last-child { border-bottom: none; }
+.modal-skill-item-name {
+  font-family: var(--font-ui);
+  font-size: var(--vt-sm);
+  color: var(--color-text-bright);
+  flex: 1;
+}
+.modal-skill-item-cost {
+  font-family: var(--font-ui);
+  font-size: var(--vt-xs);
+  color: var(--color-mp-light);
+}
+.modal-skill-item-type {
+  font-family: var(--font-ui);
+  font-size: var(--vt-xs);
+  color: var(--color-text-muted);
+}
+
+.modal-footer {
+  display: flex;
+  gap: var(--sp-3);
+  justify-content: flex-end;
+  padding: var(--sp-4) var(--sp-6);
+  border-top: 2px solid rgba(58,84,144,0.4);
+  background: var(--color-panel-title);
+  flex-wrap: wrap;
+}
+
+/* Modal – Skill Detail */
+.modal-skill-header {
+  margin-bottom: var(--sp-5);
+  padding-bottom: var(--sp-4);
+  border-bottom: 2px solid rgba(58,84,144,0.4);
+}
+.modal-skill-name {
+  font-family: var(--font-ui);
+  font-size: var(--vt-lg);
+  color: var(--color-text-bright);
+  margin-bottom: var(--sp-3);
+}
+.modal-skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+.modal-tag {
+  padding: 2px var(--sp-3);
+  font-family: var(--font-ui);
+  font-size: var(--vt-xs);
+  letter-spacing: 0.05em;
+  border: 1px solid var(--color-border);
+}
+.modal-tag-type {
+  background: rgba(58,84,144,0.2);
+  color: var(--color-text-label);
+  border-color: var(--color-border);
+}
+.modal-tag-cost {
+  background: rgba(64,144,248,0.15);
+  color: var(--color-mp-light);
+  border-color: var(--color-mp-dark);
+}
+.modal-tag-class {
+  background: rgba(64,160,64,0.15);
+  color: var(--color-green);
+  border-color: var(--color-green-dark);
+}
+.modal-tag-class-icon {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  display: inline-block;
+  vertical-align: text-bottom;
+  margin-right: 4px;
+}
+
+.modal-skill-desc {
+  font-family: var(--font-ui);
+  font-size: var(--vt-sm);
+  color: var(--color-text-muted);
+  line-height: 1.75;
+  margin-bottom: var(--sp-4);
+}
+
+.modal-skill-details {
+  background: rgba(6,10,20,0.6);
+  border: 1px solid rgba(58,84,144,0.4);
+  padding: var(--sp-4);
+  font-family: var(--font-ui);
+  font-size: var(--vt-sm);
+  color: var(--color-text-muted);
+  line-height: 1.7;
+}
+.modal-skill-details p + p { margin-top: var(--sp-2); }
+
+/* ─────────────────────────────────────────────────
+   MODAL – ITEM FORM
+───────────────────────────────────────────────── */
+.item-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  padding: var(--sp-6);
+}
+.item-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-4);
+}
+
+/* ─────────────────────────────────────────────────
+   TOAST NOTIFICATIONS — JRPG message box
+───────────────────────────────────────────────── */
+.toast-container {
+  position: fixed;
+  bottom: var(--sp-6);
+  right: var(--sp-6);
+  z-index: 260;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  pointer-events: none;
+}
+
+.toast {
+  background: var(--color-panel-bg);
+  color: var(--color-text-bright);
+  padding: var(--sp-3) var(--sp-4);
+  font-family: var(--font-ui);
+  font-size: var(--vt-sm);
+  letter-spacing: 0.05em;
+  border: 2px solid var(--color-panel-border);
+  box-shadow:
+    0 0 0 1px #0a0e1a,
+    0 0 0 3px var(--color-panel-border),
+    4px 4px 0 rgba(0,0,0,0.6);
+  animation: toast-in 0.15s steps(3), toast-out 0.2s steps(3) 2.8s forwards;
+  max-width: 300px;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.toast.success {
+  border-color: var(--color-green);
+  box-shadow: 0 0 0 1px #0a0e1a, 0 0 0 3px var(--color-green), 4px 4px 0 rgba(0,0,0,0.6);
+}
+.toast.warning {
+  border-color: var(--color-gold);
+  box-shadow: 0 0 0 1px #0a0e1a, 0 0 0 3px var(--color-gold), 4px 4px 0 rgba(0,0,0,0.6);
+}
+.toast.danger {
+  border-color: var(--color-danger);
+  box-shadow: 0 0 0 1px #0a0e1a, 0 0 0 3px var(--color-danger), 4px 4px 0 rgba(0,0,0,0.6);
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateX(24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes toast-out {
+  from { opacity: 1; transform: translateX(0); }
+  to   { opacity: 0; transform: translateX(24px); }
+}
+
+/* ─────────────────────────────────────────────────
+   BADGE / TAG utilities — JRPG Style
+───────────────────────────────────────────────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: 2px var(--sp-2);
+  font-family: var(--font-ui);
+  font-size: var(--vt-xs);
+  letter-spacing: 0.05em;
+  border: 1px solid var(--color-border);
+}
+.badge-gold   { background: rgba(160,100,0,0.2); color: var(--color-gold); border-color: var(--color-gold-dim); }
+.badge-green  { background: rgba(0,100,40,0.2); color: var(--color-green); border-color: var(--color-green-dark); }
+.badge-blue   { background: rgba(0,60,160,0.2); color: var(--color-mp-light); border-color: var(--color-mp-dark); }
+.badge-purple { background: rgba(80,0,140,0.2); color: var(--color-purple-light); border-color: #6020a0; }
+.badge-danger { background: var(--color-danger-bg); color: var(--color-danger-light); border-color: var(--color-danger); }
+
+/* ─────────────────────────────────────────────────
+   AVATAR BTN
+───────────────────────────────────────────────── */
+.avatar-btn {
+  font-family: var(--font-ui);
+  font-size: var(--vt-xs);
+  padding: var(--sp-1) var(--sp-3);
+  background: rgba(58,84,144,0.3);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.avatar-btn:hover {
+  border-color: var(--color-panel-border);
+  color: var(--color-text-label);
+}
+
+/* ─────────────────────────────────────────────────
+   RESPONSIVE COMPONENTS
+───────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .modal-container {
+    max-height: 95vh;
+  }
+  .modal-footer {
+    flex-direction: column;
+  }
+  .modal-footer .btn-primary,
+  .modal-footer .btn-secondary,
+  .modal-footer .btn-danger {
+    width: 100%;
+    justify-content: center;
+  }
+  .item-form-row {
+    grid-template-columns: 1fr;
+  }
+  .resource-big-btn {
+    width: 48px;
+    height: 36px;
+  }
+}
