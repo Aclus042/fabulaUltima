@@ -16,10 +16,10 @@ const Renderer = (() => {
   // ─────────────────────────────────────────────────
 
   const ATTR_CONFIG = [
-    { id: 'des', nome: 'Destreza',  abrev: 'DES', cor: '#c9a84c', descExtra: 'Agilidade, precisão, reflexos' },
-    { id: 'ins', nome: 'Insight',   abrev: 'INS', cor: '#3d6a8a', descExtra: 'Percepção, magia, inteligência' },
-    { id: 'vig', nome: 'Vigor',     abrev: 'VIG', cor: '#5a8a5e', descExtra: 'Resistência, força, saúde' },
-    { id: 'von', nome: 'Vontade',   abrev: 'VON', cor: '#7a4a8a', descExtra: 'Foco, espiritual, determinação' },
+    { id: 'des', nome: 'Destreza',  abrev: 'DES', cor: '#c9a84c', descExtra: 'Precisão, coordenação, agilidade, reflexos' },
+    { id: 'ast', nome: 'Astúcia',   abrev: 'AST', cor: '#3d6a8a', descExtra: 'Observação, compreensão, raciocínio' },
+    { id: 'vig', nome: 'Vigor',     abrev: 'VIG', cor: '#5a8a5e', descExtra: 'Capacidade física, robustez, resistência' },
+    { id: 'von', nome: 'Vontade',   abrev: 'VON', cor: '#7a4a8a', descExtra: 'Determinação, carisma, disciplina' },
   ];
 
   const ATTR_DADOS = ['', 'd6', 'd8', 'd10', 'd12'];
@@ -59,8 +59,9 @@ const Renderer = (() => {
     const id      = state.identidade;
     const derived = Computed.all();
 
-    _el('sumName').textContent  = id.nome  || '—';
-    _el('sumLevel').textContent = id.nivel || 1;
+    _el('sumName').textContent     = id.nome     || '—';
+    _el('sumLevel').textContent    = id.nivel    || 1;
+    _el('sumConceito').textContent = id.conceito || '—';
 
     // Classes — icon-only row
     const classesRow = _el('sumClassesRow');
@@ -72,14 +73,6 @@ const Renderer = (() => {
     } else {
       classesRow.innerHTML = '<span class="summary-no-class">—</span>';
     }
-
-    // Resources
-    _el('sumPV').textContent   = `${state.recursos.pv.atual} / ${derived.pvMax}`;
-    _el('sumPM').textContent   = `${state.recursos.pm.atual} / ${derived.pmMax}`;
-    _el('sumIP').textContent   = `${state.recursos.ip.atual} / ${state.recursos.ip.max}`;
-
-    // Derived combat stats
-    _el('sumDEF').textContent  = derived.defesa;
 
     // Avatar image
     _updateAvatarDisplay();
@@ -134,28 +127,46 @@ const Renderer = (() => {
 
   function renderDerivedStats() {
     const derived  = Computed.all();
+    const recursos = State.get('recursos');
     const container = _el('attributesDerived');
     container.innerHTML = '';
 
     const derivedConfig = [
-      { id: 'pv',   label: 'PV Máximo',    value: derived.pvMax,     icon: 'assets/icons/stats/hp.png',      formula: 'Dado VIG + Nível × 5' },
-      { id: 'pm',   label: 'PM Máximo',    value: derived.pmMax,     icon: 'assets/icons/stats/mp.png',      formula: 'Dado VON + Nível × 5' },
-      { id: 'init', label: 'Iniciativa',   value: derived.iniciativa, icon: 'assets/icons/stats/init.png',    formula: 'DES + INS' },
-      { id: 'def',  label: 'Defesa',       value: derived.defesa,    icon: 'assets/icons/stats/def.png',     formula: '10 + DES' },
-      { id: 'mdef', label: 'Res. Mágica',  value: derived.resMagica, icon: 'assets/icons/stats/def mag.png', formula: '10 + INS' },
+      { id: 'pv',   label: 'PV',    max: derived.pvMax, atual: recursos.pv.atual, icon: 'assets/icons/stats/hp.png',      formula: 'Dado VIG + Nível × 5', editable: true },
+      { id: 'pm',   label: 'PM',    max: derived.pmMax, atual: recursos.pm.atual, icon: 'assets/icons/stats/mp.png',      formula: 'Dado VON + Nível × 5', editable: true },
+      { id: 'ip',   label: 'PI',    max: recursos.ip.max, atual: recursos.ip.atual, icon: 'assets/icons/stats/ip.png',    formula: 'Pontos de Invenção', editable: true },
+      { id: 'init', label: 'Iniciativa',   value: derived.iniciativa, icon: 'assets/icons/stats/init.png',    formula: 'DES + AST' },
+      { label: 'Defesa',       value: derived.defesa,    icon: 'assets/icons/stats/def.png',     formula: '10 + DES' },
+      { id: 'mdef', label: 'Res. Mágica',  value: derived.resMagica, icon: 'assets/icons/stats/def mag.png', formula: '10 + AST' },
     ];
 
     derivedConfig.forEach(item => {
       const card = _create('div', 'derived-card');
-      card.dataset.stat = item.id;
-      card.innerHTML = `
-        <div class="derived-icon"><img src="${item.icon}" alt="${item.label}" width="42" height="42" /></div>
-        <div class="derived-info">
-          <div class="derived-label">${item.label}</div>
-          <div class="derived-formula">${item.formula}</div>
-        </div>
-        <div class="derived-value">${item.value}</div>
-      `;
+      if (item.id) card.dataset.stat = item.id;
+
+      if (item.editable) {
+        card.innerHTML = `
+          <div class="derived-icon"><img src="${item.icon}" alt="${item.label}" width="42" height="42" /></div>
+          <div class="derived-info">
+            <div class="derived-label">${item.label}</div>
+            <div class="derived-formula">${item.formula}</div>
+          </div>
+          <div class="derived-editable">
+            <input class="derived-input" id="derived-atual-${item.id}" type="text" value="${item.atual}" data-res="${item.id}" inputmode="numeric" />
+            <span class="derived-sep">/</span>
+            <span class="derived-max" id="derived-max-${item.id}">${item.max}</span>
+          </div>
+        `;
+      } else {
+        card.innerHTML = `
+          <div class="derived-icon"><img src="${item.icon}" alt="${item.label}" width="42" height="42" /></div>
+          <div class="derived-info">
+            <div class="derived-label">${item.label}</div>
+            <div class="derived-formula">${item.formula}</div>
+          </div>
+          <div class="derived-value">${item.value}</div>
+        `;
+      }
       container.appendChild(card);
     });
   }
@@ -322,7 +333,8 @@ const Renderer = (() => {
     skillsToShow.forEach(skill => {
       const cls       = getClassById(skill.classe);
       const typeStyle = getSkillTypeStyle(skill.tipo);
-      const card      = _create('div', 'skill-card');
+      const learned   = (State.get('habilidades') || []).includes(skill.id);
+      const card      = _create('div', `skill-card${learned ? ' skill-learned' : ''}`);
       card.style.setProperty('--skill-color', cls?.cor || 'var(--color-panel-border)');
       card.dataset.skillId = skill.id;
 
@@ -450,49 +462,11 @@ const Renderer = (() => {
     const atual   = recursos[resId]?.atual ?? 0;
     const max     = maxMap[resId] || recursos[resId]?.max || 0;
 
-    const atualEl = _el(`res-atual-${resId}`);
-    const maxEl   = _el(`res-max-${resId}`);
+    const atualEl = _el(`derived-atual-${resId}`);
+    const maxEl   = _el(`derived-max-${resId}`);
 
-    if (atualEl) atualEl.textContent = atual;
-    if (maxEl)   maxEl.textContent   = max;
-  }
-
-  // ─────────────────────────────────────────────────
-  // CONDITIONS
-  // ─────────────────────────────────────────────────
-
-  const CONDITION_CONFIG = [
-    { id: 'lento',      label: 'Lento',      icon: '🐢', cor: '#8a6a3d',  desc: 'Velocidade de movimento reduzida à metade.' },
-    { id: 'fraco',      label: 'Fraco',      icon: '💔', cor: '#8a3a3a',  desc: '-2 em todas as rolagens de ataque.' },
-    { id: 'abalado',    label: 'Abalado',    icon: '😨', cor: '#4a6a8a',  desc: '-2 nas rolagens de Vontade e defesa mágica.' },
-    { id: 'envenenado', label: 'Envenenado', icon: '☠️', cor: '#4a8a4a',  desc: 'Perde 5 PV no início de cada turno.' },
-    { id: 'confuso',    label: 'Confuso',    icon: '😵', cor: '#8a4a7a',  desc: 'Não pode usar habilidades ativas.' },
-    { id: 'provocado',  label: 'Provocado',  icon: '😡', cor: '#c9a84c',  desc: 'Deve atacar a fonte de provocação.' },
-    { id: 'exausto',    label: 'Exausto',    icon: '😴', cor: '#6a6a8a',  desc: '-1 em todos os dados de dano.' },
-    { id: 'cansado',    label: 'Cansado',    icon: '😓', cor: '#8a7a5a',  desc: 'Não pode correr ou usar habilidades de IP.' },
-  ];
-
-  function renderConditions() {
-    const condicoes = State.get('condicoes');
-    const grid      = _el('conditionsGrid');
-    if (!grid) return;
-    grid.innerHTML  = '';
-
-    CONDITION_CONFIG.forEach(cond => {
-      const isActive = !!condicoes[cond.id];
-      const item     = _create('div', `condition-item${isActive ? ' active' : ''}`);
-      item.style.setProperty('--cond-color', cond.cor);
-      item.dataset.conditionId = cond.id;
-      item.title = cond.desc;
-
-      item.innerHTML = `
-        <div class="condition-dot"></div>
-        <span class="condition-icon">${cond.icon}</span>
-        <span class="condition-name">${cond.label}</span>
-      `;
-
-      grid.appendChild(item);
-    });
+    if (atualEl) atualEl.value = atual;
+    if (maxEl)   maxEl.textContent = max;
   }
 
   // ─────────────────────────────────────────────────
@@ -640,6 +614,7 @@ const Renderer = (() => {
       <div class="modal-skill-details">${skill.detalhes.split('\n').map(l => `<p>${l}</p>`).join('')}</div>
 
       <div class="modal-footer">
+        <button class="btn-primary" data-modal-action="toggleSkill" data-target-skill="${skillId}">${(State.get('habilidades') || []).includes(skillId) ? 'Desaprender' : 'Aprender'}</button>
         <button class="btn-secondary" data-modal-action="close">Fechar</button>
       </div>
     `;
@@ -726,7 +701,6 @@ const Renderer = (() => {
     renderAttributes();
     renderClasses();
     renderSkills();
-    renderResources();
     renderInventory();
   }
 
@@ -766,16 +740,13 @@ const Renderer = (() => {
     renderClasses,
     renderClassDetailPanel,
     renderSkills,
-    renderResources,
     updateResourceDisplay,
-    renderConditions,
     renderInventory,
     openClassModal,
     openSkillModal,
     openItemModal,
     updateAvatarDisplay: _updateAvatarDisplay,
     ATTR_CONFIG,
-    CONDITION_CONFIG,
     ITEM_ICONS,
   };
 

@@ -699,7 +699,26 @@
   background: rgba(60,90,170,0.25);
 }
 
-/* Left accent color based on skill type */
+/* Unlearned skills — dimmed */
+.skill-card:not(.skill-learned) {
+  opacity: 0.45;
+}
+.skill-card:not(.skill-learned):hover {
+  opacity: 0.7;
+}
+/* Learned indicator */
+.skill-card.skill-learned::after {
+  content: '✓';
+  position: absolute;
+  right: var(--sp-3);
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-ui);
+  font-size: var(--vt-xs);
+  color: var(--color-green);
+  display: flex;
+  opacity: 0.7;
+}
 .skill-card::before {
   content: '';
   position: absolute;
@@ -711,8 +730,8 @@
   opacity: 0.7;
 }
 
-/* Hidden hover tip */
-.skill-card::after { display: none; }
+/* Hidden hover tip (only for unlearned) */
+.skill-card:not(.skill-learned)::after { display: none; }
 
 .skill-card-header {
   display: contents;

@@ -28,10 +28,9 @@ document.addEventListener('DOMContentLoaded', () => {
   _registerMobileMenuEvents();
   _registerIdentityEvents();
   _registerAttributeEvents();
+  _registerDerivedEditEvents();
   _registerClassEvents();
   _registerSkillFilterEvents();
-  _registerResourceEvents();
-  _registerConditionEvents();
   _registerInventoryEvents();
   _registerModalDelegation();
 
@@ -453,7 +452,7 @@ function _registerAttributeEvents() {
 }
 
 function _attrName(id) {
-  const map = { des: 'Destreza', ins: 'Insight', vig: 'Vigor', von: 'Vontade' };
+  const map = { des: 'Destreza', ast: 'Astúcia', vig: 'Vigor', von: 'Vontade' };
   return map[id] || id;
 }
 
@@ -468,6 +467,85 @@ function _syncDerivedMaxes() {
   // Não deixar atual > max
   if (pvAtual > derived.pvMax) State.set('recursos.pv.atual', derived.pvMax);
   if (pmAtual > derived.pmMax) State.set('recursos.pm.atual', derived.pmMax);
+}
+
+// ════════════════════════════════════════════════════════════
+// DERIVED PV/PM INLINE EDIT
+// ════════════════════════════════════════════════════════════
+
+function _registerDerivedEditEvents() {
+  const container = document.getElementById('attributesDerived');
+
+  // Delegated: handle focus, blur, keydown on .derived-input
+  container.addEventListener('focusin', e => {
+    const input = e.target.closest('.derived-input');
+    if (!input) return;
+    // Select all on focus for easy overwrite
+    requestAnimationFrame(() => input.select());
+  });
+
+  container.addEventListener('keydown', e => {
+    const input = e.target.closest('.derived-input');
+    if (!input) return;
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      _applyDerivedInput(input);
+      input.blur();
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      // Revert to current value
+      const resId = input.dataset.res;
+      input.value = State.get(`recursos.${resId}.atual`);
+      input.blur();
+    }
+  });
+
+  container.addEventListener('focusout', e => {
+    const input = e.target.closest('.derived-input');
+    if (!input) return;
+    _applyDerivedInput(input);
+  });
+}
+
+function _applyDerivedInput(input) {
+  const resId = input.dataset.res;
+  const raw = input.value.trim();
+  const current = State.get(`recursos.${resId}.atual`) || 0;
+  let max;
+  if (resId === 'pv') max = Computed.all().pvMax;
+  else if (resId === 'pm') max = Computed.all().pmMax;
+  else max = State.get(`recursos.${resId}.max`) || 0;
+
+  let newVal;
+
+  // Support expressions: +N, -N, or absolute number
+  if (/^[+\-]/.test(raw)) {
+    // Relative: parse as offset from current
+    const offset = parseInt(raw, 10);
+    if (isNaN(offset)) {
+      input.value = current;
+      return;
+    }
+    newVal = current + offset;
+  } else {
+    // Absolute value
+    const parsed = parseInt(raw, 10);
+    if (isNaN(parsed)) {
+      input.value = current;
+      return;
+    }
+    newVal = parsed;
+  }
+
+  // Clamp 0..max
+  newVal = Math.max(0, Math.min(max, newVal));
+
+  State.set(`recursos.${resId}.atual`, newVal);
+  input.value = newVal;
+
+  // Sync resource cards and summary
+  Renderer.updateResourceDisplay(resId);
+  Renderer.renderIdentitySummary();
 }
 
 // ════════════════════════════════════════════════════════════
@@ -622,25 +700,6 @@ function _getResMax(resId) {
 }
 
 // ════════════════════════════════════════════════════════════
-// CONDIÇÕES
-// ════════════════════════════════════════════════════════════
-
-function _registerConditionEvents() {
-  document.getElementById('conditionsGrid').addEventListener('click', e => {
-    const item = e.target.closest('.condition-item');
-    if (!item) return;
-
-    const condId   = item.dataset.conditionId;
-    const current  = State.get(`condicoes.${condId}`);
-    State.set(`condicoes.${condId}`, !current);
-
-    item.classList.toggle('active', !current);
-    const condName = item.querySelector('.condition-name')?.textContent || condId;
-    Toast.show(`${condName}: ${!current ? 'Ativada' : 'Removida'}`, !current ? 'warning' : 'default');
-  });
-}
-
-// ════════════════════════════════════════════════════════════
 // INVENTÁRIO
 // ════════════════════════════════════════════════════════════
 
@@ -690,6 +749,23 @@ function _deleteItem(itemId) {
 
 function _registerModalDelegation() {
   document.getElementById('modalContent').addEventListener('click', e => {
+    // Toggle skill learned/unlearned
+    const toggleSkill = e.target.closest('[data-modal-action="toggleSkill"]');
+    if (toggleSkill) {
+      const skillId = toggleSkill.dataset.targetSkill;
+      const current = State.get('habilidades') || [];
+      if (current.includes(skillId)) {
+        State.set('habilidades', current.filter(id => id !== skillId));
+        Toast.show('Habilidade removida', 'default');
+      } else {
+        State.set('habilidades', [...current, skillId]);
+        Toast.show('Habilidade aprendida!', 'success');
+      }
+      Modal.close();
+      Renderer.renderSkills(_currentSkillFilter);
+      return;
+    }
+
     const quickSkill = e.target.closest('[data-skill-open]');
     if (quickSkill) {
       Renderer.openSkillModal(quickSkill.dataset.skillOpen);

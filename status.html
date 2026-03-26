@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fabula Ultima – Status</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/status.css" />
+</head>
+<body>
+
+  <main class="sp-viewport crt-viewport">
+    <div class="crt-screen">
+      <div class="sp-shell">
+
+        <!-- ══════════════════════════════════
+             TOP BAR — Name / Level / Classes
+        ══════════════════════════════════ -->
+        <header class="sp-header">
+          <div class="sp-header-left">
+            <div class="sp-avatar" id="spAvatar"></div>
+            <div class="sp-identity">
+              <span class="sp-name" id="spName">—</span>
+              <span class="sp-level">Nv. <span id="spLevel">1</span></span>
+            </div>
+          </div>
+          <div class="sp-class-icons" id="spClassIcons">
+            <span class="sp-no-class">—</span>
+          </div>
+          <a href="index.html" class="sp-back-link" title="Voltar à ficha">◄ Ficha</a>
+        </header>
+
+        <!-- ══════════════════════════════════
+             MIDDLE ROW — HUD + Attributes
+        ══════════════════════════════════ -->
+        <div class="sp-middle">
+
+          <!-- HUD Panel -->
+          <section class="sp-panel sp-hud">
+            <div class="sp-panel-title">Status</div>
+            <div class="sp-hud-grid">
+              <div class="sp-hud-row sp-hud-hp">
+                <img src="assets/icons/stats/hp.png" class="sp-hud-icon" alt="HP" />
+                <span class="sp-hud-label">PV</span>
+                <div class="sp-bar-track">
+                  <div class="sp-bar-fill sp-bar-hp" id="spBarHP"></div>
+                </div>
+                <span class="sp-hud-value">
+                  <input class="sp-hud-input" id="spHP-atual" data-res="pv" data-field="atual" />
+                  <span class="sp-hud-sep">/</span>
+                  <span class="sp-hud-max" id="spHP-max">0</span>
+                </span>
+              </div>
+              <div class="sp-hud-row sp-hud-mp">
+                <img src="assets/icons/stats/mp.png" class="sp-hud-icon" alt="MP" />
+                <span class="sp-hud-label">PM</span>
+                <div class="sp-bar-track">
+                  <div class="sp-bar-fill sp-bar-mp" id="spBarMP"></div>
+                </div>
+                <span class="sp-hud-value">
+                  <input class="sp-hud-input" id="spMP-atual" data-res="pm" data-field="atual" />
+                  <span class="sp-hud-sep">/</span>
+                  <span class="sp-hud-max" id="spMP-max">0</span>
+                </span>
+              </div>
+              <div class="sp-hud-row sp-hud-ip">
+                <img src="assets/icons/stats/ip.png" class="sp-hud-icon" alt="IP" />
+                <span class="sp-hud-label">PI</span>
+                <div class="sp-bar-track">
+                  <div class="sp-bar-fill sp-bar-ip" id="spBarIP"></div>
+                </div>
+                <span class="sp-hud-value">
+                  <input class="sp-hud-input" id="spIP-atual" data-res="ip" data-field="atual" />
+                  <span class="sp-hud-sep">/</span>
+                  <span class="sp-hud-max" id="spIP-max">0</span>
+                </span>
+              </div>
+            </div>
+            <div class="sp-hud-derived">
+              <div class="sp-derived-item">
+                <img src="assets/icons/stats/init.png" class="sp-derived-icon" alt="" />
+                <span class="sp-derived-label">INIC</span>
+                <span class="sp-derived-val" id="spInit">0</span>
+              </div>
+              <div class="sp-derived-item">
+                <img src="assets/icons/stats/def.png" class="sp-derived-icon" alt="" />
+                <span class="sp-derived-label">DEF</span>
+                <span class="sp-derived-val" id="spDef">0</span>
+              </div>
+              <div class="sp-derived-item">
+                <img src="assets/icons/stats/def mag.png" class="sp-derived-icon" alt="" />
+                <span class="sp-derived-label">R.MAG</span>
+                <span class="sp-derived-val" id="spResMag">0</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- Attributes Panel -->
+          <section class="sp-panel sp-attrs">
+            <div class="sp-panel-title">Atributos</div>
+            <div class="sp-attrs-list" id="spAttrsList"></div>
+          </section>
+        </div>
+
+        <!-- ══════════════════════════════════
+             BOTTOM ROW — Skills + Detail + Inventory
+        ══════════════════════════════════ -->
+        <div class="sp-bottom">
+
+          <!-- Skills List -->
+          <section class="sp-panel sp-skills">
+            <div class="sp-panel-title">Habilidades</div>
+            <div class="sp-skills-list" id="spSkillsList">
+              <div class="sp-empty">Nenhuma habilidade disponível.</div>
+            </div>
+          </section>
+
+          <!-- Skill Detail -->
+          <section class="sp-panel sp-detail">
+            <div class="sp-panel-title">Detalhes</div>
+            <div class="sp-detail-body" id="spDetailBody">
+              <div class="sp-detail-placeholder">
+                <span class="sp-detail-cursor">►</span> Selecione uma habilidade
+              </div>
+            </div>
+          </section>
+
+          <!-- Inventory -->
+          <section class="sp-panel sp-inventory">
+            <div class="sp-panel-title">Inventário</div>
+            <div class="sp-inventory-list" id="spInventoryList">
+              <div class="sp-empty">Inventário vazio.</div>
+            </div>
+          </section>
+
+        </div>
+
+      </div><!-- .sp-shell -->
+    </div><!-- .crt-screen -->
+  </main>
+
+  <!-- Shared data modules -->
+  <script src="js/state.js"></script>
+  <script src="js/classes.js"></script>
+  <script src="js/skills.js"></script>
+  <!-- Page-specific logic -->
+  <script src="js/status-page.js"></script>
+</body>
+</html>

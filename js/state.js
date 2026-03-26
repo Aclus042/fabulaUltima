@@ -23,12 +23,13 @@ const DEFAULT_STATE = {
 
   atributos: {
     des: { nivel: 1 },  // Destreza
-    ins: { nivel: 1 },  // Insight
+    ast: { nivel: 1 },  // Astúcia
     vig: { nivel: 1 },  // Vigor
     von: { nivel: 1 },  // Vontade
   },
 
   classes: [],          // Array de IDs de classes selecionadas (máx. 2)
+  habilidades: [],      // Array de IDs de habilidades aprendidas
 
   recursos: {
     pv:      { atual: 0, max: 0 },
@@ -154,8 +155,8 @@ const Computed = {
   },
 
   // Calcula Iniciativa
-  calcIniciativa(desNivel, insNivel) {
-    return desNivel + insNivel;
+  calcIniciativa(desNivel, astNivel) {
+    return desNivel + astNivel;
   },
 
   // Calcula Defesa base
@@ -164,8 +165,8 @@ const Computed = {
   },
 
   // Calcula Resistência Mágica base
-  calcResMagica(insNivel) {
-    return 10 + insNivel;
+  calcResMagica(astNivel) {
+    return 10 + astNivel;
   },
 
   // Todos os derivados em um objeto
@@ -176,9 +177,9 @@ const Computed = {
     return {
       pvMax:      this.calcMaxPV(attrs.vig.nivel, nivel),
       pmMax:      this.calcMaxPM(attrs.von.nivel, nivel),
-      iniciativa: this.calcIniciativa(attrs.des.nivel, attrs.ins.nivel),
+      iniciativa: this.calcIniciativa(attrs.des.nivel, attrs.ast.nivel),
       defesa:     this.calcDefesa(attrs.des.nivel),
-      resMagica:  this.calcResMagica(attrs.ins.nivel),
+      resMagica:  this.calcResMagica(attrs.ast.nivel),
     };
   }
 };

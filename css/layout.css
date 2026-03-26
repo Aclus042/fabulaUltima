@@ -123,6 +123,18 @@
 	color: var(--color-gold);
 }
 
+.sidebar-link-status {
+	display: block;
+	text-decoration: none;
+	margin-top: var(--sp-2);
+	border-top: 2px solid rgba(58,84,144,0.4);
+	color: var(--color-cyan);
+	letter-spacing: 0.06em;
+}
+.sidebar-link-status:hover {
+	color: var(--color-gold);
+}
+
 /* ─────────────────────────────────────────────────
 	 SECTIONS — JRPG Panel Frames
 ───────────────────────────────────────────────── */
@@ -319,8 +331,6 @@
 	text-overflow: ellipsis;
 	white-space: nowrap;
 }
-.summary-divider { height: var(--sp-2); }
-
 /* Class icons row inside status panel */
 .summary-classes-row {
 	display: flex;
@@ -344,10 +354,7 @@
 	color: var(--color-text-light);
 }
 
-/* Resource value color accents */
-.summary-val-hp { color: var(--color-hp-light); }
-.summary-val-mp { color: var(--color-mp-light); }
-.summary-val-ip { color: var(--color-ip-light); }
+
 
 /* ─────────────────────────────────────────────────
 	 ATTRIBUTES LAYOUT — JRPG Stat Panels
@@ -566,12 +573,6 @@
 .status-panel {
 	overflow-y: auto;
 }
-.conditions-grid {
-	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-	gap: var(--sp-3);
-}
-
 /* ─────────────────────────────────────────────────
 	 INVENTORY LAYOUT
 ───────────────────────────────────────────────── */
@@ -701,9 +702,6 @@
 	}
 	.skills-side-title   { width: 100%; }
 
-	/* Conditions grid — shrink minmax for small screens */
-	.conditions-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: var(--sp-2); }
-
 	/* Section headers compact */
 	.section-header      { padding: var(--sp-2) var(--sp-4); margin-bottom: var(--sp-3); }
 	.section-desc        { display: none; }
@@ -741,10 +739,8 @@
 	.field-row > *       { width: 100%; }
 
 	.classes-selected-bar { flex-direction: column; align-items: flex-start; gap: var(--sp-2); padding: var(--sp-2) var(--sp-3); }
-
-	/* Conditions 2-col on phones */
-	.conditions-grid     { grid-template-columns: repeat(2, 1fr); gap: var(--sp-2); }
 }
+
 
 /* ── Phone portrait ── */
 @media (max-width: 480px) {
@@ -761,7 +757,6 @@
 	.section-header::before { display: none; }
 	.section-title       { font-size: 0.38rem; }
 
-	.conditions-grid     { grid-template-columns: repeat(2, 1fr); gap: var(--sp-1); }
 	.resources-grid      { gap: var(--sp-2); padding: var(--sp-1); }
 
 	.inventory-toolbar   { gap: var(--sp-2); padding: var(--sp-2); }
@@ -808,7 +803,6 @@
 @media (max-width: 360px) {
 	.main-content        { padding: 1px; }
 	.classes-grid        { grid-template-columns: 1fr; }
-	.conditions-grid     { grid-template-columns: 1fr; }
 	.resources-grid      { padding: var(--sp-1); gap: var(--sp-1); }
 	.section-header      { padding: var(--sp-1); gap: var(--sp-1); box-shadow: none; border-width: 1px; }
 	.section-title       { font-size: 0.35rem; letter-spacing: 0.08em; }
