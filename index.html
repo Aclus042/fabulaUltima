@@ -72,9 +72,10 @@
         <div class="identity-card">
           <div class="avatar-wrapper">
             <div class="avatar-circle" id="avatarDisplay">
-              <span class="avatar-initial" id="avatarInitial">?</span>
+              <img class="avatar-img" id="avatarImg" src="" alt="Avatar" style="display:none" />
             </div>
-            <button class="btn-secondary avatar-btn" id="changeAvatarBtn">Alterar Inicial</button>
+            <input type="file" id="avatarFileInput" accept="image/*" style="display:none" />
+            <button class="btn-secondary avatar-btn" id="changeAvatarBtn">Adicionar Imagem</button>
           </div>
 
           <div class="identity-fields">
@@ -291,6 +292,27 @@
        TOAST NOTIFICATIONS
   ══════════════════════════════════════ -->
   <div class="toast-container" id="toastContainer"></div>
+
+  <!-- ══════════════════════════════════════
+       CROP MODAL
+  ══════════════════════════════════════ -->
+  <div class="crop-overlay" id="cropOverlay">
+    <div class="crop-container">
+      <div class="crop-titlebar">
+        <span class="crop-titlebar-label">Ajustar Imagem</span>
+      </div>
+      <div class="crop-body">
+        <div class="crop-viewport" id="cropViewport">
+          <canvas id="cropCanvas"></canvas>
+          <div class="crop-frame" id="cropFrame"></div>
+        </div>
+      </div>
+      <div class="crop-actions">
+        <button class="crop-btn crop-btn-remove" id="cropRemove">Remover</button>
+        <button class="crop-btn crop-btn-confirm" id="cropConfirm">Confirmar</button>
+      </div>
+    </div>
+  </div>
 
   <!-- ══════════════════════════════════════
        SCRIPTS (ordem importa)

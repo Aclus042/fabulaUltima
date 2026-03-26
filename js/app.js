@@ -180,15 +180,240 @@ function _registerIdentityEvents() {
     });
   });
 
-  // Avatar letra personalizada
-  document.getElementById('changeAvatarBtn').addEventListener('click', () => {
-    const current = State.get('identidade.avatarLetra') || State.get('identidade.nome')?.charAt(0) || '?';
-    const input   = prompt('Digite uma letra ou símbolo para o avatar (1 caractere):', current);
-    if (input !== null) {
-      const letra = input.trim().charAt(0) || '?';
-      State.set('identidade.avatarLetra', letra);
-      document.getElementById('avatarInitial').textContent = letra;
+  // ── Avatar image crop system ──
+  _initAvatarCrop();
+}
+
+// ════════════════════════════════════════════════════════════
+// AVATAR CROP SYSTEM
+// ════════════════════════════════════════════════════════════
+
+function _initAvatarCrop() {
+  const fileInput    = document.getElementById('avatarFileInput');
+  const changeBtn    = document.getElementById('changeAvatarBtn');
+  const overlay      = document.getElementById('cropOverlay');
+  const viewport     = document.getElementById('cropViewport');
+  const canvas       = document.getElementById('cropCanvas');
+  const cropFrame    = document.getElementById('cropFrame');
+  const btnConfirm   = document.getElementById('cropConfirm');
+  const btnRemove    = document.getElementById('cropRemove');
+  const ctx          = canvas.getContext('2d');
+
+  let img        = null;
+  let scale      = 1;
+  let minScale   = 0.1;
+  let maxScale   = 5;
+  let offsetX    = 0;
+  let offsetY    = 0;
+  let dragging   = false;
+  let dragStartX = 0;
+  let dragStartY = 0;
+  let lastPinchDist = 0;
+
+  // Click button → open file picker
+  changeBtn.addEventListener('click', () => fileInput.click());
+
+  // File selected → load image → open crop modal
+  fileInput.addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const newImg = new Image();
+      newImg.onload = () => {
+        img = newImg;
+        _openCropModal();
+      };
+      newImg.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+    fileInput.value = '';
+  });
+
+  function _openCropModal() {
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+
+    // Compute initial scale so image covers the frame
+    const vw = viewport.clientWidth;
+    const vh = viewport.clientHeight;
+    const frameSize = cropFrame.clientWidth;
+    const fitScale = frameSize / Math.min(img.width, img.height);
+    scale = fitScale;
+    minScale = fitScale * 0.5;
+    maxScale = fitScale * 5;
+
+    // Center image
+    offsetX = (vw - img.width * scale) / 2;
+    offsetY = (vh - img.height * scale) / 2;
+
+    _drawCanvas();
+  }
+
+  function _closeCropModal() {
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  function _drawCanvas() {
+    const vw = viewport.clientWidth;
+    const vh = viewport.clientHeight;
+    canvas.width = vw;
+    canvas.height = vh;
+
+    // Frame position (centered)
+    const frameSize = cropFrame.clientWidth;
+    const fx = (vw - frameSize) / 2;
+    const fy = (vh - frameSize) / 2;
+
+    // Clear
+    ctx.clearRect(0, 0, vw, vh);
+
+    // Draw image
+    ctx.drawImage(img, offsetX, offsetY, img.width * scale, img.height * scale);
+
+    // Dim area outside frame
+    ctx.fillStyle = 'rgba(0, 0, 16, 0.7)';
+    // Top
+    ctx.fillRect(0, 0, vw, fy);
+    // Bottom
+    ctx.fillRect(0, fy + frameSize, vw, vh - fy - frameSize);
+    // Left
+    ctx.fillRect(0, fy, fx, frameSize);
+    // Right
+    ctx.fillRect(fx + frameSize, fy, vw - fx - frameSize, frameSize);
+  }
+
+  // ── Mouse drag ──
+  viewport.addEventListener('mousedown', e => {
+    dragging = true;
+    dragStartX = e.clientX - offsetX;
+    dragStartY = e.clientY - offsetY;
+    viewport.style.cursor = 'grabbing';
+    e.preventDefault();
+  });
+  window.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    offsetX = e.clientX - dragStartX;
+    offsetY = e.clientY - dragStartY;
+    _drawCanvas();
+  });
+  window.addEventListener('mouseup', () => {
+    dragging = false;
+    viewport.style.cursor = 'grab';
+  });
+
+  // ── Mouse wheel zoom ──
+  viewport.addEventListener('wheel', e => {
+    e.preventDefault();
+    const vw = viewport.clientWidth;
+    const vh = viewport.clientHeight;
+    const rect = viewport.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+
+    const oldScale = scale;
+    const delta = e.deltaY > 0 ? 0.9 : 1.1;
+    scale = Math.max(minScale, Math.min(maxScale, scale * delta));
+
+    // Zoom toward cursor
+    offsetX = mx - (mx - offsetX) * (scale / oldScale);
+    offsetY = my - (my - offsetY) * (scale / oldScale);
+
+    _drawCanvas();
+  }, { passive: false });
+
+  // ── Touch drag ──
+  viewport.addEventListener('touchstart', e => {
+    if (e.touches.length === 1) {
+      dragging = true;
+      dragStartX = e.touches[0].clientX - offsetX;
+      dragStartY = e.touches[0].clientY - offsetY;
+    } else if (e.touches.length === 2) {
+      dragging = false;
+      lastPinchDist = _pinchDist(e.touches);
     }
+    e.preventDefault();
+  }, { passive: false });
+
+  viewport.addEventListener('touchmove', e => {
+    if (e.touches.length === 1 && dragging) {
+      offsetX = e.touches[0].clientX - dragStartX;
+      offsetY = e.touches[0].clientY - dragStartY;
+      _drawCanvas();
+    } else if (e.touches.length === 2) {
+      const dist = _pinchDist(e.touches);
+      const ratio = dist / lastPinchDist;
+      const oldScale = scale;
+      scale = Math.max(minScale, Math.min(maxScale, scale * ratio));
+
+      // Zoom toward pinch center
+      const rect = viewport.getBoundingClientRect();
+      const cx = ((e.touches[0].clientX + e.touches[1].clientX) / 2) - rect.left;
+      const cy = ((e.touches[0].clientY + e.touches[1].clientY) / 2) - rect.top;
+      offsetX = cx - (cx - offsetX) * (scale / oldScale);
+      offsetY = cy - (cy - offsetY) * (scale / oldScale);
+
+      lastPinchDist = dist;
+      _drawCanvas();
+    }
+    e.preventDefault();
+  }, { passive: false });
+
+  viewport.addEventListener('touchend', () => {
+    dragging = false;
+    lastPinchDist = 0;
+  });
+
+  function _pinchDist(touches) {
+    const dx = touches[0].clientX - touches[1].clientX;
+    const dy = touches[0].clientY - touches[1].clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+
+  // ── Confirm crop ──
+  btnConfirm.addEventListener('click', () => {
+    if (!img) return;
+
+    const frameSize = cropFrame.clientWidth;
+    const vw = viewport.clientWidth;
+    const vh = viewport.clientHeight;
+    const fx = (vw - frameSize) / 2;
+    const fy = (vh - frameSize) / 2;
+
+    // Output canvas for the cropped area
+    const outSize = 256;
+    const out = document.createElement('canvas');
+    out.width = outSize;
+    out.height = outSize;
+    const octx = out.getContext('2d');
+
+    // Map frame region back to image coords
+    const sx = (fx - offsetX) / scale;
+    const sy = (fy - offsetY) / scale;
+    const sw = frameSize / scale;
+    const sh = frameSize / scale;
+
+    octx.drawImage(img, sx, sy, sw, sh, 0, 0, outSize, outSize);
+
+    const dataUrl = out.toDataURL('image/png');
+    State.set('identidade.avatarImg', dataUrl);
+    Renderer.updateAvatarDisplay();
+    _closeCropModal();
+    Toast.show('Imagem atualizada!', 'default');
+  });
+
+  // ── Remove ──
+  btnRemove.addEventListener('click', () => {
+    State.set('identidade.avatarImg', '');
+    Renderer.updateAvatarDisplay();
+    _closeCropModal();
+    Toast.show('Imagem removida', 'default');
+  });
+
+  // Close on overlay click
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) _closeCropModal();
   });
 }
 

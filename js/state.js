@@ -18,6 +18,7 @@ const DEFAULT_STATE = {
     vinculo:  '',
     notas:    '',
     avatarLetra: '',
+    avatarImg: '',
   },
 
   atributos: {

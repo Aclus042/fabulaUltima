@@ -81,9 +81,23 @@ const Renderer = (() => {
     // Derived combat stats
     _el('sumDEF').textContent  = derived.defesa;
 
-    // Atualiza initial do avatar
-    const initial = id.avatarLetra || (id.nome ? id.nome.charAt(0).toUpperCase() : '?');
-    _el('avatarInitial').textContent = initial;
+    // Avatar image
+    _updateAvatarDisplay();
+  }
+
+  function _updateAvatarDisplay() {
+    const avatarImg = _el('avatarImg');
+    const avatarBtn = _el('changeAvatarBtn');
+    const saved = State.get('identidade.avatarImg');
+    if (saved) {
+      avatarImg.src = saved;
+      avatarImg.style.display = '';
+      avatarBtn.textContent = 'Alterar Imagem';
+    } else {
+      avatarImg.style.display = 'none';
+      avatarImg.src = '';
+      avatarBtn.textContent = 'Adicionar Imagem';
+    }
   }
 
   // ─────────────────────────────────────────────────
@@ -759,6 +773,7 @@ const Renderer = (() => {
     openClassModal,
     openSkillModal,
     openItemModal,
+    updateAvatarDisplay: _updateAvatarDisplay,
     ATTR_CONFIG,
     CONDITION_CONFIG,
     ITEM_ICONS,
