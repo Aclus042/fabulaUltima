@@ -453,6 +453,39 @@
   text-align: right;
 }
 
+.derived-editable {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+.derived-input {
+  width: 38px;
+  font-family: var(--font-ui);
+  font-size: var(--vt-base);
+  color: var(--color-text-value);
+  background: rgba(8,12,22,0.6);
+  border: 1px solid var(--color-border);
+  text-align: center;
+  padding: 1px 2px;
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+.derived-input:focus {
+  border-color: var(--color-gold-dim);
+  background: rgba(8,12,22,0.9);
+}
+.derived-sep {
+  font-family: var(--font-ui);
+  font-size: var(--vt-sm);
+  color: var(--color-text-light);
+}
+.derived-max {
+  font-family: var(--font-ui);
+  font-size: var(--vt-base);
+  color: var(--color-text-muted);
+}
+
 .derived-formula {
   font-family: var(--font-ui);
   font-size: var(--vt-xs);
@@ -946,74 +979,6 @@
   color: var(--color-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-}
-
-/* ─────────────────────────────────────────────────
-   CONDITION TOGGLE — JRPG checkbox row
-───────────────────────────────────────────────── */
-.condition-item {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
-  padding: var(--sp-1) var(--sp-3);
-  background: var(--color-panel-bg);
-  border: 2px solid rgba(58,84,144,0.4);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  user-select: none;
-  box-shadow: 2px 2px 0 rgba(0,0,0,0.4);
-}
-.condition-item:hover {
-  border-color: var(--cond-color, var(--color-panel-border));
-  background: rgba(90,127,192,0.1);
-}
-.condition-item.active {
-  background: rgba(var(--cond-rgb, 90,127,192),0.15);
-  border-color: var(--cond-color, var(--color-panel-border));
-  box-shadow: 2px 2px 0 rgba(0,0,0,0.4), inset 0 0 0 1px rgba(var(--cond-rgb, 90,127,192),0.2);
-}
-
-/* Square checkbox — JRPG style */
-.condition-dot {
-  width: 14px;
-  height: 14px;
-  background: #06080e;
-  border: 2px solid var(--color-border);
-  transition: all var(--transition-fast);
-  flex-shrink: 0;
-  position: relative;
-}
-.condition-item.active .condition-dot {
-  background: var(--cond-color, var(--color-panel-border));
-  border-color: var(--cond-color, var(--color-panel-border));
-  box-shadow: 0 0 6px var(--cond-color, var(--color-panel-border));
-}
-/* Checkmark */
-.condition-item.active .condition-dot::after {
-  content: '✓';
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 9px;
-  color: #fff;
-  line-height: 12px;
-  text-align: center;
-}
-
-.condition-name {
-  font-family: var(--font-ui);
-  font-size: var(--vt-xs);
-  color: var(--color-text-muted);
-  flex: 1;
-  letter-spacing: 0.05em;
-}
-.condition-item.active .condition-name {
-  color: var(--cond-color, var(--color-text-bright));
-}
-.condition-icon {
-  font-size: var(--vt-xs);
 }
 
 /* ─────────────────────────────────────────────────
@@ -1690,12 +1655,6 @@
     white-space: nowrap;
   }
 
-  /* Touch-friendly condition items */
-  .condition-item {
-    min-height: 44px;
-    padding: var(--sp-2) var(--sp-3);
-  }
-
   /* Touch-friendly resource buttons — compact cards */
   .resource-big-btn {
     width: 44px;
@@ -1881,16 +1840,6 @@
     font-size: var(--vt-xs);
   }
 
-  /* Compact condition items */
-  .condition-item {
-    min-height: 36px;
-    padding: var(--sp-1) var(--sp-2);
-  }
-  .condition-dot {
-    width: 12px;
-    height: 12px;
-  }
-
   /* Compact buttons */
   .btn-primary,
   .btn-secondary,
@@ -1970,13 +1919,6 @@
 
   .filter-btn {
     min-height: 32px;
-    font-size: 1rem;
-  }
-
-  .condition-name {
-    font-size: 1rem;
-  }
-  .condition-icon {
     font-size: 1rem;
   }
 
