@@ -212,7 +212,10 @@ function _registerAttributeEvents() {
 
     // Atualiza display do dado
     const display = document.getElementById(`attr-display-${attrId}`);
-    if (display) display.textContent = DADOS[newLevel] || 'd6';
+    if (display) {
+      display.textContent = DADOS[newLevel] || 'd6';
+      display.dataset.die = DADOS[newLevel] || 'd6';
+    }
 
     // Recalcula derivados
     Renderer.renderDerivedStats();

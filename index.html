@@ -35,12 +35,13 @@
           <div class="summary-title">Status</div>
           <div class="summary-stat"><span class="summary-label">Nome:</span><span class="summary-value" id="sumName">—</span></div>
           <div class="summary-stat"><span class="summary-label">Nível:</span><span class="summary-value" id="sumLevel">1</span></div>
-          <div class="summary-stat"><span class="summary-label">Conceito:</span><span class="summary-value" id="sumConcept">—</span></div>
-          <div class="summary-stat"><span class="summary-label">Origem:</span><span class="summary-value" id="sumOrigin">—</span></div>
+          <div class="summary-classes-row" id="sumClassesRow"></div>
           <div class="summary-divider"></div>
-          <div class="summary-stat"><span class="summary-label">Classes:</span><span class="summary-value" id="sumClasses">Nenhuma</span></div>
-          <div class="summary-stat"><span class="summary-label">PV:</span><span class="summary-value" id="sumPV">0</span></div>
-          <div class="summary-stat"><span class="summary-label">PM:</span><span class="summary-value" id="sumPM">0</span></div>
+          <div class="summary-stat"><span class="summary-label">PV:</span><span class="summary-value summary-val-hp" id="sumPV">0</span></div>
+          <div class="summary-stat"><span class="summary-label">PM:</span><span class="summary-value summary-val-mp" id="sumPM">0</span></div>
+          <div class="summary-stat"><span class="summary-label">PI:</span><span class="summary-value summary-val-ip" id="sumIP">0</span></div>
+          <div class="summary-divider"></div>
+          <div class="summary-stat"><span class="summary-label">DEF:</span><span class="summary-value" id="sumDEF">0</span></div>
         </div>
 
         <div class="sidebar-panel sidebar-nav-panel">
@@ -277,7 +278,7 @@
   <div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true">
     <div class="modal-container" id="modalContainer">
       <div class="modal-titlebar">
-        <span class="modal-titlebar-label font-vt" id="modalTitle" style="font-family:var(--font-ui);font-size:var(--vt-sm);color:var(--color-gold);letter-spacing:0.1em;text-transform:uppercase;">Menu</span>
+        <span class="modal-titlebar-label" id="modalTitle">Menu</span>
         <button class="modal-close" id="modalClose" aria-label="Fechar">&times;</button>
       </div>
       <div class="modal-content modal-body" id="modalContent">

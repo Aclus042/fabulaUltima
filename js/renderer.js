@@ -57,16 +57,29 @@ const Renderer = (() => {
   function renderIdentitySummary() {
     const state   = State.get();
     const id      = state.identidade;
-    const classes = state.classes.map(cid => getClassById(cid)?.nome || cid);
     const derived = Computed.all();
 
-    _el('sumName').textContent    = id.nome    || '—';
-    _el('sumLevel').textContent   = id.nivel   || 1;
-    _el('sumConcept').textContent = id.conceito || '—';
-    _el('sumOrigin').textContent  = id.origem   || '—';
-    _el('sumClasses').textContent = classes.length ? classes.join(', ') : 'Nenhuma';
-    _el('sumPV').textContent      = `${state.recursos.pv.atual} / ${derived.pvMax}`;
-    _el('sumPM').textContent      = `${state.recursos.pm.atual} / ${derived.pmMax}`;
+    _el('sumName').textContent  = id.nome  || '—';
+    _el('sumLevel').textContent = id.nivel || 1;
+
+    // Classes — icon-only row
+    const classesRow = _el('sumClassesRow');
+    const selectedClasses = state.classes.map(cid => getClassById(cid)).filter(Boolean);
+    if (selectedClasses.length) {
+      classesRow.innerHTML = selectedClasses
+        .map(cls => _classIconImg(cls, 20, 'summary-class-icon'))
+        .join('');
+    } else {
+      classesRow.innerHTML = '<span class="summary-no-class">—</span>';
+    }
+
+    // Resources
+    _el('sumPV').textContent   = `${state.recursos.pv.atual} / ${derived.pvMax}`;
+    _el('sumPM').textContent   = `${state.recursos.pm.atual} / ${derived.pmMax}`;
+    _el('sumIP').textContent   = `${state.recursos.ip.atual} / ${state.recursos.ip.max}`;
+
+    // Derived combat stats
+    _el('sumDEF').textContent  = derived.defesa;
 
     // Atualiza initial do avatar
     const initial = id.avatarLetra || (id.nome ? id.nome.charAt(0).toUpperCase() : '?');
@@ -93,7 +106,7 @@ const Renderer = (() => {
       card.innerHTML = `
         <div class="attr-abbreviation">${attr.abrev}</div>
         <div class="attr-dots"></div>
-        <div class="attr-die-display" id="attr-display-${attr.id}">${dado}</div>
+        <div class="attr-die-display" id="attr-display-${attr.id}" data-die="${dado}">${dado}</div>
         <div class="attr-controls">
           <button class="attr-btn" data-attr="${attr.id}" data-dir="-1" title="Diminuir">−</button>
           <button class="attr-btn" data-attr="${attr.id}" data-dir="1"  title="Aumentar">+</button>
@@ -111,17 +124,18 @@ const Renderer = (() => {
     container.innerHTML = '';
 
     const derivedConfig = [
-      { label: 'PV Máximo',    value: derived.pvMax,     icon: '❤️',  formula: 'Dado VIG + Nível × 5' },
-      { label: 'PM Máximo',    value: derived.pmMax,     icon: '💙',  formula: 'Dado VON + Nível × 5' },
-      { label: 'Iniciativa',   value: derived.iniciativa, icon: '⚡',  formula: 'DES + INS' },
-      { label: 'Defesa',       value: derived.defesa,    icon: '🛡️',  formula: '10 + DES' },
-      { label: 'Res. Mágica',  value: derived.resMagica, icon: '✨',  formula: '10 + INS' },
+      { id: 'pv',   label: 'PV Máximo',    value: derived.pvMax,     icon: 'assets/icons/stats/hp.png',      formula: 'Dado VIG + Nível × 5' },
+      { id: 'pm',   label: 'PM Máximo',    value: derived.pmMax,     icon: 'assets/icons/stats/mp.png',      formula: 'Dado VON + Nível × 5' },
+      { id: 'init', label: 'Iniciativa',   value: derived.iniciativa, icon: 'assets/icons/stats/init.png',    formula: 'DES + INS' },
+      { id: 'def',  label: 'Defesa',       value: derived.defesa,    icon: 'assets/icons/stats/def.png',     formula: '10 + DES' },
+      { id: 'mdef', label: 'Res. Mágica',  value: derived.resMagica, icon: 'assets/icons/stats/def mag.png', formula: '10 + INS' },
     ];
 
     derivedConfig.forEach(item => {
       const card = _create('div', 'derived-card');
+      card.dataset.stat = item.id;
       card.innerHTML = `
-        <div class="derived-icon">${item.icon}</div>
+        <div class="derived-icon"><img src="${item.icon}" alt="${item.label}" width="42" height="42" /></div>
         <div class="derived-info">
           <div class="derived-label">${item.label}</div>
           <div class="derived-formula">${item.formula}</div>
@@ -334,7 +348,7 @@ const Renderer = (() => {
       id:       'pv',
       label:    'HP',
       subtitle: 'Pontos de Vida',
-      icon:     '♥',
+      icon:     'assets/icons/stats/hp.png',
       color:    '#f03050',
       colorDk:  '#800020',
       colorLt:  '#ff6080',
@@ -345,7 +359,7 @@ const Renderer = (() => {
       id:       'pm',
       label:    'MP',
       subtitle: 'Pontos de Magia',
-      icon:     '♦',
+      icon:     'assets/icons/stats/mp.png',
       color:    '#4090f8',
       colorDk:  '#0030a0',
       colorLt:  '#80c0ff',
@@ -356,7 +370,7 @@ const Renderer = (() => {
       id:       'ip',
       label:    'IP',
       subtitle: 'Pontos de Invenção',
-      icon:     '★',
+      icon:     'assets/icons/stats/ip.png',
       color:    '#a0e040',
       colorDk:  '#306000',
       colorLt:  '#c8ff60',
@@ -379,6 +393,7 @@ const Renderer = (() => {
       const max      = maxMap[res.id] || recursos[res.id]?.max || 0;
 
       const card = _create('div', 'resource-card');
+      card.dataset.resource = res.id;
       card.style.setProperty('--res-color',   res.color);
       card.style.setProperty('--res-colordk', res.colorDk);
       card.style.setProperty('--res-colorlt', res.colorLt);
@@ -388,20 +403,22 @@ const Renderer = (() => {
       card.innerHTML = `
         <div class="resource-card-header">
           <div class="resource-title-group">
-            <span class="resource-icon" style="color:${res.color};text-shadow:0 0 8px ${res.glow};">${res.icon}</span>
+            <img class="resource-icon" src="${res.icon}" alt="${res.label}" width="30" height="30" style="filter:drop-shadow(0 0 6px ${res.glow});" />
             <div class="resource-title">${res.label}</div>
           </div>
         </div>
-        <div class="resource-inline-controls">
-          <button class="resource-big-btn" data-res="${res.id}" data-res-dir="-5" title="-5">−−</button>
-          <button class="resource-big-btn" data-res="${res.id}" data-res-dir="-1" title="-1">−</button>
+        <div class="resource-display">
           <div class="resource-ratio">
             <span class="resource-current" id="res-atual-${res.id}">${atual}</span>
             <span class="resource-separator">/</span>
             <span class="resource-max" id="res-max-${res.id}">${max}</span>
           </div>
-          <button class="resource-big-btn" data-res="${res.id}" data-res-dir="1" title="+1">+</button>
-          <button class="resource-big-btn" data-res="${res.id}" data-res-dir="5" title="+5">++</button>
+          <div class="resource-btn-row">
+            <button class="resource-big-btn" data-res="${res.id}" data-res-dir="-5" title="-5">−−</button>
+            <button class="resource-big-btn" data-res="${res.id}" data-res-dir="-1" title="-1">−</button>
+            <button class="resource-big-btn" data-res="${res.id}" data-res-dir="1" title="+1">+</button>
+            <button class="resource-big-btn" data-res="${res.id}" data-res-dir="5" title="+5">++</button>
+          </div>
         </div>
       `;
 

@@ -318,6 +318,34 @@
 }
 .summary-divider { height: var(--sp-2); }
 
+/* Class icons row inside status panel */
+.summary-classes-row {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: var(--sp-3);
+	padding: var(--sp-2) var(--sp-4);
+	border-bottom: 1px solid rgba(58,84,144,0.25);
+	min-height: 28px;
+}
+.summary-class-icon {
+	width: 20px;
+	height: 20px;
+	object-fit: contain;
+	image-rendering: pixelated;
+	filter: drop-shadow(0 0 3px rgba(90,127,192,0.4));
+}
+.summary-no-class {
+	font-family: var(--font-ui);
+	font-size: var(--vt-xs);
+	color: var(--color-text-light);
+}
+
+/* Resource value color accents */
+.summary-val-hp { color: var(--color-hp-light); }
+.summary-val-mp { color: var(--color-mp-light); }
+.summary-val-ip { color: var(--color-ip-light); }
+
 /* ─────────────────────────────────────────────────
 	 ATTRIBUTES LAYOUT — JRPG Stat Panels
 ───────────────────────────────────────────────── */
@@ -433,10 +461,10 @@
 }
 
 .class-detail-desc {
-	font-family: var(--font-body);
-	font-size: var(--fs-sm);
+	font-family: var(--font-ui);
+	font-size: var(--vt-sm);
 	color: var(--color-text);
-	line-height: 1.5;
+	line-height: 1.7;
 	margin-top: var(--sp-2);
 }
 
@@ -809,7 +837,15 @@
 	position: fixed;
 	inset: 0;
 	z-index: 199;
-	background: rgba(0,0,0,0.6);
+	background:
+		repeating-linear-gradient(
+			180deg,
+			transparent,
+			transparent 2px,
+			rgba(0,0,0,0.12) 2px,
+			rgba(0,0,0,0.12) 4px
+		),
+		rgba(0,0,0,0.65);
 }
 .sidebar-backdrop.active {
 	display: block;
