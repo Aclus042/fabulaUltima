@@ -580,6 +580,78 @@ em { font-style: italic; }
 }
 
 /* ─────────────────────────────────────────────────
+   RESPONSIVE — MOBILE ONLY (max-width: 768px)
+   Refined typography scale, tighter spacing,
+   better visual hierarchy for phone screens
+───────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  :root {
+    /* ── Refined VT323 scale for mobile ── */
+    --vt-xs:   1.0rem;
+    --vt-sm:   1.15rem;
+    --vt-base: 1.3rem;
+    --vt-md:   1.52rem;
+    --vt-lg:   1.78rem;
+    --vt-xl:   2.08rem;
+    --vt-2xl:  2.6rem;
+
+    /* ── Refined pixel font scale ── */
+    --fs-px:   0.56rem;
+    --fs-xs:   0.68rem;
+    --fs-sm:   0.82rem;
+    --fs-base: 0.95rem;
+    --fs-md:   1.1rem;
+    --fs-lg:   1.3rem;
+    --fs-xl:   1.6rem;
+
+    /* ── Tighter large spacings ── */
+    --sp-5:  1rem;
+    --sp-6:  1.12rem;
+    --sp-8:  1.5rem;
+    --sp-10: 1.75rem;
+    --sp-12: 2rem;
+
+    /* ── Softer CRT for mobile ── */
+    --crt-scanline-opacity: 0.02;
+    --crt-vignette-opacity: 0.04;
+    --crt-glow-opacity: 0.008;
+  }
+
+  body {
+    font-size: var(--fs-base);
+    line-height: 1.5;
+  }
+
+  /* Thinner scrollbar */
+  ::-webkit-scrollbar { width: 3px; height: 3px; }
+
+  /* Compact panel titles */
+  .rpg-panel-title {
+    font-size: 0.56rem;
+    padding: var(--sp-1) var(--sp-3);
+    gap: var(--sp-2);
+  }
+  .rpg-panel-title::before {
+    font-size: 0.68rem;
+  }
+
+  /* Compact stat rows */
+  .rpg-stat-row {
+    padding: var(--sp-1) var(--sp-2);
+  }
+
+  /* Thinner HP/MP bars */
+  .rpg-bar-wrap {
+    height: 10px;
+  }
+
+  /* Compact rpg-menu items */
+  .rpg-menu-item {
+    padding: var(--sp-1) var(--sp-3);
+  }
+}
+
+/* ─────────────────────────────────────────────────
    RESPONSIVE — Mobile-first CRT & base
    Base = mobile (soft CRT, scrollable body).
    Enhance upward for tablet / desktop.

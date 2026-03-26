@@ -677,6 +677,244 @@ background: rgba(6,10,20,0.5);
 
 
 /* ---------------------------------------------------------------
+   RESPONSIVE — MOBILE ONLY (max-width: 768px)
+   Compact layout, tighter panels, smart space usage
+--------------------------------------------------------------- */
+@media (max-width: 768px) {
+
+/* ── Topbar: compact ── */
+.mobile-topbar {
+  padding: var(--sp-2) var(--sp-3);
+  gap: var(--sp-2);
+}
+.mobile-menu-btn {
+  width: 38px;
+  height: 38px;
+  font-size: var(--vt-md);
+}
+.mobile-topbar-title {
+  font-size: 0.42rem;
+}
+.mobile-topbar-section {
+  font-size: var(--vt-xs);
+}
+
+/* ── Main content: tighter ── */
+.main-content {
+  padding: var(--sp-1);
+}
+.app-shell {
+  gap: var(--sp-1);
+}
+
+/* ── Sidebar: compact links ── */
+.shell-sidebar {
+  width: min(280px, 80vw);
+  padding: var(--sp-3);
+  gap: var(--sp-3);
+}
+.sidebar-link {
+  min-height: 40px;
+  padding: var(--sp-2) var(--sp-3);
+}
+.sidebar-panel-title {
+  font-size: 0.40rem;
+  padding: var(--sp-1) var(--sp-3);
+}
+.summary-title {
+  font-size: 0.40rem;
+  padding: var(--sp-2) var(--sp-3);
+}
+.summary-stat {
+  padding: var(--sp-2) var(--sp-3);
+}
+.summary-classes-row {
+  padding: var(--sp-2) var(--sp-3);
+  min-height: 26px;
+  gap: var(--sp-2);
+}
+.summary-class-icon {
+  width: 18px;
+  height: 18px;
+}
+
+/* ── Shell main ── */
+.shell-main {
+  gap: var(--sp-2);
+}
+
+/* ── Sections: compact headers ── */
+.section.active {
+  gap: var(--sp-2);
+}
+.section-header {
+  margin-bottom: var(--sp-1);
+  padding: var(--sp-2) var(--sp-3);
+  gap: var(--sp-2);
+  border-bottom-width: 2px;
+  box-shadow:
+    0 0 0 1px #0a0e1a,
+    0 0 0 2px var(--color-panel-border),
+    1px 1px 0 rgba(0,0,0,0.3);
+}
+.section-header::before {
+  font-size: 0.68rem;
+}
+.section-title {
+  font-size: 0.42rem;
+  letter-spacing: 0.1em;
+  gap: var(--sp-2);
+}
+.subsection-title {
+  font-size: var(--vt-sm);
+  margin: var(--sp-3) 0 var(--sp-2);
+  padding-bottom: var(--sp-1);
+}
+
+/* ── Identity: avatar + nível top row, rest below ── */
+.identity-grid {
+  gap: var(--sp-2);
+}
+.identity-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--sp-2) var(--sp-3);
+  padding: var(--sp-3);
+  box-shadow:
+    0 0 0 1px #0a0e1a,
+    0 0 0 2px var(--color-panel-border),
+    2px 2px 0 rgba(0,0,0,0.3);
+  align-items: start;
+}
+.avatar-wrapper {
+  grid-column: 1;
+  grid-row: 1;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  gap: var(--sp-2);
+}
+.avatar-circle {
+  width: 56px;
+  height: 56px;
+}
+/* Flatten .identity-fields so its children become grid items */
+.identity-fields {
+  display: contents;
+}
+/* Flatten .field-row so Nível and Conceito become separate grid items */
+.identity-fields > .field-row {
+  display: contents;
+}
+/* Nível field: centered beside avatar, no stretch */
+.identity-fields > .field-row > .field-group:not(.flex-grow) {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: center;
+  justify-self: center;
+}
+/* All other fields: full width below */
+.identity-fields > .field-group,
+.identity-fields > .field-row > .field-group.flex-grow {
+  grid-column: 1 / -1;
+}
+.field-row {
+  gap: var(--sp-2);
+}
+
+/* ── Attributes: compact ── */
+.attributes-layout {
+  gap: var(--sp-2);
+}
+.attributes-panel,
+.derived-panel {
+  box-shadow:
+    0 0 0 1px #0a0e1a,
+    0 0 0 2px var(--color-panel-border),
+    2px 2px 0 rgba(0,0,0,0.3);
+}
+
+/* ── Classes: compact bar + grid ── */
+.classes-selected-bar {
+  gap: var(--sp-1);
+  margin-bottom: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+}
+.classes-layout {
+  gap: var(--sp-2);
+}
+.classes-grid {
+  gap: var(--sp-1);
+  padding: var(--sp-2);
+}
+.classes-grid-panel {
+  max-height: 50vh;
+}
+.class-detail-empty {
+  padding: var(--sp-4) var(--sp-3);
+}
+.class-detail-body {
+  padding: var(--sp-3);
+  gap: var(--sp-2);
+}
+.class-detail-skill {
+  padding: var(--sp-2) var(--sp-3);
+  min-height: 38px;
+}
+
+/* ── Skills: compact ── */
+.skills-layout {
+  gap: var(--sp-2);
+}
+.skills-filter-bar {
+  gap: var(--sp-1);
+  padding: var(--sp-2);
+}
+.skills-empty {
+  padding: var(--sp-6) var(--sp-3);
+}
+
+/* ── Resources: compact ── */
+.resources-grid {
+  gap: var(--sp-2);
+  padding: var(--sp-2);
+}
+.resources-layout {
+  gap: var(--sp-2);
+}
+
+/* ── Inventory: compact ── */
+.inventory-layout {
+  gap: var(--sp-2);
+}
+.inventory-toolbar {
+  gap: var(--sp-2);
+  padding: var(--sp-2);
+}
+.inventory-empty {
+  padding: var(--sp-6) var(--sp-3);
+}
+
+/* ── All panels: tighter shadows on mobile ── */
+.sidebar-panel,
+.classes-grid-panel,
+.class-detail-panel,
+.skills-side-panel,
+.skills-main-panel,
+.resources-main-panel,
+.status-panel,
+.inventory-side-panel,
+.inventory-main-panel {
+  box-shadow:
+    0 0 0 1px #0a0e1a,
+    0 0 0 2px var(--color-panel-border),
+    2px 2px 0 rgba(0,0,0,0.3);
+}
+
+}
+
+
+/* ---------------------------------------------------------------
  RESPONSIVE � TABLET (min-width: 769px)
  2-column grids, slightly larger panels
 --------------------------------------------------------------- */
@@ -821,139 +1059,246 @@ height: 20px;
 
 
 /* ---------------------------------------------------------------
- RESPONSIVE � DESKTOP (min-width: 1025px)
- Full sidebar, fixed viewport, all grids expanded
+   RESPONSIVE — DESKTOP (min-width: 1025px)
+   Full sidebar, fixed viewport, all grids expanded
+   Maximize space usage — JRPG menu layout
 --------------------------------------------------------------- */
 @media (min-width: 1025px) {
+
 /* Hide mobile topbar */
 .mobile-topbar {
-display: none !important;
+  display: none !important;
 }
 
+/* ── VIEWPORT: use all available screen ── */
 .main-content {
-width: min(1360px, calc(100vw - 32px));
-height: min(940px, calc(100vh - 32px));
-max-width: 1360px;
-margin: 16px auto;
-padding: var(--sp-4);
-min-height: 0;
-display: flex;
-align-items: center;
-justify-content: center;
-overflow: hidden;
-border: 2px solid var(--color-panel-border);
-box-shadow:
-0 0 0 2px #0a0e1a,
-0 0 0 6px var(--color-panel-border),
-0 0 0 8px #0a0e1a,
-18px 18px 40px rgba(0,0,0,0.55);
+  width: calc(100vw - 32px);
+  height: calc(100vh - 32px);
+  max-width: 1440px;
+  max-height: 1060px;
+  margin: 16px auto;
+  padding: var(--sp-4);
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 2px solid var(--color-panel-border);
+  box-shadow:
+    0 0 0 2px #0a0e1a,
+    0 0 0 6px var(--color-panel-border),
+    0 0 0 8px #0a0e1a,
+    18px 18px 40px rgba(0,0,0,0.55);
 }
 
+/* ── APP SHELL: sidebar + main grid ── */
 .app-shell {
-display: grid;
-grid-template-columns: 240px minmax(0, 1fr);
-gap: var(--sp-4);
-align-items: stretch;
-width: 100%;
-height: 100%;
+  display: grid;
+  grid-template-columns: 224px minmax(0, 1fr);
+  gap: var(--sp-4);
+  align-items: stretch;
+  width: 100%;
+  height: 100%;
 }
 
-/* Sidebar: static, visible */
+/* ── SIDEBAR: static, full-height distribution ── */
 .shell-sidebar {
-position: static;
-width: auto;
-height: auto;
-z-index: auto;
-background: transparent;
-border-right: none;
-box-shadow: none;
-transform: none;
-transition: none;
-overflow: hidden;
-padding: 0;
+  position: static;
+  width: auto;
+  height: auto;
+  z-index: auto;
+  background: transparent;
+  border-right: none;
+  box-shadow: none;
+  transform: none;
+  transition: none;
+  overflow: hidden;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
 }
-
-.shell-main {
-min-height: 0;
-overflow: hidden;
+.sidebar-summary-panel {
+  flex: 0 0 auto;
 }
-
-/* Sections constrained */
-.section {
-height: 100%;
-overflow: hidden;
+.sidebar-nav-panel {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
-.section.active {
-gap: 0;
+.sidebar-section-links {
+  flex: 1;
+  overflow-y: auto;
 }
-
-.section-title {
-font-size: clamp(0.5rem, 1.5vw, 0.75rem);
-}
-
-/* Identity card full height */
-.identity-grid {
-height: 100%;
-}
-.identity-card {
-height: 100%;
-}
-.avatar-circle {
-width: 88px;
-height: 88px;
-}
-
-/* Classes: side + detail column */
-.classes-layout {
-display: grid;
-grid-template-columns: 1fr 280px;
-gap: var(--sp-4);
-overflow: hidden;
-}
-.class-detail-panel {
-display: flex;
-flex-direction: column;
-overflow-y: auto;
-}
-.classes-grid-panel {
-max-height: none;
-}
-
-/* Resources: 3 columns + status side */
-.resources-grid {
-grid-template-columns: repeat(3, minmax(0, 1fr));
-gap: var(--sp-5);
-}
-.resources-layout {
-display: grid;
-grid-template-columns: minmax(0, 1.4fr) 320px;
-gap: var(--sp-5);
-height: 100%;
-}
-
-/* Sidebar smaller font */
 .sidebar-panel-title {
-font-size: 0.48rem;
-padding: var(--sp-2) var(--sp-4);
+  font-size: 0.48rem;
+  padding: var(--sp-2) var(--sp-4);
 }
 .sidebar-link {
-min-height: auto;
-padding: var(--sp-2) var(--sp-3);
-font-size: var(--vt-sm);
+  min-height: auto;
+  padding: var(--sp-2) var(--sp-3);
+  font-size: var(--vt-sm);
 }
 
-/* Selected bar horizontal */
+/* ── MAIN AREA ── */
+.shell-main {
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ── SECTIONS: fill all available height ── */
+.section {
+  height: 100%;
+  overflow: hidden;
+}
+.section.active {
+  gap: 0;
+}
+.section-header {
+  flex: 0 0 auto;
+  margin-bottom: var(--sp-3);
+}
+.section-title {
+  font-size: clamp(0.5rem, 1.5vw, 0.75rem);
+}
+
+/* ── IDENTITY: full-height, spacious card ── */
+.identity-grid {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.identity-card {
+  flex: 1;
+  min-height: 0;
+  height: auto;
+  overflow-y: auto;
+  align-items: flex-start;
+}
+.avatar-wrapper {
+  position: sticky;
+  top: 0;
+}
+.avatar-circle {
+  width: 96px;
+  height: 96px;
+}
+.identity-fields {
+  gap: var(--sp-5);
+}
+.identity-fields .field-group:last-child .field-textarea {
+  flex: 1;
+  min-height: 80px;
+}
+
+/* ── ATTRIBUTES: two panels fill height ── */
+.attributes-layout {
+  flex: 1;
+  min-height: 0;
+  align-items: stretch;
+}
+.attributes-panel,
+.derived-panel {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+/* ── CLASSES: selected bar + grid/detail fill ── */
 .classes-selected-bar {
-flex-direction: row;
-align-items: center;
-gap: var(--sp-3);
-padding: var(--sp-3) var(--sp-5);
-margin-bottom: var(--sp-5);
+  flex: 0 0 auto;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-5);
+  margin-bottom: 0;
+}
+.classes-layout {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: var(--sp-4);
+  overflow: hidden;
+}
+.classes-grid-panel {
+  max-height: none;
+  overflow-y: auto;
+  min-height: 0;
+}
+.classes-grid {
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+}
+.class-detail-panel {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  min-height: 0;
 }
 
-/* Inventory toolbar */
-.inventory-toolbar {
-padding: var(--sp-4);
-gap: var(--sp-4);
+/* ── SKILLS: filter sidebar + list fill height ── */
+.skills-layout {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+  gap: var(--sp-4);
+  overflow: hidden;
 }
+.skills-side-panel {
+  overflow-y: auto;
+  min-height: 0;
+}
+.skills-main-panel {
+  overflow-y: auto;
+  min-height: 0;
+}
+
+/* ── CONDITIONS ── */
+.conditions-layout {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+.conditions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--sp-4);
+  padding: var(--sp-3);
+}
+
+/* ── RESOURCES: 3 columns + status side ── */
+.resources-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--sp-5);
+}
+.resources-layout {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) 320px;
+  gap: var(--sp-5);
+}
+
+/* ── INVENTORY: toolbar + list fill height ── */
+.inventory-layout {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+.inventory-side-panel {
+  overflow-y: auto;
+  min-height: 0;
+}
+.inventory-main-panel {
+  overflow-y: auto;
+  min-height: 0;
+}
+.inventory-toolbar {
+  padding: var(--sp-3);
+  gap: var(--sp-3);
+}
+
 }

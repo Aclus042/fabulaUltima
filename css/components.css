@@ -1617,6 +1617,340 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE — MOBILE ONLY (max-width: 768px)
+   Compact touch targets, refined hierarchy, better density
+═══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+
+  /* ── Buttons: compact but still touchable ── */
+  .btn-primary {
+    min-height: 38px;
+    padding: var(--sp-2) var(--sp-4);
+    box-shadow:
+      0 0 0 1px #0a0e1a,
+      2px 2px 0 rgba(0,0,0,0.4),
+      inset 0 1px 0 rgba(255,255,255,0.1);
+  }
+  .btn-secondary {
+    min-height: 38px;
+    padding: var(--sp-2) var(--sp-3);
+    box-shadow: 2px 2px 0 rgba(0,0,0,0.4);
+  }
+  .btn-danger {
+    min-height: 38px;
+    padding: var(--sp-2) var(--sp-3);
+    box-shadow: 2px 2px 0 rgba(0,0,0,0.4);
+  }
+  .btn-ghost {
+    min-height: 32px;
+    padding: var(--sp-1) var(--sp-2);
+  }
+
+  /* ── Inputs: tighter ── */
+  .field-input {
+    padding: var(--sp-1) var(--sp-2);
+  }
+  .field-large {
+    font-size: var(--vt-sm);
+  }
+  .field-textarea {
+    padding: var(--sp-1) var(--sp-2);
+  }
+  .field-select {
+    padding: var(--sp-1) var(--sp-2);
+    padding-right: var(--sp-6);
+  }
+  .field-number {
+    width: 46px;
+    padding: var(--sp-1);
+  }
+
+  /* ── Number control: compact ── */
+  .num-btn {
+    width: 34px;
+    height: 36px;
+  }
+
+  /* ── Attribute cards: compact rows ── */
+  .attr-card {
+    padding: var(--sp-1) var(--sp-2);
+  }
+  .attr-abbreviation {
+    width: 36px;
+  }
+  .attr-dots {
+    width: 36px;
+  }
+  .attr-die-display {
+    min-width: 32px;
+    min-height: 28px;
+  }
+  .attr-btn {
+    width: 28px;
+    height: 28px;
+  }
+  .attr-controls {
+    margin-left: var(--sp-1);
+    gap: 2px;
+  }
+  .attr-panel-title {
+    font-size: 0.42rem;
+    padding: var(--sp-1) var(--sp-2);
+  }
+
+  /* ── Derived cards: compact ── */
+  .derived-card {
+    padding: var(--sp-1) var(--sp-2);
+    gap: var(--sp-2);
+  }
+  .derived-icon {
+    width: 32px;
+  }
+  .derived-icon img {
+    width: 28px;
+    height: 28px;
+  }
+  .derived-card[data-stat="pv"] .derived-icon img,
+  .derived-card[data-stat="pm"] .derived-icon img {
+    width: 34px;
+    height: 34px;
+  }
+  .derived-input {
+    width: 30px;
+  }
+  .derived-panel-title {
+    font-size: 0.42rem;
+    padding: var(--sp-1) var(--sp-2);
+  }
+
+  /* ── Class cards: compact grid items ── */
+  .class-card {
+    padding: var(--sp-1);
+    gap: 0;
+    box-shadow: 1px 1px 0 rgba(0,0,0,0.4);
+    border-width: 1px;
+  }
+  .class-icon {
+    width: 22px;
+    height: 22px;
+  }
+  .class-icon-img {
+    width: 20px;
+    height: 20px;
+  }
+  .class-card-top {
+    gap: var(--sp-1);
+  }
+
+  /* ── Selected class tags: compact ── */
+  .selected-class-tag {
+    padding: 1px var(--sp-2);
+    gap: var(--sp-1);
+  }
+  .class-tag-icon {
+    width: 12px;
+    height: 12px;
+  }
+  .selected-class-tag .tag-remove {
+    width: 14px;
+    height: 14px;
+  }
+
+  /* ── Skill cards: compact list items ── */
+  .skill-card {
+    padding: var(--sp-2) var(--sp-3);
+    gap: var(--sp-2);
+    min-height: 40px;
+  }
+  .skill-cursor {
+    width: 10px;
+  }
+
+  /* ── Filter buttons: compact ── */
+  .filter-btn {
+    min-height: 34px;
+    padding: var(--sp-1) var(--sp-2);
+  }
+  .filter-class-icon {
+    width: 12px;
+    height: 12px;
+  }
+
+  /* ── Resource cards: compact ── */
+  .resource-card {
+    box-shadow:
+      0 0 0 1px #0a0e1a,
+      0 0 0 3px var(--res-border, var(--color-panel-border)),
+      3px 3px 0 rgba(0,0,0,0.4);
+  }
+  .resource-card-header {
+    padding: var(--sp-1) var(--sp-3);
+  }
+  .resource-icon {
+    width: 22px;
+    height: 22px;
+  }
+  .resource-card[data-resource="pv"] .resource-icon,
+  .resource-card[data-resource="pm"] .resource-icon {
+    width: 28px;
+    height: 28px;
+  }
+  .resource-title {
+    font-size: 0.42rem;
+  }
+  .resource-display {
+    padding: var(--sp-2) var(--sp-3);
+    gap: var(--sp-1);
+  }
+  .resource-big-btn {
+    width: 36px;
+    height: 28px;
+  }
+  .resource-max-control {
+    padding: var(--sp-1) var(--sp-3) var(--sp-2);
+  }
+
+  /* ── Inventory cards: compact ── */
+  .inventory-card {
+    padding: var(--sp-2) var(--sp-3);
+    gap: var(--sp-2);
+  }
+  .inventory-card::before {
+    width: 10px;
+  }
+  .inventory-panel-title {
+    font-size: 0.42rem;
+    padding: var(--sp-1) var(--sp-3);
+  }
+
+  /* ── Modal: refined for mobile screen ── */
+  .modal-container {
+    border-width: 2px;
+    box-shadow:
+      0 0 0 1px #0a0e1a,
+      0 0 0 3px var(--color-panel-border),
+      0 0 0 5px #0a0e1a,
+      inset 0 0 0 1px rgba(90,127,192,0.15);
+  }
+  .modal-titlebar {
+    padding: var(--sp-2) var(--sp-3);
+    gap: var(--sp-2);
+  }
+  .modal-titlebar::before {
+    font-size: 0.68rem;
+  }
+  .modal-titlebar-label {
+    font-size: 0.6rem;
+  }
+  .modal-close {
+    width: 32px;
+    height: 32px;
+  }
+  .modal-body {
+    padding: var(--sp-3);
+    line-height: 1.6;
+  }
+  .modal-class-header {
+    gap: var(--sp-3);
+    margin-bottom: var(--sp-3);
+    padding-bottom: var(--sp-3);
+  }
+  .modal-class-icon-img {
+    width: 32px;
+    height: 32px;
+  }
+  .modal-section-label {
+    margin-bottom: var(--sp-2);
+    padding-bottom: var(--sp-1);
+  }
+  .modal-desc {
+    margin-bottom: var(--sp-3);
+    line-height: 1.6;
+  }
+  .modal-skills-list {
+    margin-bottom: var(--sp-3);
+  }
+  .modal-skill-item {
+    padding: var(--sp-2) var(--sp-3);
+    gap: var(--sp-2);
+  }
+  .modal-footer {
+    padding: var(--sp-3) var(--sp-4);
+    gap: var(--sp-2);
+  }
+  .modal-skill-header {
+    margin-bottom: var(--sp-3);
+    padding-bottom: var(--sp-3);
+  }
+  .modal-skill-tags {
+    gap: var(--sp-1);
+  }
+  .modal-skill-desc {
+    line-height: 1.6;
+    margin-bottom: var(--sp-3);
+  }
+  .modal-skill-details {
+    padding: var(--sp-3);
+  }
+
+  /* ── Item form: compact ── */
+  .item-form {
+    gap: var(--sp-3);
+    padding: var(--sp-3);
+  }
+
+  /* ── Toast: compact ── */
+  .toast {
+    padding: var(--sp-2) var(--sp-3);
+    max-width: 260px;
+    box-shadow:
+      0 0 0 1px #0a0e1a,
+      0 0 0 2px var(--color-panel-border),
+      3px 3px 0 rgba(0,0,0,0.5);
+  }
+
+  /* ── Crop modal: compact ── */
+  .crop-container {
+    width: min(360px, 88vw);
+  }
+  .crop-viewport {
+    width: 260px;
+    height: 260px;
+  }
+  .crop-frame {
+    width: 150px;
+    height: 150px;
+  }
+  .crop-body {
+    padding: var(--sp-3);
+  }
+  .crop-titlebar {
+    font-size: 0.6rem;
+    padding: var(--sp-2) var(--sp-3);
+  }
+  .crop-actions {
+    padding: var(--sp-2) var(--sp-3);
+    gap: var(--sp-2);
+  }
+  .crop-btn {
+    padding: var(--sp-1) var(--sp-3);
+  }
+
+  /* ── Avatar button: compact ── */
+  .avatar-btn {
+    min-height: auto;
+    padding: 2px var(--sp-2);
+  }
+
+  /* ── Skills panel title: compact ── */
+  .skills-side-title,
+  .skills-panel-title {
+    font-size: 0.42rem;
+    padding: var(--sp-1) var(--sp-2);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
    RESPONSIVE — TABLET (min-width: 769px)
 ═══════════════════════════════════════════════════════════════ */
 @media (min-width: 769px) {
