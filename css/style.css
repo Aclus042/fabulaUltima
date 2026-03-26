@@ -153,12 +153,12 @@
   /* ── JRPG pixel-border mixin values ── */
   --pb-size: 3px; /* pixel border thickness */
 
-  /* ── CRT overlay tuning ── */
-  --crt-scanline-opacity: 0.08;
-  --crt-vignette-opacity: 0.22;
-  --crt-glow-opacity: 0.04;
-  --crt-curvature-scale-x: 1.008;
-  --crt-curvature-scale-y: 1.014;
+  /* ── CRT overlay tuning (mobile-friendly defaults) ── */
+  --crt-scanline-opacity: 0.03;
+  --crt-vignette-opacity: 0.08;
+  --crt-glow-opacity: 0.015;
+  --crt-curvature-scale-x: 1;
+  --crt-curvature-scale-y: 1;
 }
 
 /* ─────────────────────────────────────────────────
@@ -181,7 +181,7 @@ html {
   -webkit-text-size-adjust: 100%;
   image-rendering: pixelated;
   height: 100%;
-  overflow: hidden;
+  overflow: auto;
   touch-action: manipulation;
 }
 
@@ -202,13 +202,14 @@ body {
     radial-gradient(ellipse at 30% 20%, rgba(20,40,120,0.5) 0%, transparent 70%),
     radial-gradient(ellipse at 70% 80%, rgba(10,20,60,0.6) 0%, transparent 60%);
   background-attachment: fixed;
-  height: 100vh;
   min-height: 100vh;
-  line-height: 1.5;
+  min-height: 100dvh;
+  line-height: 1.6;
   -webkit-font-smoothing: none;
   image-rendering: pixelated;
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 body::before,
@@ -254,7 +255,8 @@ body::after {
 
 .crt-screen {
   position: relative;
-  transform: perspective(1800px) scaleX(var(--crt-curvature-scale-x)) scaleY(var(--crt-curvature-scale-y));
+  /* Mobile: flat screen, no curvature */
+  transform: none;
   transform-origin: center center;
   filter: none;
 }
@@ -266,6 +268,8 @@ body::after {
   inset: -12px;
   pointer-events: none;
   z-index: 2;
+  /* Hidden on mobile — too heavy */
+  display: none;
 }
 
 .crt-screen::before {
@@ -575,64 +579,43 @@ em { font-style: italic; }
   color: #fff;
 }
 
-@media (max-width: 900px) {
+/* ─────────────────────────────────────────────────
+   RESPONSIVE — Mobile-first CRT & base
+   Base = mobile (soft CRT, scrollable body).
+   Enhance upward for tablet / desktop.
+───────────────────────────────────────────────── */
+
+/* Tablet: restore some CRT glow */
+@media (min-width: 769px) {
   :root {
-    --crt-scanline-opacity: 0.04;
-    --crt-vignette-opacity: 0.1;
-    --crt-glow-opacity: 0.015;
-    --crt-curvature-scale-x: 1.002;
-    --crt-curvature-scale-y: 1.004;
+    --crt-scanline-opacity: 0.05;
+    --crt-vignette-opacity: 0.14;
+    --crt-glow-opacity: 0.025;
+  }
+}
+
+/* Desktop: full CRT experience with curvature */
+@media (min-width: 1025px) {
+  :root {
+    --crt-scanline-opacity: 0.08;
+    --crt-vignette-opacity: 0.22;
+    --crt-glow-opacity: 0.04;
   }
 
   html {
-    overflow: auto;
+    overflow: hidden;
   }
   body {
-    height: auto;
-    min-height: 100vh;
-    min-height: 100dvh;
-    overflow-x: hidden;
-    overflow-y: auto;
+    height: 100vh;
+    overflow: hidden;
   }
 
   .crt-screen {
-    transform: none;
+    transform: perspective(1800px) scaleX(1.008) scaleY(1.014);
   }
   .crt-screen::before,
   .crt-screen::after {
-    display: none;
-  }
-  .crt-screen::after {
-    box-shadow: none;
-  }
-}
-
-@media (max-width: 480px) {
-  :root {
-    --crt-scanline-opacity: 0.02;
-    --crt-vignette-opacity: 0.06;
-    --crt-glow-opacity: 0.01;
-  }
-
-  body::before {
-    opacity: 0.5;
-  }
-}
-
-@media (max-width: 360px) {
-  :root {
-    --crt-scanline-opacity: 0;
-    --crt-vignette-opacity: 0;
-    --crt-glow-opacity: 0;
-  }
-
-  html {
-    font-size: 14px;
-  }
-
-  body::before,
-  body::after {
-    display: none;
+    display: block;
   }
 }
 

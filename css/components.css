@@ -10,7 +10,8 @@
   display: inline-flex;
   align-items: center;
   gap: var(--sp-2);
-  padding: var(--sp-3) var(--sp-6);
+  padding: var(--sp-3) var(--sp-5);
+  min-height: 44px;
   background: var(--color-gold-dim);
   color: #fff;
   font-family: var(--font-ui);
@@ -46,7 +47,8 @@
   display: inline-flex;
   align-items: center;
   gap: var(--sp-2);
-  padding: var(--sp-2) var(--sp-4);
+  padding: var(--sp-3) var(--sp-4);
+  min-height: 44px;
   background: var(--color-panel-title);
   color: var(--color-text-label);
   font-family: var(--font-ui);
@@ -71,7 +73,8 @@
   display: inline-flex;
   align-items: center;
   gap: var(--sp-2);
-  padding: var(--sp-2) var(--sp-4);
+  padding: var(--sp-3) var(--sp-4);
+  min-height: 44px;
   background: var(--color-danger-bg);
   color: var(--color-danger-light);
   font-family: var(--font-ui);
@@ -95,7 +98,8 @@
   display: inline-flex;
   align-items: center;
   gap: var(--sp-1);
-  padding: var(--sp-1) var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  min-height: 40px;
   background: none;
   color: var(--color-text-muted);
   font-family: var(--font-ui);
@@ -232,8 +236,8 @@
 }
 
 .num-btn {
-  width: 34px;
-  height: 38px;
+  width: 40px;
+  height: 44px;
   background: var(--color-panel-title);
   color: var(--color-text-label);
   font-family: var(--font-ui);
@@ -359,8 +363,8 @@
 }
 
 .attr-btn {
-  width: 22px;
-  height: 22px;
+  width: 32px;
+  height: 32px;
   background: var(--color-panel-title);
   border: 1px solid var(--color-border);
   color: var(--color-text-muted);
@@ -824,6 +828,7 @@
   align-items: center;
   gap: var(--sp-2);
   padding: var(--sp-2) var(--sp-3);
+  min-height: 44px;
   background: var(--color-panel-title);
   border: 1px solid var(--color-border);
   font-family: var(--font-ui);
@@ -832,7 +837,8 @@
   cursor: pointer;
   transition: all var(--transition-fast);
   letter-spacing: 0.05em;
-  width: 100%;
+  width: auto;
+  white-space: nowrap;
   text-align: left;
 }
 .filter-class-icon {
@@ -958,8 +964,8 @@
   font-size: var(--vt-lg);
 }
 .resource-big-btn {
-  width: 40px;
-  height: 32px;
+  width: 44px;
+  height: 36px;
   background: var(--color-panel-title);
   border: 2px solid var(--color-border);
   color: var(--color-text-label);
@@ -1110,9 +1116,9 @@
     ),
     radial-gradient(circle at center, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.82) 100%);
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
-  padding: var(--sp-4);
+  padding: 0;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.15s ease;
@@ -1135,9 +1141,10 @@
   background-image:
     linear-gradient(160deg, rgba(40,60,120,0.25) 0%, transparent 50%),
     linear-gradient(to bottom, rgba(0,0,0,0.0) 0%, rgba(0,0,0,0.15) 100%);
-  max-width: 640px;
+  max-width: 100vw;
   width: 100%;
-  max-height: 90vh;
+  max-height: 100vh;
+  max-height: 100dvh;
   overflow-y: auto;
   position: relative;
   transform: scaleY(0.8);
@@ -1187,8 +1194,8 @@
 }
 
 .modal-close {
-  width: 28px;
-  height: 28px;
+  width: 40px;
+  height: 40px;
   background: rgba(180,40,40,0.3);
   border: 2px solid var(--color-danger);
   color: var(--color-danger-light);
@@ -1208,7 +1215,7 @@
 
 /* Modal body padding */
 .modal-body {
-  padding: var(--sp-6);
+  padding: var(--sp-4);
   font-family: var(--font-ui);
   font-size: var(--vt-sm);
   line-height: 1.7;
@@ -1397,7 +1404,7 @@
 }
 .item-form-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: var(--sp-4);
 }
 
@@ -1406,8 +1413,9 @@
 ───────────────────────────────────────────────── */
 .toast-container {
   position: fixed;
-  bottom: var(--sp-6);
-  right: var(--sp-6);
+  bottom: var(--sp-3);
+  right: var(--sp-2);
+  left: var(--sp-2);
   z-index: 260;
   display: flex;
   flex-direction: column;
@@ -1608,343 +1616,112 @@
   border-color: var(--color-danger);
 }
 
-@media (max-width: 480px) {
-  .crop-container {
-    width: 95vw;
-  }
-  .crop-viewport {
-    width: 260px;
-    height: 260px;
-  }
-  .crop-frame {
-    width: 150px;
-    height: 150px;
-  }
-}
-
-/* ─────────────────────────────────────────────────
-   RESPONSIVE COMPONENTS
-───────────────────────────────────────────────── */
-@media (max-width: 900px) {
-  /* Touch-friendly buttons */
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE — TABLET (min-width: 769px)
+═══════════════════════════════════════════════════════════════ */
+@media (min-width: 769px) {
+  /* Buttons can be slightly more compact */
   .btn-primary,
   .btn-secondary,
   .btn-danger {
-    min-height: 44px;
-    padding: var(--sp-3) var(--sp-5);
+    min-height: 40px;
   }
   .btn-ghost {
-    min-height: 40px;
-    padding: var(--sp-2) var(--sp-3);
+    min-height: 36px;
   }
 
-  /* Touch-friendly attribute controls */
-  .attr-btn {
-    width: 32px;
-    height: 32px;
-    font-size: var(--vt-base);
-  }
-
-  /* Touch-friendly number controls */
-  .num-btn {
-    width: 40px;
-    height: 44px;
-  }
-
-  /* Touch-friendly sidebar links */
-  .sidebar-link {
-    min-height: 48px;
-    display: flex;
-    align-items: center;
-    padding: var(--sp-3) var(--sp-4);
-    font-size: var(--vt-base);
-  }
-
-  /* Touch-friendly skill cards */
-  .skill-card {
-    min-height: 52px;
-    padding: var(--sp-3) var(--sp-4);
-  }
-
-  /* Touch-friendly filter buttons */
-  .filter-btn {
-    min-height: 44px;
-    padding: var(--sp-2) var(--sp-3);
-    width: auto;
-    white-space: nowrap;
-  }
-
-  /* Touch-friendly resource buttons — compact cards */
-  .resource-big-btn {
-    width: 44px;
-    height: 36px;
-    font-size: var(--vt-md);
-  }
-  .resource-card-header {
-    padding: var(--sp-1) var(--sp-3);
-  }
-  .resource-title {
-    font-size: 0.42rem;
-  }
-  .resource-display {
-    padding: var(--sp-2) var(--sp-3);
-    gap: var(--sp-2);
-  }
-  .resource-btn-row {
-    gap: var(--sp-2);
-  }
-  .resource-ratio {
-    font-size: var(--vt-lg);
-  }
-  .resource-separator {
-    font-size: var(--vt-md);
-  }
-  .resource-max {
-    font-size: var(--vt-md);
-  }
-
-  /* Compact attribute cards */
-  .attr-card {
-    padding: var(--sp-1) var(--sp-2);
-  }
-  .attr-dots {
-    width: 30px;
-  }
-
-  /* Modal fullscreen-ish on mobile */
+  /* Modal centered dialog */
   .modal-overlay {
-    padding: var(--sp-2);
-    align-items: flex-start;
-    padding-top: 5vh;
+    align-items: center;
+    padding: var(--sp-4);
   }
   .modal-container {
-    max-width: 100%;
+    max-width: 640px;
     max-height: 90vh;
   }
   .modal-body {
-    padding: var(--sp-4);
-  }
-  .modal-close {
-    width: 36px;
-    height: 36px;
-    font-size: var(--vt-lg);
-  }
-}
-
-@media (max-width: 680px) {
-  /* Modal nearly fullscreen */
-  .modal-overlay {
-    padding: 0;
-    padding-top: 0;
-    align-items: stretch;
-  }
-  .modal-container {
-    max-height: 100vh;
-    max-width: 100vw;
-    border-left: none;
-    border-right: none;
+    padding: var(--sp-6);
   }
 
-  /* Toast at the bottom center */
+  /* Toast to the right */
   .toast-container {
-    right: var(--sp-2);
-    left: var(--sp-2);
-    bottom: var(--sp-3);
+    left: auto;
+    right: var(--sp-6);
+    bottom: var(--sp-6);
   }
   .toast {
-    max-width: 100%;
+    max-width: 300px;
+  }
+
+  /* Resource cards slightly more compact */
+  .resource-card {
+    box-shadow:
+      0 0 0 2px #0a0e1a,
+      0 0 0 4px var(--res-border, var(--color-panel-border)),
+      6px 6px 0 rgba(0,0,0,0.5);
+  }
+
+  /* Item form 2 columns */
+  .item-form-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* Filter buttons vertical in side panel */
+  .filter-btn {
+    width: 100%;
   }
 }
 
-@media (max-width: 480px) {
-  .modal-footer {
-    flex-direction: column;
-    padding: var(--sp-3) var(--sp-4);
-  }
-  .modal-footer .btn-primary,
-  .modal-footer .btn-secondary,
-  .modal-footer .btn-danger {
-    width: 100%;
-    justify-content: center;
-  }
-  .item-form-row {
-    grid-template-columns: 1fr;
-  }
-  .resource-big-btn {
-    width: 36px;
-    height: 28px;
-    font-size: var(--vt-sm);
-  }
-  .resource-display {
-    padding: var(--sp-1) var(--sp-1);
-    gap: var(--sp-1);
-  }
-  .resource-btn-row {
-    gap: var(--sp-1);
-  }
-  .resource-ratio {
-    font-size: var(--vt-md);
-  }
-  .resource-separator {
-    font-size: var(--vt-sm);
-    margin: 0;
-  }
-  .resource-max {
-    font-size: var(--vt-sm);
-  }
-  .resource-title {
-    font-size: 0.38rem;
-    letter-spacing: 0.1em;
-  }
-  .resource-card {
-    box-shadow:
-      0 0 0 1px #0a0e1a,
-      0 0 0 3px var(--res-border, var(--color-panel-border)),
-      3px 3px 0 rgba(0,0,0,0.5);
-  }
 
-  /* More compact panels */
-  .attr-panel-title,
-  .derived-panel-title,
-  .skills-panel-title,
-  .skills-side-title,
-  .inventory-panel-title {
-    font-size: 0.38rem;
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE — DESKTOP (min-width: 1025px)
+═══════════════════════════════════════════════════════════════ */
+@media (min-width: 1025px) {
+  /* Compact desktop buttons */
+  .btn-primary {
+    min-height: auto;
+    padding: var(--sp-3) var(--sp-6);
+  }
+  .btn-secondary {
+    min-height: auto;
+    padding: var(--sp-2) var(--sp-4);
+  }
+  .btn-danger {
+    min-height: auto;
+    padding: var(--sp-2) var(--sp-4);
+  }
+  .btn-ghost {
+    min-height: auto;
     padding: var(--sp-1) var(--sp-2);
   }
 
-  /* Compact attributes */
-  .attr-card {
-    padding: var(--sp-1) var(--sp-2);
-  }
-  .attr-abbreviation {
-    width: 36px;
-    font-size: var(--vt-xs);
-  }
-  .attr-dots {
-    width: 20px;
-  }
-  .attr-die-display {
-    font-size: var(--vt-sm);
-    min-width: 30px;
-  }
+  /* Compact attribute controls */
   .attr-btn {
-    width: 28px;
-    height: 28px;
-    font-size: var(--vt-sm);
-  }
-
-  /* Smaller class cards */
-  .class-card {
-    padding: var(--sp-1);
-  }
-  .class-icon-img {
     width: 22px;
     height: 22px;
   }
-  .class-card-name {
-    font-size: var(--vt-xs);
+
+  /* Compact number controls */
+  .num-btn {
+    width: 34px;
+    height: 38px;
   }
 
-  /* Compact skill cards */
-  .skill-card {
-    min-height: 40px;
-    padding: var(--sp-2) var(--sp-3);
+  /* Compact modal close */
+  .modal-close {
+    width: 28px;
+    height: 28px;
   }
 
-  /* Compact filter buttons */
-  .filter-btn {
-    min-height: 36px;
-    padding: var(--sp-1) var(--sp-2);
-    font-size: var(--vt-xs);
-  }
-
-  /* Compact buttons */
-  .btn-primary,
-  .btn-secondary,
-  .btn-danger {
-    min-height: 40px;
-    padding: var(--sp-2) var(--sp-3);
-    font-size: var(--vt-xs);
-  }
-
-  /* Compact modal */
-  .modal-body {
-    padding: var(--sp-3);
-  }
-  .modal-title {
-    font-size: 0.42rem;
-  }
-  .modal-titlebar-label {
-    font-size: 0.38rem;
-  }
-  .modal-titlebar::before {
-    font-size: var(--vt-xs);
-  }
-}
-
-/* ── Very small phones ── */
-@media (max-width: 360px) {
+  /* Compact resource buttons */
   .resource-big-btn {
-    width: 32px;
-    height: 26px;
-    font-size: var(--vt-xs);
-  }
-  .resource-display {
-    padding: var(--sp-1) 0;
-    gap: 2px;
-  }
-  .resource-btn-row {
-    gap: 2px;
-  }
-  .resource-ratio {
-    font-size: var(--vt-sm);
-  }
-  .resource-card-header {
-    padding: var(--sp-1) var(--sp-2);
-  }
-  .resource-title {
-    font-size: 0.34rem;
+    width: 40px;
+    height: 32px;
   }
 
-  .attr-abbreviation {
-    width: 30px;
-    font-size: 1rem;
-  }
-  .attr-dots {
-    display: none;
-  }
-  .attr-die-display {
-    font-size: var(--vt-xs);
-    min-width: 24px;
-  }
-  .attr-btn {
-    width: 24px;
-    height: 24px;
-  }
-
-  .class-card-name {
-    font-size: 1rem;
-  }
-  .class-icon-img {
-    width: 18px;
-    height: 18px;
-  }
-
-  .skill-card {
-    min-height: 36px;
-    padding: var(--sp-1) var(--sp-2);
-  }
-
+  /* Filter buttons in sidebar */
   .filter-btn {
-    min-height: 32px;
-    font-size: 1rem;
-  }
-
-  .btn-primary,
-  .btn-secondary,
-  .btn-danger {
-    min-height: 36px;
-    padding: var(--sp-1) var(--sp-2);
+    min-height: auto;
+    width: 100%;
   }
 }

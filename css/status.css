@@ -1,43 +1,41 @@
-/* ═══════════════════════════════════════════════════════════════
-   status.css — JRPG Status Screen Layout
-   Fabula Ultima – Tela de Status
+﻿/* ===============================================================
+   status.css -- JRPG Status Screen Layout (Mobile-First)
+   Fabula Ultima -- Tela de Status
    Inspired by: Final Fantasy, Chrono Trigger, Dragon Quest
-═══════════════════════════════════════════════════════════════ */
+=============================================================== */
 
-/* ─────────────────────────────────────────────────
-   VIEWPORT / SHELL
-───────────────────────────────────────────────── */
+/* -------------------------------------------------
+   VIEWPORT / SHELL -- Mobile base (scrollable)
+------------------------------------------------- */
 .sp-viewport {
   width: 100vw;
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  overflow-y: auto;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
 }
 
 .sp-shell {
   width: 100%;
-  height: 100%;
-  max-width: 1200px;
-  max-height: 100vh;
-  display: grid;
-  grid-template-rows: auto 1fr 1.2fr;
-  gap: var(--sp-3);
-  padding: var(--sp-3);
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-2);
 }
 
-/* ─────────────────────────────────────────────────
+/* -------------------------------------------------
    SHARED PANEL STYLE
-───────────────────────────────────────────────── */
+------------------------------------------------- */
 .sp-panel {
   background: var(--color-panel-bg);
   border: 2px solid var(--color-panel-border);
   box-shadow:
-    0 0 0 2px #0a0e1a,
-    0 0 0 4px var(--color-panel-border),
-    6px 6px 0 rgba(0,0,0,0.5);
+    0 0 0 1px #0a0e1a,
+    0 0 0 2px var(--color-panel-border),
+    3px 3px 0 rgba(0,0,0,0.4);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -47,9 +45,9 @@
 
 .sp-panel-title {
   font-family: var(--font-pixel);
-  font-size: 0.5rem;
+  font-size: 0.44rem;
   color: var(--color-gold);
-  padding: var(--sp-2) var(--sp-4);
+  padding: var(--sp-2) var(--sp-3);
   background: var(--color-panel-title);
   border-bottom: 2px solid var(--color-panel-border);
   letter-spacing: 0.15em;
@@ -58,34 +56,35 @@
   flex-shrink: 0;
 }
 
-/* ─────────────────────────────────────────────────
-   HEADER — Identity Bar
-───────────────────────────────────────────────── */
+/* -------------------------------------------------
+   HEADER -- Identity Bar (mobile: wrapped)
+------------------------------------------------- */
 .sp-header {
   background: var(--color-panel-bg);
   border: 2px solid var(--color-panel-border);
   box-shadow:
-    0 0 0 2px #0a0e1a,
-    0 0 0 4px var(--color-panel-border),
-    6px 6px 0 rgba(0,0,0,0.5);
+    0 0 0 1px #0a0e1a,
+    0 0 0 2px var(--color-panel-border),
+    3px 3px 0 rgba(0,0,0,0.4);
   display: flex;
   align-items: center;
-  gap: var(--sp-4);
-  padding: var(--sp-3) var(--sp-5);
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
   min-height: 0;
 }
 
 .sp-header-left {
   display: flex;
   align-items: center;
-  gap: var(--sp-4);
+  gap: var(--sp-3);
   flex: 1;
   min-width: 0;
 }
 
 .sp-avatar {
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   border: 2px solid var(--color-panel-border);
   background: var(--color-bg-panel-dk);
   overflow: hidden;
@@ -114,7 +113,7 @@
 
 .sp-name {
   font-family: var(--font-pixel);
-  font-size: 0.6rem;
+  font-size: 0.5rem;
   color: var(--color-text-bright);
   letter-spacing: 0.1em;
   white-space: nowrap;
@@ -132,12 +131,12 @@
 .sp-class-icons {
   display: flex;
   align-items: center;
-  gap: var(--sp-3);
+  gap: var(--sp-2);
   flex-shrink: 0;
 }
 .sp-class-icon {
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   object-fit: contain;
   image-rendering: pixelated;
   filter: drop-shadow(0 0 4px rgba(90,127,192,0.5));
@@ -160,6 +159,9 @@
   transition: all var(--transition-fast);
   flex-shrink: 0;
   white-space: nowrap;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
 }
 .sp-back-link:hover {
   color: var(--color-gold);
@@ -167,18 +169,17 @@
   background: rgba(240,192,64,0.08);
 }
 
-/* ─────────────────────────────────────────────────
-   MIDDLE ROW — HUD + Attributes
-───────────────────────────────────────────────── */
+/* -------------------------------------------------
+   MIDDLE ROW -- HUD + Attributes (mobile: stacked)
+------------------------------------------------- */
 .sp-middle {
-  display: grid;
-  grid-template-columns: 1.4fr 1fr;
-  gap: var(--sp-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
   min-height: 0;
-  overflow: hidden;
 }
 
-/* ── HUD Panel ── */
+/* -- HUD Panel -- */
 .sp-hud {
   display: flex;
   flex-direction: column;
@@ -194,15 +195,15 @@
 
 .sp-hud-row {
   display: grid;
-  grid-template-columns: 24px 32px 1fr auto;
+  grid-template-columns: 22px 28px 1fr auto;
   align-items: center;
-  gap: var(--sp-3);
+  gap: var(--sp-2);
   padding: var(--sp-1) 0;
 }
 
 .sp-hud-icon {
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   object-fit: contain;
   image-rendering: pixelated;
 }
@@ -240,7 +241,7 @@
   font-size: var(--vt-sm);
   color: var(--color-text-value);
   text-align: right;
-  min-width: 80px;
+  min-width: 70px;
   letter-spacing: 0.04em;
   display: flex;
   align-items: center;
@@ -255,7 +256,7 @@
   background: transparent;
   border: 1px solid transparent;
   text-align: right;
-  width: 38px;
+  width: 36px;
   padding: 0 2px;
   outline: none;
   transition: border-color var(--transition-fast), background var(--transition-fast);
@@ -288,8 +289,9 @@
 /* Derived combat row */
 .sp-hud-derived {
   display: flex;
-  gap: var(--sp-4);
-  padding: var(--sp-2) var(--sp-4) var(--sp-3);
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
   border-top: 1px solid rgba(58,84,144,0.3);
   justify-content: center;
 }
@@ -323,7 +325,7 @@
   text-align: right;
 }
 
-/* ── Attributes Panel ── */
+/* -- Attributes Panel -- */
 .sp-attrs {
   display: flex;
   flex-direction: column;
@@ -344,14 +346,15 @@
   padding: var(--sp-3) var(--sp-4);
   border-bottom: 1px solid rgba(58,84,144,0.25);
   transition: background var(--transition-fast);
+  min-height: 44px;
 }
 .sp-attr-row:last-child { border-bottom: none; }
 .sp-attr-row:hover { background: rgba(60,90,170,0.12); }
 
 .sp-attr-abrev {
   font-family: var(--font-pixel);
-  font-size: 0.48rem;
-  min-width: 42px;
+  font-size: 0.44rem;
+  min-width: 36px;
   letter-spacing: 0.1em;
 }
 
@@ -394,18 +397,18 @@
   text-transform: lowercase;
 }
 
-/* ─────────────────────────────────────────────────
-   BOTTOM ROW — Skills / Detail / Inventory
-───────────────────────────────────────────────── */
+/* -------------------------------------------------
+   BOTTOM ROW -- Skills / Detail / Inventory
+   Mobile: stacked vertically
+------------------------------------------------- */
 .sp-bottom {
-  display: grid;
-  grid-template-columns: 1fr 1.2fr 0.8fr;
-  gap: var(--sp-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
   min-height: 0;
-  overflow: hidden;
 }
 
-/* ── Skills List ── */
+/* -- Skills List -- */
 .sp-skills {
   display: flex;
   flex-direction: column;
@@ -418,17 +421,19 @@
   display: flex;
   flex-direction: column;
   gap: 0;
+  max-height: 35vh;
 }
 
 .sp-skill-item {
   display: flex;
   align-items: center;
   gap: var(--sp-3);
-  padding: var(--sp-2) var(--sp-4);
+  padding: var(--sp-3) var(--sp-4);
   cursor: pointer;
   border-bottom: 1px solid rgba(58,84,144,0.2);
   transition: background var(--transition-fast);
   position: relative;
+  min-height: 44px;
 }
 .sp-skill-item:last-child { border-bottom: none; }
 .sp-skill-item:hover { background: rgba(60,90,170,0.18); }
@@ -483,7 +488,7 @@
   flex-shrink: 0;
 }
 
-/* ── Skill Detail Panel ── */
+/* -- Skill Detail Panel -- */
 .sp-detail {
   display: flex;
   flex-direction: column;
@@ -494,6 +499,7 @@
   flex: 1;
   overflow-y: auto;
   padding: var(--sp-4);
+  max-height: 40vh;
 }
 
 .sp-detail-placeholder {
@@ -516,7 +522,7 @@
 
 .sp-detail-name {
   font-family: var(--font-pixel);
-  font-size: 0.5rem;
+  font-size: 0.44rem;
   color: var(--color-text-bright);
   margin-bottom: var(--sp-3);
   letter-spacing: 0.1em;
@@ -579,7 +585,7 @@
   padding: var(--sp-3);
 }
 
-/* ── Inventory Panel ── */
+/* -- Inventory Panel -- */
 .sp-inventory {
   display: flex;
   flex-direction: column;
@@ -592,15 +598,17 @@
   display: flex;
   flex-direction: column;
   gap: 0;
+  max-height: 35vh;
 }
 
 .sp-inv-item {
   display: flex;
   align-items: center;
   gap: var(--sp-3);
-  padding: var(--sp-2) var(--sp-4);
+  padding: var(--sp-3) var(--sp-4);
   border-bottom: 1px solid rgba(58,84,144,0.2);
   transition: background var(--transition-fast);
+  min-height: 44px;
 }
 .sp-inv-item:last-child { border-bottom: none; }
 .sp-inv-item:hover { background: rgba(60,90,170,0.12); }
@@ -640,7 +648,7 @@
   text-align: right;
 }
 
-/* ── Empty state ── */
+/* -- Empty state -- */
 .sp-empty {
   font-family: var(--font-ui);
   font-size: var(--vt-sm);
@@ -650,9 +658,9 @@
   letter-spacing: 0.05em;
 }
 
-/* ─────────────────────────────────────────────────
+/* -------------------------------------------------
    SCROLLBAR
-───────────────────────────────────────────────── */
+------------------------------------------------- */
 .sp-skills-list::-webkit-scrollbar,
 .sp-detail-body::-webkit-scrollbar,
 .sp-inventory-list::-webkit-scrollbar,
@@ -672,140 +680,143 @@
   background: var(--color-border);
 }
 
-/* ─────────────────────────────────────────────────
-   RESPONSIVE — TABLET (≤ 900px)
-───────────────────────────────────────────────── */
-@media (max-width: 900px) {
+
+/* ===============================================================
+   RESPONSIVE -- TABLET (min-width: 769px)
+=============================================================== */
+@media (min-width: 769px) {
   .sp-shell {
-    grid-template-rows: auto auto 1fr;
-    gap: var(--sp-2);
-    padding: var(--sp-2);
+    gap: var(--sp-3);
+    padding: var(--sp-3);
   }
-
-  .sp-middle {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .sp-bottom {
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto;
-  }
-
-  .sp-inventory {
-    grid-column: 1 / -1;
-  }
-}
-
-/* ─────────────────────────────────────────────────
-   RESPONSIVE — PHONE LANDSCAPE (≤ 680px)
-───────────────────────────────────────────────── */
-@media (max-width: 680px) {
-  .sp-shell {
-    grid-template-rows: auto auto auto auto;
-    overflow-y: auto;
-    max-height: 100vh;
-  }
-
-  .sp-middle {
-    grid-template-columns: 1fr;
-  }
-
-  .sp-bottom {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto;
-  }
-
-  .sp-inventory {
-    grid-column: auto;
-  }
-
-  .sp-header {
-    flex-wrap: wrap;
-    gap: var(--sp-2);
-    padding: var(--sp-2) var(--sp-3);
-  }
-
-  .sp-name { font-size: 0.5rem; }
-  .sp-avatar { width: 40px; height: 40px; }
 
   .sp-panel {
     box-shadow:
-      0 0 0 1px #0a0e1a,
-      0 0 0 2px var(--color-panel-border),
-      3px 3px 0 rgba(0,0,0,0.4);
+      0 0 0 2px #0a0e1a,
+      0 0 0 4px var(--color-panel-border),
+      6px 6px 0 rgba(0,0,0,0.5);
+  }
+
+  .sp-header {
+    box-shadow:
+      0 0 0 2px #0a0e1a,
+      0 0 0 4px var(--color-panel-border),
+      6px 6px 0 rgba(0,0,0,0.5);
+    padding: var(--sp-3) var(--sp-5);
+  }
+
+  .sp-panel-title {
+    font-size: 0.5rem;
+    padding: var(--sp-2) var(--sp-4);
+  }
+
+  .sp-avatar {
+    width: 48px;
+    height: 48px;
+  }
+
+  .sp-name {
+    font-size: 0.6rem;
+  }
+
+  .sp-class-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  /* Middle: 2 columns */
+  .sp-middle {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: var(--sp-3);
+  }
+
+  /* Bottom: 2 columns, inventory spans */
+  .sp-bottom {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--sp-3);
+  }
+  .sp-inventory {
+    grid-column: 1 / -1;
   }
 
   .sp-skills-list,
   .sp-inventory-list {
-    max-height: 35vh;
+    max-height: none;
   }
-
   .sp-detail-body {
-    max-height: 40vh;
+    max-height: none;
+  }
+
+  .sp-hud-row {
+    grid-template-columns: 24px 32px 1fr auto;
+    gap: var(--sp-3);
+  }
+  .sp-hud-icon {
+    width: 22px;
+    height: 22px;
+  }
+  .sp-hud-value {
+    min-width: 80px;
+  }
+
+  .sp-attr-abrev {
+    font-size: 0.48rem;
+    min-width: 42px;
+  }
+
+  .sp-detail-name {
+    font-size: 0.5rem;
   }
 }
 
-/* ─────────────────────────────────────────────────
-   RESPONSIVE — PHONE PORTRAIT (≤ 480px)
-───────────────────────────────────────────────── */
-@media (max-width: 480px) {
+
+/* ===============================================================
+   RESPONSIVE -- DESKTOP (min-width: 1025px)
+=============================================================== */
+@media (min-width: 1025px) {
+  .sp-viewport {
+    height: 100vh;
+    overflow: hidden;
+    align-items: center;
+  }
+
   .sp-shell {
-    padding: 2px;
-    gap: var(--sp-1);
+    max-width: 1200px;
+    max-height: 100vh;
+    display: grid;
+    grid-template-rows: auto 1fr 1.2fr;
+    overflow: hidden;
   }
 
-  .sp-header {
-    padding: var(--sp-1) var(--sp-2);
+  /* Bottom: full 3-column grid */
+  .sp-bottom {
+    grid-template-columns: 1fr 1.2fr 0.8fr;
+    overflow: hidden;
+  }
+  .sp-inventory {
+    grid-column: auto;
   }
 
-  .sp-name { font-size: 0.42rem; }
-  .sp-avatar { width: 36px; height: 36px; }
-  .sp-class-icon { width: 22px; height: 22px; }
-  .sp-back-link { font-size: 0.36rem; padding: var(--sp-1) var(--sp-2); }
-
-  .sp-panel-title {
-    font-size: 0.4rem;
-    padding: var(--sp-1) var(--sp-3);
+  .sp-skills-list {
+    flex: 1;
   }
 
-  .sp-hud-row {
-    grid-template-columns: 20px 28px 1fr auto;
-    gap: var(--sp-2);
+  /* Touch targets can be compact on desktop */
+  .sp-skill-item {
+    min-height: auto;
+    padding: var(--sp-2) var(--sp-4);
   }
-  .sp-hud-icon { width: 18px; height: 18px; }
-  .sp-hud-value { min-width: 60px; font-size: var(--vt-xs); }
-
-  .sp-derived-label { font-size: 1rem; }
-  .sp-derived-val { font-size: var(--vt-xs); }
-
-  .sp-attr-abrev { font-size: 0.4rem; min-width: 34px; }
-
-  .sp-skill-item { padding: var(--sp-1) var(--sp-3); }
-  .sp-skill-name { font-size: var(--vt-xs); }
-
-  .sp-detail-name { font-size: 0.4rem; }
-
-  .sp-inv-item { padding: var(--sp-1) var(--sp-3); }
-}
-
-/* ─────────────────────────────────────────────────
-   RESPONSIVE — VERY SMALL PHONES (≤ 360px)
-───────────────────────────────────────────────── */
-@media (max-width: 360px) {
-  .sp-shell { padding: 1px; }
-  .sp-header { gap: var(--sp-1); }
-  .sp-name { font-size: 0.38rem; }
-  .sp-avatar { width: 32px; height: 32px; }
-  .sp-class-icon { width: 18px; height: 18px; }
-  .sp-back-link { display: none; }
-
-  .sp-hud-row {
-    grid-template-columns: 18px 24px 1fr auto;
-    gap: var(--sp-1);
+  .sp-inv-item {
+    min-height: auto;
+    padding: var(--sp-2) var(--sp-4);
   }
-  .sp-bar-track { height: 10px; }
-  .sp-hud-derived { gap: var(--sp-2); flex-wrap: wrap; }
-
-  .sp-attr-dots { display: none; }
-  .sp-attr-abrev { font-size: 0.36rem; min-width: 28px; }
+  .sp-attr-row {
+    min-height: auto;
+    padding: var(--sp-3) var(--sp-4);
+  }
+  .sp-back-link {
+    min-height: auto;
+  }
 }
