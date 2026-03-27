@@ -13,12 +13,16 @@ const DEFAULT_STATE = {
   identidade: {
     nome:     '',
     nivel:    1,
-    conceito: '',
-    origem:   '',
-    vinculo:  '',
-    notas:    '',
     avatarLetra: '',
     avatarImg: '',
+    tracos: {
+      identidade: '',
+      origem:     '',
+      tema:       '',
+    },
+    lacos: [],            // Array de { nome, emocoes: { admiracao, lealdade, afeto } }  — cada emoção: 'positivo' | 'negativo' | null
+    pontosFabula: 3,
+    notas: '',
   },
 
   atributos: {
@@ -38,14 +42,19 @@ const DEFAULT_STATE = {
   },
 
   condicoes: {
-    lento:      false,
-    fraco:      false,
-    abalado:    false,
-    envenenado: false,
-    confuso:    false,
-    provocado:  false,
-    exausto:    false,
-    cansado:    false,
+    abalado:     false,  // −1 VON
+    atordoado:   false,  // −1 AST
+    enfurecido:  false,  // −1 DES, −1 AST
+    envenenado:  false,  // −1 VIG, −1 VON
+    fraco:       false,  // −1 VIG
+    lento:       false,  // −1 DES
+  },
+
+  zenites: 500,
+
+  equipamento: {
+    armadura: 'sem_armadura',   // ID da armadura equipada
+    escudo:   null,             // ID do escudo equipado (ou null)
   },
 
   inventario: [],   // Array de { id, nome, tipo, desc, qtd, peso, valor, notas }
@@ -145,41 +154,70 @@ const Computed = {
   // Calcula PV máximo
   calcMaxPV(vigNivel, nivel) {
     const vigDado = [0, 6, 8, 10, 12][Math.min(vigNivel, 4)];
-    return vigDado + (nivel * 5);
+    return nivel + (vigDado * 5);
   },
 
   // Calcula PM máximo
   calcMaxPM(vonNivel, nivel) {
     const vonDado = [0, 6, 8, 10, 12][Math.min(vonNivel, 4)];
-    return vonDado + (nivel * 5);
+    return nivel + (vonDado * 5);
   },
 
-  // Calcula Iniciativa
+  // Calcula Iniciativa (base, sem armadura)
   calcIniciativa(desNivel, astNivel) {
     return desNivel + astNivel;
   },
 
-  // Calcula Defesa base
+  // Calcula Defesa base (sem armadura — dado de DES)
   calcDefesa(desNivel) {
-    return 10 + desNivel;
+    const desDado = [0, 6, 8, 10, 12][Math.min(desNivel, 4)];
+    return desDado;
   },
 
-  // Calcula Resistência Mágica base
+  // Calcula Resistência Mágica base (sem armadura — dado de AST)
   calcResMagica(astNivel) {
-    return 10 + astNivel;
+    const astDado = [0, 6, 8, 10, 12][Math.min(astNivel, 4)];
+    return astDado;
   },
 
-  // Todos os derivados em um objeto
+  // Todos os derivados em um objeto (COM armadura e escudo)
   all() {
     const state  = State.get();
     const attrs  = state.atributos;
     const nivel  = state.identidade.nivel;
+    const equip  = state.equipamento || {};
+
+    // Base values
+    let defesa     = this.calcDefesa(attrs.des.nivel);
+    let resMagica  = this.calcResMagica(attrs.ast.nivel);
+    let iniciativa = this.calcIniciativa(attrs.des.nivel, attrs.ast.nivel);
+
+    // Armadura equipada
+    const armorId = equip.armadura || 'sem_armadura';
+    const armor   = typeof getArmorById === 'function' ? getArmorById(armorId) : null;
+    if (armor) {
+      const av = calcArmorValues(armor);
+      defesa     = av.defesa;
+      resMagica  = av.defesaMagica;
+      iniciativa += av.iniciativa;
+    }
+
+    // Escudo equipado
+    const shieldId = equip.escudo || null;
+    const shield   = shieldId && typeof getShieldById === 'function' ? getShieldById(shieldId) : null;
+    if (shield) {
+      const sv = calcShieldValues(shield);
+      defesa     += sv.defesa;
+      resMagica  += sv.defesaMagica;
+      iniciativa += sv.iniciativa;
+    }
+
     return {
       pvMax:      this.calcMaxPV(attrs.vig.nivel, nivel),
       pmMax:      this.calcMaxPM(attrs.von.nivel, nivel),
-      iniciativa: this.calcIniciativa(attrs.des.nivel, attrs.ast.nivel),
-      defesa:     this.calcDefesa(attrs.des.nivel),
-      resMagica:  this.calcResMagica(attrs.ast.nivel),
+      iniciativa,
+      defesa,
+      resMagica,
     };
   }
 };

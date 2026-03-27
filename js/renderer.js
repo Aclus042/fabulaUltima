@@ -57,11 +57,10 @@ const Renderer = (() => {
   function renderIdentitySummary() {
     const state   = State.get();
     const id      = state.identidade;
-    const derived = Computed.all();
 
-    _el('sumName').textContent     = id.nome     || '—';
-    _el('sumLevel').textContent    = id.nivel    || 1;
-    _el('sumConceito').textContent = id.conceito || '—';
+    _el('sumName').textContent     = id.nome  || '—';
+    _el('sumLevel').textContent    = id.nivel  || 1;
+    _el('sumFabula').textContent   = id.pontosFabula ?? 3;
 
     // Classes — icon-only row
     const classesRow = _el('sumClassesRow');
@@ -128,16 +127,38 @@ const Renderer = (() => {
   function renderDerivedStats() {
     const derived  = Computed.all();
     const recursos = State.get('recursos');
+    const equip    = State.get('equipamento') || {};
     const container = _el('attributesDerived');
     container.innerHTML = '';
 
+    // Build armor/shield formula labels
+    const armorId  = equip.armadura || 'sem_armadura';
+    const shieldId = equip.escudo || null;
+    const armor    = typeof getArmorById === 'function' ? getArmorById(armorId) : null;
+    const shield   = shieldId && typeof getShieldById === 'function' ? getShieldById(shieldId) : null;
+
+    let defFormula  = 'Dado DES';
+    let mdefFormula = 'Dado AST';
+    let initFormula = 'DES + AST';
+
+    if (armor) {
+      defFormula  = formatArmorStat(armor.defesa);
+      mdefFormula = formatArmorStat(armor.defesaMagica);
+      if (armor.iniciativa !== 0) initFormula += ` ${armor.iniciativa > 0 ? '+' : ''}${armor.iniciativa}`;
+    }
+    if (shield) {
+      if (shield.defesa)       defFormula  += ` +${shield.defesa}`;
+      if (shield.defesaMagica) mdefFormula += ` +${shield.defesaMagica}`;
+      if (shield.iniciativa)   initFormula += ` ${shield.iniciativa > 0 ? '+' : ''}${shield.iniciativa}`;
+    }
+
     const derivedConfig = [
-      { id: 'pv',   label: 'PV',    max: derived.pvMax, atual: recursos.pv.atual, icon: 'assets/icons/stats/hp.png',      formula: 'Dado VIG + Nível × 5', editable: true },
-      { id: 'pm',   label: 'PM',    max: derived.pmMax, atual: recursos.pm.atual, icon: 'assets/icons/stats/mp.png',      formula: 'Dado VON + Nível × 5', editable: true },
+      { id: 'pv',   label: 'PV',    max: derived.pvMax, atual: recursos.pv.atual, icon: 'assets/icons/stats/hp.png',      formula: 'Nível + Dado VIG × 5', editable: true },
+      { id: 'pm',   label: 'PM',    max: derived.pmMax, atual: recursos.pm.atual, icon: 'assets/icons/stats/mp.png',      formula: 'Nível + Dado VON × 5', editable: true },
       { id: 'ip',   label: 'PI',    max: recursos.ip.max, atual: recursos.ip.atual, icon: 'assets/icons/stats/ip.png',    formula: 'Pontos de Invenção', editable: true },
-      { id: 'init', label: 'Iniciativa',   value: derived.iniciativa, icon: 'assets/icons/stats/init.png',    formula: 'DES + AST' },
-      { label: 'Defesa',       value: derived.defesa,    icon: 'assets/icons/stats/def.png',     formula: '10 + DES' },
-      { id: 'mdef', label: 'Res. Mágica',  value: derived.resMagica, icon: 'assets/icons/stats/def mag.png', formula: '10 + AST' },
+      { id: 'init', label: 'Iniciativa',   value: derived.iniciativa, icon: 'assets/icons/stats/init.png',    formula: initFormula },
+      { label: 'Defesa',       value: derived.defesa,    icon: 'assets/icons/stats/def.png',     formula: defFormula },
+      { id: 'mdef', label: 'Res. Mágica',  value: derived.resMagica, icon: 'assets/icons/stats/def mag.png', formula: mdefFormula },
     ];
 
     derivedConfig.forEach(item => {
@@ -168,6 +189,37 @@ const Renderer = (() => {
         `;
       }
       container.appendChild(card);
+    });
+  }
+
+  // ─────────────────────────────────────────────────
+  // CONDITIONS
+  // ─────────────────────────────────────────────────
+
+  const CONDITIONS_CONFIG = [
+    { id: 'abalado',    nome: 'Abalado',    desc: '− VON' },
+    { id: 'atordoado',  nome: 'Atordoado',  desc: '− AST' },
+    { id: 'enfurecido', nome: 'Enfurecido', desc: '− DES, AST' },
+    { id: 'envenenado', nome: 'Envenenado', desc: '− VIG, VON' },
+    { id: 'fraco',      nome: 'Fraco',      desc: '− VIG' },
+    { id: 'lento',      nome: 'Lento',      desc: '− DES' },
+  ];
+
+  function renderConditions() {
+    const condicoes = State.get('condicoes');
+    const grid = _el('conditionsGrid');
+    grid.innerHTML = '';
+
+    CONDITIONS_CONFIG.forEach(cond => {
+      const active = condicoes[cond.id] || false;
+      const row = _create('div', 'condition-row' + (active ? ' active' : ''));
+      row.dataset.condition = cond.id;
+      row.innerHTML = `
+        <span class="condition-toggle">✕</span>
+        <span class="condition-name">${cond.nome}</span>
+        <span class="condition-desc">${cond.desc}</span>
+      `;
+      grid.appendChild(row);
     });
   }
 
@@ -224,7 +276,9 @@ const Renderer = (() => {
           <div class="class-detail-tier">${cls.tier}</div>
         </div>
       </div>
-      <div class="class-detail-desc">${cls.descricao}</div>
+      ${cls.beneficioInicial ? `
+        <div class="class-detail-desc" style="color:var(--color-gold);border-left:3px solid var(--color-gold-dim);padding-left:var(--sp-3);margin-top:var(--sp-2);"><strong>Benefício Inicial:</strong> ${cls.beneficioInicial}</div>
+      ` : ''}
       <div class="class-detail-skill-list">
         ${skills.map(skill => `
           <button class="class-detail-skill" data-skill-open="${skill.id}" style="background:none;border:none;text-align:left;cursor:pointer;">
@@ -355,10 +409,37 @@ const Renderer = (() => {
 
       skillsGrid.appendChild(card);
     });
+
+    // Arcanos section (only when Arcanista is the active filter)
+    const filteredClass = getClassById(filterClassId);
+    if (filteredClass && filteredClass.arcanos) {
+      const arcanos = getAllArcanos();
+
+      const arcanoTitle = _create('div', 'skills-panel-title arcano-panel-title');
+      arcanoTitle.innerHTML = `
+        <span>⬡ Arcanos</span>
+        <span style="font-family:var(--font-ui);font-size:var(--vt-xs);color:var(--color-text-muted);">${arcanos.length} disponíveis</span>
+      `;
+      skillsGrid.appendChild(arcanoTitle);
+
+      arcanos.forEach(arc => {
+        const card = _create('div', 'arcano-skill-card');
+        card.dataset.arcanoId = arc.id;
+        card.innerHTML = `
+          <img class="arcano-skill-icon" src="${arc.icone}" alt="${arc.nome}" width="32" height="32" loading="lazy" />
+          <div class="arcano-skill-info">
+            <div class="arcano-skill-name">${arc.nome}</div>
+            <div class="arcano-skill-domains">${arc.dominios.join(' · ')}</div>
+          </div>
+        `;
+        skillsGrid.appendChild(card);
+      });
+    }
   }
 
   function _getCostIcon(custo) {
     if (!custo || custo === '—') return '🔷';
+    if (custo.startsWith('ç'))    return '🔶';
     if (custo.startsWith('PM'))   return '💙';
     if (custo.startsWith('IP'))   return '⭐';
     if (custo.startsWith('PV'))   return '❤️';
@@ -470,12 +551,46 @@ const Renderer = (() => {
   }
 
   // ─────────────────────────────────────────────────
+  // EQUIPMENT SUMMARY BAR
+  // ─────────────────────────────────────────────────
+
+  function renderEquipSummary() {
+    const equip  = State.get('equipamento') || {};
+    const el     = _el('equipSummary');
+    if (!el) return;
+
+    const armorId  = equip.armadura || 'sem_armadura';
+    const shieldId = equip.escudo || null;
+    const armor    = typeof getArmorById === 'function' ? getArmorById(armorId) : null;
+    const shield   = shieldId && typeof getShieldById === 'function' ? getShieldById(shieldId) : null;
+    const derived  = Computed.all();
+
+    el.innerHTML = `
+      <div class="equip-slot">
+        <span class="equip-slot-label">Armadura</span>
+        <span class="equip-slot-name">${armor ? _escape(armor.nome) : 'Nenhuma'}</span>
+      </div>
+      <div class="equip-slot">
+        <span class="equip-slot-label">Escudo</span>
+        <span class="equip-slot-name">${shield ? _escape(shield.nome) : '—'}</span>
+        ${shield ? '<button class="equip-slot-remove" data-unequip-shield title="Remover">✕</button>' : ''}
+      </div>
+      <div class="equip-stats-row">
+        <span class="equip-stat"><span class="equip-stat-label">DEF</span> <span class="equip-stat-val equip-stat-def">${derived.defesa}</span></span>
+        <span class="equip-stat"><span class="equip-stat-label">D.M</span> <span class="equip-stat-val equip-stat-mdef">${derived.resMagica}</span></span>
+        <span class="equip-stat"><span class="equip-stat-label">INIC</span> <span class="equip-stat-val">${derived.iniciativa}</span></span>
+      </div>
+    `;
+  }
+
+  // ─────────────────────────────────────────────────
   // INVENTORY
   // ─────────────────────────────────────────────────
 
   const ITEM_ICONS = {
     arma:      '⚔️',
     armadura:  '🛡️',
+    escudo:    '🔰',
     consumivel: '🧪',
     acessorio: '💍',
     misc:      '📦',
@@ -486,6 +601,13 @@ const Renderer = (() => {
     const grid        = _el('inventoryGrid');
     const emptyEl     = _el('inventoryEmpty');
     grid.innerHTML    = '';
+
+    // Always update equipment summary
+    renderEquipSummary();
+
+    // Update active filter tab
+    const tabs = document.querySelectorAll('[data-inv-filter]');
+    tabs.forEach(t => t.classList.toggle('active', t.dataset.invFilter === filterType));
 
     const filtered = filterType === 'all'
       ? inventario
@@ -505,31 +627,282 @@ const Renderer = (() => {
 
     filtered.forEach(item => {
       const icon = ITEM_ICONS[item.tipo] || '📦';
-      const card = _create('div', 'inventory-card');
+      const card = _create('div', 'inv-card');
       card.dataset.itemId = item.id;
 
+      const isWeapon  = item.tipo === 'arma' && item.weaponId;
+      const isArmor   = item.tipo === 'armadura' && item.armorId;
+      const isShield  = item.tipo === 'escudo' && item.shieldId;
+      const isEquipItem = isWeapon || isArmor || isShield;
+
+      let statsHtml  = '';
+      let tagExtra   = '';
+      let actionBtns = '';
+
+      if (isWeapon) {
+        const w = getWeaponById(item.weaponId);
+        if (w) {
+          const prec = calcWeaponPrecisao(w);
+          statsHtml = `<span class="inv-stat inv-stat-cyan">${prec.formula}</span><span class="inv-stat inv-stat-red">${formatWeaponDano(w)}</span><span class="inv-stat">${w.empunhadura === 'duas mãos' ? '2M' : '1M'}</span>`;
+          tagExtra = _escape(w.categoria);
+          actionBtns = `<button class="inv-action-btn" data-view-weapon="${item.weaponId}" title="Detalhes">🔍</button>`;
+        }
+      }
+
+      if (isArmor) {
+        const a = getArmorById(item.armorId);
+        if (a) {
+          const equipped = (State.get('equipamento.armadura') || 'sem_armadura') === a.id;
+          statsHtml = `<span class="inv-stat inv-stat-cyan">DEF ${formatArmorStat(a.defesa)}</span><span class="inv-stat inv-stat-purple">D.M ${formatArmorStat(a.defesaMagica)}</span>`;
+          if (equipped) tagExtra = '<span class="equipped-badge">EQUIP</span>';
+          actionBtns = `<button class="inv-action-btn" data-view-armor="${item.armorId}" title="Detalhes">🔍</button>`;
+          if (!equipped) actionBtns += `<button class="inv-action-btn" data-equip-armor="${item.armorId}" title="Equipar">⬆</button>`;
+        }
+      }
+
+      if (isShield) {
+        const s = getShieldById(item.shieldId);
+        if (s) {
+          const equipped = State.get('equipamento.escudo') === s.id;
+          statsHtml = `<span class="inv-stat inv-stat-cyan">DEF +${s.defesa}</span><span class="inv-stat inv-stat-purple">D.M +${s.defesaMagica}</span>`;
+          if (equipped) tagExtra = '<span class="equipped-badge">EQUIP</span>';
+          actionBtns = `<button class="inv-action-btn" data-view-shield="${item.shieldId}" title="Detalhes">🔍</button>`;
+          if (!equipped) actionBtns += `<button class="inv-action-btn" data-equip-shield="${item.shieldId}" title="Equipar">⬆</button>`;
+          else actionBtns += `<button class="inv-action-btn" data-unequip-shield title="Desequipar">⬇</button>`;
+        }
+      }
+
+      if (!isEquipItem) {
+        actionBtns = `<button class="inv-action-btn" data-edit-item="${item.id}" title="Editar">✏</button>`;
+      }
+
       card.innerHTML = `
-        <div class="inventory-card-header">
-          <div class="item-icon">${icon}</div>
-          <div class="item-title-group">
-            <div class="item-name">${_escape(item.nome)}</div>
-            <div class="item-type-tag">${item.tipo || 'misc'}</div>
+        <span class="inv-card-icon">${icon}</span>
+        <div class="inv-card-body">
+          <div class="inv-card-row1">
+            <span class="inv-card-name">${_escape(item.nome)}</span>
+            ${tagExtra ? `<span class="inv-card-tag">${tagExtra}</span>` : ''}
           </div>
-          <div class="item-actions">
-            <button class="btn-ghost" data-edit-item="${item.id}" title="Editar">✏️</button>
-            <button class="btn-ghost" data-delete-item="${item.id}" title="Remover">🗑️</button>
-          </div>
+          ${statsHtml ? `<div class="inv-card-stats">${statsHtml}</div>` : ''}
+          ${!isEquipItem && item.qtd > 1 ? `<span class="inv-card-qty">×${item.qtd}</span>` : ''}
         </div>
-        ${item.desc ? `<div class="item-desc">${_escape(item.desc)}</div>` : ''}
-        <div class="item-meta">
-          ${item.qtd  ? `<div class="item-meta-entry"><strong>Qtd:</strong> ${item.qtd}</div>` : ''}
-          ${item.peso ? `<div class="item-meta-entry"><strong>Peso:</strong> ${item.peso}</div>` : ''}
-          ${item.valor ? `<div class="item-meta-entry"><strong>Valor:</strong> ${_escape(item.valor)}</div>` : ''}
+        <div class="inv-card-actions">
+          ${actionBtns}
+          <button class="inv-action-btn inv-action-btn--danger" data-delete-item="${item.id}" title="Remover">✕</button>
         </div>
       `;
 
       grid.appendChild(card);
     });
+  }
+
+  // ─────────────────────────────────────────────────
+  // WEAPON SHOP MODAL
+  // ─────────────────────────────────────────────────
+
+  function openWeaponShop(activeCategory = WEAPON_CATEGORIES[0]) {
+    const zenites = State.get('zenites') ?? 500;
+
+    const catTabs = WEAPON_CATEGORIES.map(cat =>
+      `<button class="weapon-cat-btn${cat === activeCategory ? ' active' : ''}" data-weapon-cat="${_escape(cat)}">${_escape(cat)}</button>`
+    ).join('');
+
+    const weapons = getWeaponsByCategory(activeCategory);
+    const rows = weapons.map(w => {
+      const prec = calcWeaponPrecisao(w);
+      const canBuy = w.custo === 0 || zenites >= w.custo;
+      return `
+        <div class="weapon-shop-row">
+          <span class="weapon-shop-name" data-weapon-detail="${w.id}">${_escape(w.nome)}</span>
+          <div class="weapon-shop-stats">
+            <span class="weapon-shop-prec">${prec.formula}</span>
+            <span class="weapon-shop-dmg">${formatWeaponDano(w)}</span>
+            <span class="weapon-shop-hand">${w.empunhadura === 'duas mãos' ? '2 mãos' : '1 mão'}</span>
+            <span class="weapon-shop-cost">${w.custo > 0 ? w.custo + 'z' : '—'}</span>
+          </div>
+          <div class="weapon-shop-actions">
+            <button class="weapon-shop-buy" data-buy-weapon="${w.id}" ${!canBuy ? 'disabled' : ''} title="Comprar (${w.custo}z)"><img src="assets/icons/inv/z.png" alt="z" class="shop-btn-icon"/></button>
+            <button class="weapon-shop-add" data-add-weapon="${w.id}" title="Adicionar grátis">+</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    const content = `
+      <div class="weapon-shop-cats">${catTabs}</div>
+      <div class="weapon-shop-list" id="weaponShopList">${rows}</div>
+    `;
+
+    Modal.open(content, '⚔ Loja de Armas');
+  }
+
+  // ─────────────────────────────────────────────────
+  // WEAPON DETAIL MODAL
+  // ─────────────────────────────────────────────────
+
+  function openWeaponDetail(weaponId) {
+    const w = getWeaponById(weaponId);
+    if (!w) return;
+
+    const prec = calcWeaponPrecisao(w);
+
+    const content = `
+      <div class="weapon-detail">
+        <div class="weapon-detail-header">
+          <div>
+            <div class="weapon-detail-name">${_escape(w.nome)}</div>
+            <div class="weapon-detail-cat">${_escape(w.categoria)}</div>
+          </div>
+        </div>
+        <div class="weapon-detail-grid">
+          <div class="weapon-detail-stat">
+            <span class="weapon-detail-label">Precisão</span>
+            <span class="weapon-detail-value prec">${prec.formula} (${prec.dado1}+${prec.dado2}${w.bonusPrecisao ? '+' + w.bonusPrecisao : ''} = ${prec.total})</span>
+          </div>
+          <div class="weapon-detail-stat">
+            <span class="weapon-detail-label">Dano</span>
+            <span class="weapon-detail-value dmg">${formatWeaponDano(w)}</span>
+          </div>
+          <div class="weapon-detail-stat">
+            <span class="weapon-detail-label">Tipo de Dano</span>
+            <span class="weapon-detail-value">${w.tipoDano}</span>
+          </div>
+          <div class="weapon-detail-stat">
+            <span class="weapon-detail-label">Empunhadura</span>
+            <span class="weapon-detail-value">${w.empunhadura}</span>
+          </div>
+          <div class="weapon-detail-stat">
+            <span class="weapon-detail-label">Alcance</span>
+            <span class="weapon-detail-value">${w.alcance}</span>
+          </div>
+          <div class="weapon-detail-stat">
+            <span class="weapon-detail-label">Custo</span>
+            <span class="weapon-detail-value gold">${w.custo > 0 ? w.custo + 'z' : 'Gratuito'}</span>
+          </div>
+        </div>
+        ${w.especial ? `<div class="weapon-detail-special">${_escape(w.especial)}</div>` : ''}
+      </div>
+    `;
+
+    Modal.open(content, `⚔ ${w.nome}`);
+  }
+
+  // ─────────────────────────────────────────────────
+  // ARMOR SHOP MODAL
+  // ─────────────────────────────────────────────────
+
+  function openArmorShop(activeCategory = 'Armaduras') {
+    const zenites = State.get('zenites') ?? 500;
+    const equip   = State.get('equipamento') || {};
+
+    const catTabs = ARMOR_CATEGORIES.map(cat =>
+      `<button class="weapon-cat-btn${cat === activeCategory ? ' active' : ''}" data-armor-cat="${_escape(cat)}">${_escape(cat)}</button>`
+    ).join('');
+
+    const items = activeCategory === 'Escudos' ? SHIELDS : ARMORS;
+    const rows = items.map(item => {
+      const canBuy = item.custo === 0 || zenites >= item.custo;
+      const isEquipped = activeCategory === 'Escudos'
+        ? equip.escudo === item.id
+        : (equip.armadura || 'sem_armadura') === item.id;
+
+      const defStr  = activeCategory === 'Escudos' ? `+${item.defesa}` : formatArmorStat(item.defesa);
+      const mdefStr = activeCategory === 'Escudos' ? `+${item.defesaMagica}` : formatArmorStat(item.defesaMagica);
+      const initStr = `${item.iniciativa >= 0 ? '+' : ''}${item.iniciativa}`;
+
+      return `
+        <div class="weapon-shop-row${isEquipped ? ' armor-equipped' : ''}">
+          <span class="weapon-shop-name" data-armor-detail="${item.id}">${_escape(item.nome)}</span>
+          <div class="weapon-shop-stats">
+            <span class="weapon-shop-prec">DEF ${defStr}</span>
+            <span class="weapon-shop-dmg">D.M ${mdefStr}</span>
+            <span class="weapon-shop-hand">INIC ${initStr}</span>
+            <span class="weapon-shop-cost">${item.custo > 0 ? item.custo + 'z' : '—'}</span>
+          </div>
+          <div class="weapon-shop-actions">
+            <button class="weapon-shop-buy" data-buy-armor="${item.id}" ${!canBuy ? 'disabled' : ''} title="Comprar (${item.custo}z)"><img src="assets/icons/inv/z.png" alt="z" class="shop-btn-icon"/></button>
+            <button class="weapon-shop-add" data-add-armor="${item.id}" title="Adicionar grátis">+</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    const content = `
+      <div class="weapon-shop-cats">${catTabs}</div>
+      <div class="weapon-shop-list" id="armorShopList">${rows}</div>
+    `;
+
+    Modal.open(content, '🛡 Loja de Armaduras');
+  }
+
+  // ─────────────────────────────────────────────────
+  // ARMOR / SHIELD DETAIL MODAL
+  // ─────────────────────────────────────────────────
+
+  function openArmorDetail(itemId) {
+    const armor  = getArmorById(itemId);
+    const shield = getShieldById(itemId);
+    const item   = armor || shield;
+    if (!item) return;
+
+    const isShield = !!shield;
+    const equip    = State.get('equipamento') || {};
+    const isEquipped = isShield
+      ? equip.escudo === item.id
+      : (equip.armadura || 'sem_armadura') === item.id;
+
+    let defStr, mdefStr, defCalc, mdefCalc;
+
+    if (isShield) {
+      defStr    = `+${item.defesa}`;
+      mdefStr   = `+${item.defesaMagica}`;
+      defCalc   = item.defesa;
+      mdefCalc  = item.defesaMagica;
+    } else {
+      defStr    = formatArmorStat(item.defesa);
+      mdefStr   = formatArmorStat(item.defesaMagica);
+      defCalc   = calcArmorStat(item.defesa);
+      mdefCalc  = calcArmorStat(item.defesaMagica);
+    }
+
+    const content = `
+      <div class="weapon-detail">
+        <div class="weapon-detail-header">
+          <div>
+            <div class="weapon-detail-name">${_escape(item.nome)}</div>
+            <div class="weapon-detail-cat">${isShield ? 'Escudo' : 'Armadura'}${isEquipped ? ' · <span class="equipped-tag">Equipado</span>' : ''}</div>
+          </div>
+        </div>
+        <div class="weapon-detail-grid">
+          <div class="weapon-detail-stat">
+            <span class="weapon-detail-label">Defesa</span>
+            <span class="weapon-detail-value prec">${defStr} (= ${defCalc})</span>
+          </div>
+          <div class="weapon-detail-stat">
+            <span class="weapon-detail-label">Defesa Mágica</span>
+            <span class="weapon-detail-value dmg">${mdefStr} (= ${mdefCalc})</span>
+          </div>
+          <div class="weapon-detail-stat">
+            <span class="weapon-detail-label">Iniciativa</span>
+            <span class="weapon-detail-value">${item.iniciativa >= 0 ? '+' : ''}${item.iniciativa}</span>
+          </div>
+          <div class="weapon-detail-stat">
+            <span class="weapon-detail-label">Custo</span>
+            <span class="weapon-detail-value gold">${item.custo > 0 ? item.custo + 'z' : 'Gratuito'}</span>
+          </div>
+        </div>
+        ${item.especial ? `<div class="weapon-detail-special">${_escape(item.especial)}</div>` : ''}
+        <div class="modal-footer" style="margin-top:var(--sp-4);">
+          ${!isEquipped
+            ? `<button class="btn-primary" data-modal-action="equipArmor" data-armor-id="${item.id}" data-armor-type="${isShield ? 'escudo' : 'armadura'}">Equipar</button>`
+            : (isShield ? `<button class="btn-secondary" data-modal-action="unequipShield">Desequipar</button>` : '')
+          }
+          <button class="btn-secondary" data-modal-action="close">Fechar</button>
+        </div>
+      </div>
+    `;
+
+    Modal.open(content, `🛡 ${item.nome}`);
   }
 
   // ─────────────────────────────────────────────────
@@ -566,8 +939,10 @@ const Renderer = (() => {
         </div>
       </div>
 
-      <div class="modal-section-label">Descrição</div>
-      <p class="modal-desc">${cls.descricao}</p>
+      ${cls.beneficioInicial ? `
+        <div class="modal-section-label">Benefício Inicial</div>
+        <p class="modal-desc" style="color:var(--color-gold);border-left:3px solid var(--color-gold-dim);padding-left:var(--sp-3);">${cls.beneficioInicial}</p>
+      ` : ''}
 
       <div class="modal-section-label">Habilidades (${cls.habilidades.length})</div>
       <div class="modal-skills-list">${skillsList}</div>
@@ -607,10 +982,12 @@ const Renderer = (() => {
         </div>
       </div>
 
-      <div class="modal-section-label">Descrição</div>
-      <p class="modal-skill-desc">${skill.descricao}</p>
+      ${skill.descricao && skill.descricao !== skill.detalhes ? `
+        <div class="modal-section-label">Descrição</div>
+        <p class="modal-skill-desc">${skill.descricao}</p>
+      ` : ''}
 
-      <div class="modal-section-label">Detalhes Completos</div>
+      <div class="modal-section-label">Efeito</div>
       <div class="modal-skill-details">${skill.detalhes.split('\n').map(l => `<p>${l}</p>`).join('')}</div>
 
       <div class="modal-footer">
@@ -620,6 +997,48 @@ const Renderer = (() => {
     `;
 
     Modal.open(content, `■ ${skill.nome}`);
+  }
+
+  // ─────────────────────────────────────────────────
+  // MODAL — ARCANO DETAIL
+  // ─────────────────────────────────────────────────
+
+  function openArcanoModal(arcanoId) {
+    const arc = getArcanoById(arcanoId);
+    if (!arc) return;
+
+    const content = `
+      <div class="arcano-modal-header">
+        <img class="arcano-modal-icon-img" src="${arc.icone}" alt="${arc.nome}" width="48" height="48" loading="lazy" />
+        <div class="arcano-modal-title">${arc.nome}</div>
+      </div>
+
+      <div class="arcano-modal-domains">
+        ${arc.dominios.map(d => `<span class="arcano-domain-tag">${d}</span>`).join('')}
+      </div>
+
+      <div class="modal-section-label arcano-section-fundir">⚡ Fundir</div>
+      <div class="arcano-modal-effect arcano-effect-fundir">
+        ${arc.fundir.split('\n').map(l => `<p>${l}</p>`).join('')}
+      </div>
+
+      ${arc.dispensar ? `
+        <div class="modal-section-label arcano-section-dispensar">✦ Dispensar</div>
+        <div class="arcano-modal-effect arcano-effect-dispensar">
+          ${arc.dispensar.split('\n').map(l => `<p>${l}</p>`).join('')}
+        </div>
+      ` : ''}
+
+      <div class="arcano-modal-rules">
+        <p>${ARCANO_RULES.escala}</p>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-secondary" data-modal-action="close">Fechar</button>
+      </div>
+    `;
+
+    Modal.open(content, `⬡ ${arc.nome}`);
   }
 
   // ─────────────────────────────────────────────────
@@ -693,15 +1112,121 @@ const Renderer = (() => {
   }
 
   // ─────────────────────────────────────────────────
+  // TRAÇOS
+  // ─────────────────────────────────────────────────
+
+  function renderTracos() {
+    const tracos = State.get('identidade.tracos') || {};
+    _el('tracoIdentidade').textContent = tracos.identidade || '—';
+    _el('tracoOrigem').textContent     = tracos.origem     || '—';
+    _el('tracoTema').textContent       = tracos.tema       || '—';
+  }
+
+  // ─────────────────────────────────────────────────
+  // PONTOS DE FÁBULA
+  // ─────────────────────────────────────────────────
+
+  function renderFabulaPoints() {
+    const pf = State.get('identidade.pontosFabula') ?? 3;
+    _el('fabulaPointsValue').textContent = pf;
+  }
+
+  // ─────────────────────────────────────────────────
+  // LAÇOS
+  // ─────────────────────────────────────────────────
+
+  const EMOCAO_PAIRS = [
+    { key: 'admiracao', pos: 'Admiração',    neg: 'Inferioridade' },
+    { key: 'lealdade',  pos: 'Lealdade',     neg: 'Desconfiança' },
+    { key: 'afeto',     pos: 'Afeto',        neg: 'Ódio' },
+  ];
+
+  function renderLacos() {
+    const lacos   = State.get('identidade.lacos') || [];
+    const block   = _el('lacosBlock');
+    const grid    = _el('lacosGrid');
+    const addBtn  = _el('addLacoBtn');
+    grid.innerHTML = '';
+
+    if (addBtn) addBtn.style.display = lacos.length >= 6 ? 'none' : '';
+
+    // Toggle class so CSS controls empty vs grid visibility
+    block.classList.toggle('lacos-has-items', lacos.length > 0);
+
+    // Title row inside the overlay
+    const titleRow = _create('div', 'lacos-overlay-title');
+    titleRow.textContent = 'Laços';
+    grid.appendChild(titleRow);
+
+    lacos.forEach((laco, idx) => {
+      const card = _create('div', 'laco-card');
+      card.dataset.lacoIndex = idx;
+
+      const emocaoHTML = EMOCAO_PAIRS.map(pair => {
+        const val = (laco.emocoes && laco.emocoes[pair.key]) || null;
+        return `
+          <div class="emocao-pair">
+            <button type="button" class="emocao-btn emocao-pos${val === 'positivo' ? ' active' : ''}"
+              data-laco="${idx}" data-emocao="${pair.key}" data-polo="positivo">${pair.pos}</button>
+            <button type="button" class="emocao-btn emocao-neg${val === 'negativo' ? ' active' : ''}"
+              data-laco="${idx}" data-emocao="${pair.key}" data-polo="negativo">${pair.neg}</button>
+          </div>
+        `;
+      }).join('');
+
+      card.innerHTML = `
+        <div class="laco-header">
+          <input type="text" class="laco-nome-input" data-laco-nome="${idx}"
+            placeholder="Nome do laço..." value="${_escape(laco.nome || '')}" />
+          <button type="button" class="btn-ghost laco-remove-btn" data-remove-laco="${idx}" title="Remover">✕</button>
+        </div>
+        <div class="laco-emocoes">${emocaoHTML}</div>
+      `;
+
+      grid.appendChild(card);
+    });
+  }
+
+  // ─────────────────────────────────────────────────
+  // MODAL — TRAÇO EDIT
+  // ─────────────────────────────────────────────────
+
+  function openTracoModal(tracoKey) {
+    const labels = { identidade: 'Identidade', origem: 'Origem', tema: 'Tema' };
+    const label  = labels[tracoKey] || tracoKey;
+    const value  = State.get(`identidade.tracos.${tracoKey}`) || '';
+
+    const content = `
+      <div class="modal-skill-header">
+        <div class="modal-skill-name">Editar ${label}</div>
+      </div>
+      <div class="field-group" style="margin-top:var(--sp-4);">
+        <label class="field-label" for="tracoEditInput">${label}</label>
+        <textarea id="tracoEditInput" class="field-textarea" rows="3" placeholder="Descreva ${label.toLowerCase()}...">${_escape(value)}</textarea>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" data-modal-action="close">Cancelar</button>
+        <button class="btn-primary" data-modal-action="saveTraco" data-traco-key="${tracoKey}">Salvar</button>
+      </div>
+    `;
+
+    Modal.open(content, `■ ${label}`);
+  }
+
+  // ─────────────────────────────────────────────────
   // FULL RE-RENDER
   // ─────────────────────────────────────────────────
 
   function renderAll() {
     renderIdentitySummary();
     renderAttributes();
+    renderConditions();
     renderClasses();
     renderSkills();
     renderInventory();
+    renderTracos();
+    renderFabulaPoints();
+    renderLacos();
   }
 
   // ─────────────────────────────────────────────────
@@ -737,17 +1262,29 @@ const Renderer = (() => {
     renderIdentitySummary,
     renderAttributes,
     renderDerivedStats,
+    renderConditions,
     renderClasses,
     renderClassDetailPanel,
     renderSkills,
     updateResourceDisplay,
     renderInventory,
+    renderEquipSummary,
+    openWeaponShop,
+    openWeaponDetail,
+    openArmorShop,
+    openArmorDetail,
+    renderTracos,
+    renderFabulaPoints,
+    renderLacos,
     openClassModal,
     openSkillModal,
+    openArcanoModal,
     openItemModal,
+    openTracoModal,
     updateAvatarDisplay: _updateAvatarDisplay,
     ATTR_CONFIG,
     ITEM_ICONS,
+    EMOCAO_PAIRS,
   };
 
 })();

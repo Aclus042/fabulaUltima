@@ -22,16 +22,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 4. Hidrata os campos de identidade com dados salvos
   _hydrateIdentityFields();
+  _hydrateZenites();
 
   // 5. Registra todos os event listeners
   _registerNavEvents();
   _registerMobileMenuEvents();
   _registerIdentityEvents();
   _registerAttributeEvents();
+  _registerConditionEvents();
   _registerDerivedEditEvents();
   _registerClassEvents();
   _registerSkillFilterEvents();
   _registerInventoryEvents();
+  _registerZenitesEvents();
   _registerModalDelegation();
 
   // 6. Subscreve ao state change para atualizar o resumo
@@ -129,42 +132,41 @@ function _hydrateIdentityFields() {
   const id = State.get('identidade');
   _setVal('charName',    id.nome     || '');
   _setVal('charLevel',   id.nivel    || 1);
-  _setVal('charConcept', id.conceito || '');
-  _setVal('charOrigin',  id.origem   || '');
-  _setVal('charBond',    id.vinculo  || '');
   _setVal('charNotes',   id.notas    || '');
+  // Pontos de Fábula display is a span, use textContent
+  const pfEl = document.getElementById('fabulaPointsValue');
+  if (pfEl) pfEl.textContent = id.pontosFabula ?? 3;
 }
 
 function _registerIdentityEvents() {
-  const fields = [
-    { id: 'charName',    path: 'identidade.nome' },
-    { id: 'charConcept', path: 'identidade.conceito' },
-    { id: 'charOrigin',  path: 'identidade.origem' },
-    { id: 'charBond',    path: 'identidade.vinculo' },
-    { id: 'charNotes',   path: 'identidade.notas' },
-  ];
-
-  fields.forEach(({ id, path }) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.addEventListener('input', () => {
-      State.set(path, el.value);
+  // ── Nome ──
+  const nameEl = document.getElementById('charName');
+  if (nameEl) {
+    nameEl.addEventListener('input', () => {
+      State.set('identidade.nome', nameEl.value);
     });
-  });
+  }
 
-  // Nível
+  // ── Notas ──
+  const notesEl = document.getElementById('charNotes');
+  if (notesEl) {
+    notesEl.addEventListener('input', () => {
+      State.set('identidade.notas', notesEl.value);
+    });
+  }
+
+  // ── Nível input ──
   const levelInput = document.getElementById('charLevel');
   if (levelInput) {
     levelInput.addEventListener('input', () => {
       const val = Math.max(1, Math.min(50, parseInt(levelInput.value) || 1));
       State.set('identidade.nivel', val);
-      // Atualiza recursos derivados
       _syncDerivedMaxes();
       Renderer.renderDerivedStats();
     });
   }
 
-  // Botões +/- do nível
+  // ── Nível +/- buttons ──
   document.querySelectorAll('[data-action][data-target="charLevel"]').forEach(btn => {
     btn.addEventListener('click', () => {
       const dir    = btn.dataset.action === 'increase' ? 1 : -1;
@@ -177,6 +179,122 @@ function _registerIdentityEvents() {
       _syncDerivedMaxes();
       Renderer.renderDerivedStats();
     });
+  });
+
+  // ── Pontos de Fábula ──
+  document.getElementById('fabulaMinus').addEventListener('click', () => {
+    const cur = State.get('identidade.pontosFabula') ?? 3;
+    const val = Math.max(0, cur - 1);
+    State.set('identidade.pontosFabula', val);
+    Renderer.renderFabulaPoints();
+  });
+  document.getElementById('fabulaPlus').addEventListener('click', () => {
+    const cur = State.get('identidade.pontosFabula') ?? 3;
+    const val = Math.min(99, cur + 1);
+    State.set('identidade.pontosFabula', val);
+    Renderer.renderFabulaPoints();
+  });
+
+  // ── Traços toggle ──
+  document.getElementById('tracosToggle').addEventListener('click', () => {
+    const block = document.getElementById('tracosBlock');
+    block.classList.toggle('open');
+  });
+
+  // ── Traços card click → edit modal ──
+  document.getElementById('tracosContent').addEventListener('click', e => {
+    const card = e.target.closest('.traco-card');
+    if (!card) return;
+    const key = card.dataset.traco;
+    if (key) Renderer.openTracoModal(key);
+  });
+
+  // ── Laços toggle ──
+  document.getElementById('lacosToggle').addEventListener('click', e => {
+    // Don't toggle if the + button was clicked
+    if (e.target.closest('.lacos-add-btn')) return;
+    document.getElementById('lacosBlock').classList.toggle('open');
+  });
+
+  // ── Laços: add bond ──
+  document.getElementById('addLacoBtn').addEventListener('click', e => {
+    e.stopPropagation();
+    const lacos = State.get('identidade.lacos') || [];
+    if (lacos.length >= 6) return;
+    lacos.push({ nome: '', emocoes: { admiracao: null, lealdade: null, afeto: null } });
+    State.set('identidade.lacos', lacos);
+    // Auto-open if not already open
+    document.getElementById('lacosBlock').classList.add('open');
+    Renderer.renderLacos();
+  });
+
+  // ── Laços: delegated events (remove, name input, emotion toggle) ──
+  document.getElementById('lacosGrid').addEventListener('click', e => {
+    // Remove bond
+    const removeBtn = e.target.closest('[data-remove-laco]');
+    if (removeBtn) {
+      const idx = parseInt(removeBtn.dataset.removeLaco);
+      const lacos = State.get('identidade.lacos') || [];
+      lacos.splice(idx, 1);
+      State.set('identidade.lacos', lacos);
+      Renderer.renderLacos();
+      return;
+    }
+
+    // Emotion toggle
+    const emBtn = e.target.closest('.emocao-btn');
+    if (emBtn) {
+      const idx     = parseInt(emBtn.dataset.laco);
+      const emKey   = emBtn.dataset.emocao;
+      const polo    = emBtn.dataset.polo;
+      const lacos   = State.get('identidade.lacos') || [];
+      if (!lacos[idx]) return;
+      if (!lacos[idx].emocoes) lacos[idx].emocoes = {};
+
+      // Toggle: if already selected, deselect; otherwise set
+      if (lacos[idx].emocoes[emKey] === polo) {
+        lacos[idx].emocoes[emKey] = null;
+      } else {
+        lacos[idx].emocoes[emKey] = polo;
+      }
+      State.set('identidade.lacos', lacos);
+      Renderer.renderLacos();
+      return;
+    }
+  });
+
+  // Name input (delegated via focusout)
+  document.getElementById('lacosGrid').addEventListener('input', e => {
+    const nameInput = e.target.closest('[data-laco-nome]');
+    if (!nameInput) return;
+    const idx = parseInt(nameInput.dataset.lacoNome);
+    const lacos = State.get('identidade.lacos') || [];
+    if (!lacos[idx]) return;
+    lacos[idx].nome = nameInput.value;
+    State.set('identidade.lacos', lacos);
+  });
+
+  // ── Close Traços/Laços overlays on backdrop click ──
+  // The ::before pseudo backdrop is fixed fullscreen on .open blocks.
+  // We close when clicking anything that isn't inside the overlay content.
+  document.addEventListener('mousedown', e => {
+    const tracosBlock = document.getElementById('tracosBlock');
+    const lacosBlock  = document.getElementById('lacosBlock');
+
+    if (tracosBlock.classList.contains('open')) {
+      const isInsideContent = e.target.closest('.tracos-content');
+      const isHeader = e.target.closest('.tracos-header');
+      if (!isInsideContent && !isHeader) {
+        tracosBlock.classList.remove('open');
+      }
+    }
+    if (lacosBlock.classList.contains('open')) {
+      const isInsideContent = e.target.closest('.lacos-grid') || e.target.closest('.lacos-empty');
+      const isHeader = e.target.closest('.lacos-header');
+      if (!isInsideContent && !isHeader) {
+        lacosBlock.classList.remove('open');
+      }
+    }
   });
 
   // ── Avatar image crop system ──
@@ -451,6 +569,19 @@ function _registerAttributeEvents() {
   });
 }
 
+function _registerConditionEvents() {
+  document.getElementById('conditionsGrid').addEventListener('click', e => {
+    const row = e.target.closest('.condition-row');
+    if (!row) return;
+
+    const condId = row.dataset.condition;
+    const current = State.get(`condicoes.${condId}`) || false;
+    State.set(`condicoes.${condId}`, !current);
+
+    row.classList.toggle('active', !current);
+  });
+}
+
 function _attrName(id) {
   const map = { des: 'Destreza', ast: 'Astúcia', vig: 'Vigor', von: 'Vontade' };
   return map[id] || id;
@@ -643,6 +774,20 @@ function _registerClassEvents() {
       Renderer.renderClassDetailPanel(remaining[remaining.length - 1]);
     }
   });
+
+  // Class detail panel — skill & arcano clicks
+  document.getElementById('classDetailBody').addEventListener('click', e => {
+    const skillBtn = e.target.closest('[data-skill-open]');
+    if (skillBtn) {
+      Renderer.openSkillModal(skillBtn.dataset.skillOpen);
+      return;
+    }
+    const arcanoBtn = e.target.closest('[data-arcano-id]');
+    if (arcanoBtn) {
+      Renderer.openArcanoModal(arcanoBtn.dataset.arcanoId);
+      return;
+    }
+  });
 }
 
 // ════════════════════════════════════════════════════════════
@@ -662,6 +807,11 @@ function _registerSkillFilterEvents() {
 
   // Skill card click
   document.getElementById('skillsGrid').addEventListener('click', e => {
+    const arcanoCard = e.target.closest('.arcano-skill-card');
+    if (arcanoCard) {
+      Renderer.openArcanoModal(arcanoCard.dataset.arcanoId);
+      return;
+    }
     const card = e.target.closest('.skill-card');
     if (!card) return;
     Renderer.openSkillModal(card.dataset.skillId);
@@ -706,22 +856,71 @@ function _getResMax(resId) {
 let _currentInventoryFilter = 'all';
 
 function _registerInventoryEvents() {
-  // Botão adicionar
+  // Botão adicionar item genérico
   document.getElementById('addItemBtn').addEventListener('click', () => {
     Renderer.openItemModal(null);
   });
 
-  // Filtro de tipo
-  document.getElementById('inventoryFilter').addEventListener('change', e => {
-    _currentInventoryFilter = e.target.value;
+  // Botão loja de armas
+  document.getElementById('weaponShopBtn').addEventListener('click', () => {
+    Renderer.openWeaponShop();
+  });
+
+  // Botão loja de armaduras
+  document.getElementById('armorShopBtn').addEventListener('click', () => {
+    Renderer.openArmorShop();
+  });
+
+  // Filter tabs
+  document.getElementById('invFilterTabs').addEventListener('click', e => {
+    const tab = e.target.closest('[data-inv-filter]');
+    if (!tab) return;
+    _currentInventoryFilter = tab.dataset.invFilter;
     Renderer.renderInventory(_currentInventoryFilter);
   });
 
-  // Edit / Delete delegation na grid
-  document.getElementById('inventoryGrid').addEventListener('click', e => {
-    const editBtn   = e.target.closest('[data-edit-item]');
-    const deleteBtn = e.target.closest('[data-delete-item]');
+  // Equipment summary: unequip shield
+  document.getElementById('equipSummary').addEventListener('click', e => {
+    if (e.target.closest('[data-unequip-shield]')) {
+      _unequipShield();
+    }
+  });
 
+  // Edit / Delete / View / Equip delegation na grid
+  document.getElementById('inventoryGrid').addEventListener('click', e => {
+    const editBtn       = e.target.closest('[data-edit-item]');
+    const deleteBtn     = e.target.closest('[data-delete-item]');
+    const viewWeapon    = e.target.closest('[data-view-weapon]');
+    const viewArmor     = e.target.closest('[data-view-armor]');
+    const viewShield    = e.target.closest('[data-view-shield]');
+    const equipArmor    = e.target.closest('[data-equip-armor]');
+    const equipShield   = e.target.closest('[data-equip-shield]');
+    const unequipShield = e.target.closest('[data-unequip-shield]');
+
+    if (viewWeapon) {
+      Renderer.openWeaponDetail(viewWeapon.dataset.viewWeapon);
+      return;
+    }
+    if (viewArmor) {
+      Renderer.openArmorDetail(viewArmor.dataset.viewArmor);
+      return;
+    }
+    if (viewShield) {
+      Renderer.openArmorDetail(viewShield.dataset.viewShield);
+      return;
+    }
+    if (equipArmor) {
+      _equipArmor(equipArmor.dataset.equipArmor);
+      return;
+    }
+    if (equipShield) {
+      _equipShield(equipShield.dataset.equipShield);
+      return;
+    }
+    if (unequipShield) {
+      _unequipShield();
+      return;
+    }
     if (editBtn) {
       const itemId = editBtn.dataset.editItem;
       const items  = State.get('inventario');
@@ -741,6 +940,76 @@ function _deleteItem(itemId) {
   State.set('inventario', items.filter(i => i.id !== itemId));
   Renderer.renderInventory(_currentInventoryFilter);
   Toast.show('Item removido.', 'danger');
+}
+
+function _equipArmor(armorId) {
+  State.set('equipamento.armadura', armorId);
+  Renderer.renderInventory(_currentInventoryFilter);
+  Renderer.renderDerivedStats();
+  const armor = getArmorById(armorId);
+  Toast.show(`${armor?.nome || 'Armadura'} equipada!`, 'success');
+}
+
+function _equipShield(shieldId) {
+  State.set('equipamento.escudo', shieldId);
+  Renderer.renderInventory(_currentInventoryFilter);
+  Renderer.renderDerivedStats();
+  const shield = getShieldById(shieldId);
+  Toast.show(`${shield?.nome || 'Escudo'} equipado!`, 'success');
+}
+
+function _unequipShield() {
+  State.set('equipamento.escudo', null);
+  Renderer.renderInventory(_currentInventoryFilter);
+  Renderer.renderDerivedStats();
+  Toast.show('Escudo desequipado.', 'default');
+}
+
+function _addWeaponToInventory(weapon) {
+  const items = State.get('inventario') || [];
+  items.push({
+    id:       generateId(),
+    nome:     weapon.nome,
+    tipo:     'arma',
+    weaponId: weapon.id,
+    qtd:      1,
+    desc:     weapon.especial || '',
+  });
+  State.set('inventario', items);
+}
+
+function _addArmorToInventory(item, armor, shield) {
+  const items = State.get('inventario') || [];
+  const invItem = {
+    id:   generateId(),
+    nome: item.nome,
+    tipo: item.tipo,
+    qtd:  1,
+    desc: item.especial || '',
+  };
+  if (armor)  invItem.armorId  = item.id;
+  if (shield) invItem.shieldId = item.id;
+  items.push(invItem);
+  State.set('inventario', items);
+}
+
+// ════════════════════════════════════════════════════════════
+// ZÊNITES
+// ════════════════════════════════════════════════════════════
+
+function _hydrateZenites() {
+  const val = State.get('zenites') ?? 500;
+  document.getElementById('zenitesValue').value = val;
+}
+
+function _registerZenitesEvents() {
+  const input = document.getElementById('zenitesValue');
+
+  input.addEventListener('change', () => {
+    const val = Math.max(0, parseInt(input.value) || 0);
+    input.value = val;
+    State.set('zenites', val);
+  });
 }
 
 // ════════════════════════════════════════════════════════════
@@ -772,9 +1041,114 @@ function _registerModalDelegation() {
       return;
     }
 
+    // ── Arcano detail modal ──
+    const arcanoEl = e.target.closest('[data-arcano-id]');
+    if (arcanoEl) {
+      Renderer.openArcanoModal(arcanoEl.dataset.arcanoId);
+      return;
+    }
+
+    // ── Weapon shop: buy weapon (costs zenites) ──
+    const buyBtn = e.target.closest('[data-buy-weapon]');
+    if (buyBtn) {
+      const weaponId = buyBtn.dataset.buyWeapon;
+      const weapon   = getWeaponById(weaponId);
+      if (!weapon) return;
+      const zenites = State.get('zenites') || 0;
+      if (zenites < weapon.custo) {
+        Toast.show('Zênites insuficientes!', 'danger');
+        return;
+      }
+      State.set('zenites', zenites - weapon.custo);
+      _addWeaponToInventory(weapon);
+      const zInput = document.getElementById('zenitesValue');
+      if (zInput) zInput.value = State.get('zenites');
+      Renderer.renderInventory(_currentInventoryFilter);
+      Toast.show(`${weapon.nome} comprada!`, 'success');
+      Renderer.openWeaponShop(weapon.categoria);
+      return;
+    }
+
+    // ── Weapon shop: add weapon (free) ──
+    const addWeaponBtn = e.target.closest('[data-add-weapon]');
+    if (addWeaponBtn) {
+      const weapon = getWeaponById(addWeaponBtn.dataset.addWeapon);
+      if (!weapon) return;
+      _addWeaponToInventory(weapon);
+      Renderer.renderInventory(_currentInventoryFilter);
+      Toast.show(`${weapon.nome} adicionada!`, 'success');
+      Renderer.openWeaponShop(weapon.categoria);
+      return;
+    }
+
+    // ── Weapon shop: switch category ──
+    const catBtn = e.target.closest('[data-weapon-cat]');
+    if (catBtn) {
+      Renderer.openWeaponShop(catBtn.dataset.weaponCat);
+      return;
+    }
+
+    // ── Weapon shop: open weapon detail ──
+    const detailEl = e.target.closest('[data-weapon-detail]');
+    if (detailEl) {
+      Renderer.openWeaponDetail(detailEl.dataset.weaponDetail);
+      return;
+    }
+
+    // ── Armor shop: buy armor/shield (costs zenites) ──
+    const buyArmorBtn = e.target.closest('[data-buy-armor]');
+    if (buyArmorBtn) {
+      const itemId = buyArmorBtn.dataset.buyArmor;
+      const armor  = getArmorById(itemId);
+      const shield = getShieldById(itemId);
+      const item   = armor || shield;
+      if (!item) return;
+      const zenites = State.get('zenites') || 0;
+      if (zenites < item.custo) {
+        Toast.show('Zênites insuficientes!', 'danger');
+        return;
+      }
+      State.set('zenites', zenites - item.custo);
+      _addArmorToInventory(item, armor, shield);
+      const zInput = document.getElementById('zenitesValue');
+      if (zInput) zInput.value = State.get('zenites');
+      Renderer.renderInventory(_currentInventoryFilter);
+      Toast.show(`${item.nome} comprado!`, 'success');
+      Renderer.openArmorShop(shield ? 'Escudos' : 'Armaduras');
+      return;
+    }
+
+    // ── Armor shop: add armor/shield (free) ──
+    const addArmorBtn = e.target.closest('[data-add-armor]');
+    if (addArmorBtn) {
+      const itemId = addArmorBtn.dataset.addArmor;
+      const armor  = getArmorById(itemId);
+      const shield = getShieldById(itemId);
+      const item   = armor || shield;
+      if (!item) return;
+      _addArmorToInventory(item, armor, shield);
+      Renderer.renderInventory(_currentInventoryFilter);
+      Toast.show(`${item.nome} adicionado!`, 'success');
+      Renderer.openArmorShop(shield ? 'Escudos' : 'Armaduras');
+      return;
+    }
+
+    // ── Armor shop: switch category ──
+    const armorCatBtn = e.target.closest('[data-armor-cat]');
+    if (armorCatBtn) {
+      Renderer.openArmorShop(armorCatBtn.dataset.armorCat);
+      return;
+    }
+
+    // ── Armor shop: open armor/shield detail ──
+    const armorDetailEl = e.target.closest('[data-armor-detail]');
+    if (armorDetailEl) {
+      Renderer.openArmorDetail(armorDetailEl.dataset.armorDetail);
+      return;
+    }
+
     const actionEl = e.target.closest('[data-modal-action]');
     if (!actionEl) {
-      // Verificar clique em skill dentro do modal de classe
       const skillItem = e.target.closest('[data-skill-id]');
       if (skillItem) {
         Renderer.openSkillModal(skillItem.dataset.skillId);
@@ -846,6 +1220,36 @@ function _registerModalDelegation() {
         const itemId = actionEl.dataset.itemId;
         Modal.close();
         setTimeout(() => _deleteItem(itemId), 400);
+        break;
+      }
+
+      case 'saveTraco': {
+        const key   = actionEl.dataset.tracoKey;
+        const input = document.getElementById('tracoEditInput');
+        if (key && input) {
+          State.set(`identidade.tracos.${key}`, input.value.trim());
+          Renderer.renderTracos();
+          Toast.show('Traço atualizado!', 'success');
+        }
+        Modal.close();
+        break;
+      }
+
+      case 'equipArmor': {
+        const armorId   = actionEl.dataset.armorId;
+        const armorType = actionEl.dataset.armorType;
+        if (armorType === 'escudo') {
+          _equipShield(armorId);
+        } else {
+          _equipArmor(armorId);
+        }
+        Modal.close();
+        break;
+      }
+
+      case 'unequipShield': {
+        _unequipShield();
+        Modal.close();
         break;
       }
     }

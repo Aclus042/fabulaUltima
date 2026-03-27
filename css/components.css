@@ -164,6 +164,7 @@
   font-size: var(--vt-sm);
   padding: var(--sp-2);
   -moz-appearance: textfield;
+  appearance: textfield;
 }
 .field-number::-webkit-inner-spin-button,
 .field-number::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
@@ -266,25 +267,26 @@
 ───────────────────────────────────────────────── */
 .attr-card {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0;
+  gap: var(--sp-1);
   padding: var(--sp-2) var(--sp-3);
-  border-bottom: 1px solid rgba(58,84,144,0.3);
+  border: 1px solid rgba(58,84,144,0.3);
   position: relative;
   transition: background var(--transition-fast);
 }
 .attr-card:hover {
   background: rgba(90,127,192,0.1);
 }
-/* Color accent strip on left */
+/* Color accent strip on top */
 .attr-card::before {
   content: '';
   position: absolute;
   left: 0;
+  right: 0;
   top: 0;
-  bottom: 0;
-  width: 3px;
+  height: 3px;
   background: var(--attr-color, var(--color-gold-dim));
   opacity: 0;
   transition: opacity var(--transition-fast);
@@ -297,28 +299,15 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--attr-color, var(--color-text-label));
-  width: 44px;
-  flex-shrink: 0;
+  text-align: center;
 }
 
 .attr-name {
   display: none; /* Hidden in JRPG list view */
 }
 
-/* Dot leaders */
 .attr-dots {
-  width: 60px;
-  flex-shrink: 0;
-  font-family: var(--font-ui);
-  font-size: var(--vt-xs);
-  color: rgba(58,84,144,0.6);
-  overflow: hidden;
-  white-space: nowrap;
-  padding: 0 var(--sp-1);
-}
-.attr-dots::after {
-  content: '...............................................';
-  letter-spacing: 0.05em;
+  display: none;
 }
 
 .attr-die-display {
@@ -359,7 +348,6 @@
   display: flex;
   align-items: center;
   gap: var(--sp-1);
-  margin-left: var(--sp-2);
 }
 
 .attr-btn {
@@ -402,6 +390,88 @@
   content: '■';
   color: var(--color-cyan);
   font-size: 8px;
+}
+
+/* ─────────────────────────────────────────────────
+   CONDITIONS — toggle list below attributes
+───────────────────────────────────────────────── */
+.conditions-panel {
+  border-top: 2px solid var(--color-panel-border);
+}
+.conditions-title {
+  font-family: var(--font-pixel);
+  font-size: 0.5rem;
+  color: var(--color-gold);
+  padding: var(--sp-2) var(--sp-3);
+  background: var(--color-panel-title);
+  border-bottom: 2px solid var(--color-panel-border);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.conditions-title::before {
+  content: '■';
+  color: #c44;
+  font-size: 8px;
+}
+.conditions-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.condition-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-1) var(--sp-3);
+  border-bottom: 1px solid rgba(58,84,144,0.2);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+  user-select: none;
+}
+.condition-row:last-child {
+  border-bottom: none;
+}
+.condition-row:hover {
+  background: rgba(90,127,192,0.08);
+}
+.condition-row.active {
+  background: rgba(180,60,60,0.12);
+}
+.condition-toggle {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--color-border);
+  background: rgba(8,12,22,0.6);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: transparent;
+  transition: all var(--transition-fast);
+}
+.condition-row.active .condition-toggle {
+  border-color: #c44;
+  background: rgba(180,60,60,0.3);
+  color: #f66;
+}
+.condition-name {
+  font-family: var(--font-ui);
+  font-size: var(--vt-sm);
+  color: var(--color-text-label);
+  flex-shrink: 0;
+  min-width: 72px;
+}
+.condition-row.active .condition-name {
+  color: #f88;
+}
+.condition-desc {
+  font-family: var(--font-ui);
+  font-size: var(--vt-xs);
+  color: var(--color-text-muted);
+  flex: 1;
 }
 
 /* ─────────────────────────────────────────────────
@@ -1007,96 +1077,952 @@
 }
 
 /* ─────────────────────────────────────────────────
-   INVENTORY ITEM CARD — JRPG list row
+   ZÊNITES — currency bar
 ───────────────────────────────────────────────── */
-.inventory-card {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--sp-3);
-  padding: var(--sp-3) var(--sp-5);
-  border-bottom: 1px solid rgba(58,84,144,0.25);
-  transition: background var(--transition-fast);
-  position: relative;
+.zenites-bar {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-1) var(--sp-3);
+  background: var(--color-panel-bg);
+  border: 2px solid var(--color-gold-dim);
+  box-shadow:
+    0 0 0 1px #0a0e1a,
+    inset 0 0 8px rgba(240,192,64,0.05);
+  align-self: flex-end;
 }
-.inventory-card:hover {
-  background: rgba(60,90,170,0.2);
+.zenites-icon {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 4px rgba(240,192,64,0.4));
+}
+.zenites-input {
+  width: 56px;
+  font-family: var(--font-ui);
+  font-size: var(--vt-sm);
+  color: var(--color-gold);
+  background: transparent;
+  border: none;
+  text-align: center;
+  padding: 2px;
+  outline: none;
+}
+.zenites-input:focus {
+  background: rgba(8,12,22,0.9);
 }
 
-/* JRPG cursor */
-.inventory-card::before {
-  content: '►';
+/* ─────────────────────────────────────────────────
+   INVENTORY TOOLBAR
+───────────────────────────────────────────────── */
+.inv-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+  margin-bottom: var(--sp-2);
+}
+.inv-toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+}
+.inv-shop-btns {
+  display: flex;
+  gap: var(--sp-1);
+}
+.inv-shop-btn {
+  font-family: var(--font-pixel);
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+  background: var(--color-panel-title);
+  border: 1px solid var(--color-border);
+  padding: var(--sp-2) var(--sp-3);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+.inv-shop-btn:hover {
+  border-color: var(--color-gold-dim);
+  color: var(--color-gold);
+}
+.inv-shop-btn--add {
+  border-color: rgba(90,255,90,0.25);
+  color: rgba(90,255,90,0.7);
+}
+.inv-shop-btn--add:hover {
+  border-color: rgba(90,255,90,0.6);
+  color: #5aff5a;
+}
+
+/* ── Filter tabs ── */
+.inv-filter-tabs {
+  display: flex;
+  gap: 1px;
+  background: var(--color-border);
+  border: 1px solid var(--color-border);
+}
+.inv-filter-tab {
   font-family: var(--font-ui);
   font-size: var(--vt-xs);
+  color: var(--color-text-muted);
+  background: var(--color-panel-bg);
+  border: none;
+  padding: var(--sp-2) var(--sp-3);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  min-width: 34px;
+  text-align: center;
+}
+.inv-filter-tab:hover {
+  background: rgba(60,90,170,0.15);
+  color: var(--color-text-bright);
+}
+.inv-filter-tab.active {
+  background: rgba(60,90,170,0.25);
   color: var(--color-gold);
-  opacity: 0;
-  transition: opacity var(--transition-fast);
-  align-self: center;
-  flex-shrink: 0;
-  width: 14px;
-}
-.inventory-card:hover::before { opacity: 1; }
-
-.inventory-card-header { display: contents; }
-
-.item-icon {
-  font-size: var(--vt-base);
-  flex-shrink: 0;
-  align-self: center;
+  box-shadow: inset 0 -2px 0 var(--color-gold);
 }
 
-.item-title-group { flex: 1; }
-.item-name {
+/* ── Equipment summary bar ── */
+.equip-summary {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  padding: var(--sp-2) var(--sp-3);
+  background: rgba(6,10,20,0.6);
+  border: 1px solid rgba(58,84,144,0.3);
+  border-left: 3px solid var(--color-cyan);
+  margin-bottom: var(--sp-3);
+}
+.equip-slot {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  position: relative;
+}
+.equip-slot-label {
+  font-family: var(--font-pixel);
+  font-size: 0.35rem;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.equip-slot-name {
   font-family: var(--font-ui);
   font-size: var(--vt-sm);
   color: var(--color-text-bright);
 }
-.item-type-tag {
+.equip-slot-remove {
+  font-size: var(--vt-xs);
+  color: var(--color-text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0 2px;
+  line-height: 1;
+  opacity: 0.5;
+  transition: opacity var(--transition-fast), color var(--transition-fast);
+}
+.equip-slot-remove:hover {
+  opacity: 1;
+  color: #c44;
+}
+.equip-stats-row {
+  display: flex;
+  gap: var(--sp-3);
+  margin-left: auto;
+}
+.equip-stat {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+.equip-stat-label {
+  font-family: var(--font-pixel);
+  font-size: 0.32rem;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+}
+.equip-stat-val {
+  font-family: var(--font-ui);
+  font-size: var(--vt-sm);
+  color: var(--color-text-value);
+  font-weight: 600;
+}
+.equip-stat-def  { color: var(--color-cyan); }
+.equip-stat-mdef { color: #a080d0; }
+
+/* ─────────────────────────────────────────────────
+   WEAPON SHOP MODAL
+───────────────────────────────────────────────── */
+.weapon-shop-cats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+  padding: var(--sp-2) 0;
+  border-bottom: 2px solid var(--color-panel-border);
+  margin-bottom: var(--sp-3);
+}
+.weapon-cat-btn {
+  font-family: var(--font-pixel);
+  font-size: 0.4rem;
+  color: var(--color-text-muted);
+  background: var(--color-panel-title);
+  border: 1px solid var(--color-border);
+  padding: var(--sp-1) var(--sp-3);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.weapon-cat-btn:hover {
+  border-color: var(--color-gold-dim);
+  color: var(--color-text-bright);
+}
+.weapon-cat-btn.active {
+  background: var(--color-gold-dim);
+  border-color: var(--color-gold);
+  color: #fff;
+  text-shadow: 0 0 6px rgba(240,192,64,0.5);
+}
+.weapon-shop-list {
+  display: flex;
+  flex-direction: column;
+  max-height: 50vh;
+  overflow-y: auto;
+}
+.weapon-shop-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-3);
+  border-bottom: 1px solid rgba(58,84,144,0.2);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+.weapon-shop-row:hover {
+  background: rgba(90,127,192,0.1);
+}
+.weapon-shop-name {
+  font-family: var(--font-ui);
+  font-size: var(--vt-sm);
+  color: var(--color-text-bright);
+  flex: 1;
+  min-width: 0;
+}
+.weapon-shop-stats {
+  display: flex;
+  gap: var(--sp-3);
+  align-items: center;
+  flex-shrink: 0;
+  font-family: var(--font-ui);
+  font-size: var(--vt-xs);
+  color: var(--color-text-muted);
+}
+.weapon-shop-prec {
+  color: var(--color-cyan);
+  min-width: 80px;
+  text-align: center;
+}
+.weapon-shop-dmg {
+  color: #c44;
+  min-width: 44px;
+  text-align: center;
+}
+.weapon-shop-hand {
+  min-width: 56px;
+  text-align: center;
+}
+.weapon-shop-cost {
+  color: var(--color-gold);
+  font-weight: bold;
+  min-width: 40px;
+  text-align: right;
+}
+.weapon-shop-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+  align-items: center;
+}
+.weapon-shop-buy,
+.weapon-shop-add {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  background: var(--color-panel-title);
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+  padding: 0;
+}
+.weapon-shop-buy {
+  border-color: var(--color-gold-dim);
+}
+.weapon-shop-buy .shop-btn-icon {
+  width: 16px;
+  height: 16px;
+  image-rendering: pixelated;
+  filter: brightness(1);
+  transition: filter var(--transition-fast);
+}
+.weapon-shop-buy:hover {
+  background: var(--color-gold-dim);
+  border-color: var(--color-gold);
+}
+.weapon-shop-buy:hover .shop-btn-icon {
+  filter: brightness(1.4);
+}
+.weapon-shop-buy:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+.weapon-shop-buy:disabled:hover {
+  background: var(--color-panel-title);
+  border-color: var(--color-gold-dim);
+}
+.weapon-shop-add {
+  font-family: var(--font-ui);
+  font-size: var(--vt-sm);
+  font-weight: bold;
+  color: rgba(90,255,90,0.7);
+  border-color: rgba(90,255,90,0.25);
+}
+.weapon-shop-add:hover {
+  background: rgba(90,255,90,0.1);
+  border-color: rgba(90,255,90,0.6);
+  color: #5aff5a;
+}
+
+/* ─────────────────────────────────────────────────
+   WEAPON DETAIL MODAL
+───────────────────────────────────────────────── */
+.weapon-detail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+.weapon-detail-header {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  padding-bottom: var(--sp-3);
+  border-bottom: 2px solid rgba(58,84,144,0.4);
+}
+.weapon-detail-name {
+  font-family: var(--font-ui);
+  font-size: var(--vt-lg);
+  color: var(--color-text-bright);
+}
+.weapon-detail-cat {
+  font-family: var(--font-ui);
+  font-size: var(--vt-xs);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.weapon-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-2) var(--sp-4);
+}
+.weapon-detail-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.weapon-detail-label {
   font-family: var(--font-ui);
   font-size: var(--vt-xs);
   color: var(--color-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
-
-.item-actions {
-  display: flex;
-  gap: var(--sp-2);
-  align-items: center;
-  flex-shrink: 0;
+.weapon-detail-value {
+  font-family: var(--font-ui);
+  font-size: var(--vt-base);
+  color: var(--color-text-value);
+}
+.weapon-detail-value.prec { color: var(--color-cyan); }
+.weapon-detail-value.dmg  { color: #c44; }
+.weapon-detail-value.gold { color: var(--color-gold); }
+.weapon-detail-special {
+  padding: var(--sp-2) var(--sp-3);
+  background: rgba(180,60,60,0.1);
+  border-left: 3px solid #c44;
+  font-family: var(--font-ui);
+  font-size: var(--vt-sm);
+  color: var(--color-text-label);
+  font-style: italic;
 }
 
-.item-desc {
-  display: none; /* Shown in modal detail, hidden in list */
-}
-
-.item-meta {
+/* ─── Inventory weapon card extras ─── */
+.inv-weapon-stats {
   display: flex;
   gap: var(--sp-3);
   font-family: var(--font-ui);
   font-size: var(--vt-xs);
   color: var(--color-text-muted);
-  flex-wrap: wrap;
   margin-top: 2px;
 }
-.item-meta-entry {
-  display: flex;
-  gap: var(--sp-1);
-  align-items: center;
+.inv-weapon-prec { color: var(--color-cyan); }
+.inv-weapon-dmg  { color: #c44; }
+
+/* ─── Inventory armor/shield card extras ─── */
+.equipped-badge {
+  font-family: var(--font-pixel);
+  font-size: 0.3rem;
+  color: #5aff5a;
+  background: rgba(90,255,90,0.1);
+  border: 1px solid rgba(90,255,90,0.3);
+  padding: 1px 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-shadow: 0 0 4px rgba(90,255,90,0.4);
 }
 
-/* Inventory panel title */
-.inventory-panel-title {
-  font-family: var(--font-pixel);
-  font-size: 0.5rem;
-  color: var(--color-gold);
-  padding: var(--sp-2) var(--sp-4);
-  background: var(--color-panel-title);
-  border-bottom: 2px solid var(--color-panel-border);
-  letter-spacing: 0.15em;
+/* Armor shop equipped row highlight */
+.weapon-shop-row.armor-equipped {
+  background: rgba(90,255,90,0.07);
+  border-left: 3px solid #5aff5a;
+}
+
+/* ─────────────────────────────────────────────────
+   INVENTORY CARDS — Compact JRPG rows
+───────────────────────────────────────────────── */
+.inv-list {
+  display: flex;
+  flex-direction: column;
+  background: rgba(6,10,20,0.4);
+  border: 1px solid rgba(58,84,144,0.2);
+}
+.inv-card {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  border-bottom: 1px solid rgba(58,84,144,0.15);
+  transition: background var(--transition-fast);
+  cursor: default;
+}
+.inv-card:last-child { border-bottom: none; }
+.inv-card:hover {
+  background: rgba(60,90,170,0.12);
+}
+
+.inv-card-icon {
+  font-size: 0.9rem;
+  flex-shrink: 0;
+  width: 22px;
+  text-align: center;
+}
+
+.inv-card-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.inv-card-row1 {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.inv-card-name {
+  font-family: var(--font-ui);
+  font-size: var(--vt-sm);
+  color: var(--color-text-bright);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.inv-card-tag {
+  font-family: var(--font-ui);
+  font-size: 0.65rem;
+  color: var(--color-text-muted);
   text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.inv-card-stats {
+  display: flex;
+  gap: var(--sp-3);
+  font-family: var(--font-ui);
+  font-size: var(--vt-xs);
+  color: var(--color-text-muted);
+}
+.inv-stat { white-space: nowrap; }
+.inv-stat-cyan   { color: var(--color-cyan); }
+.inv-stat-red    { color: #c44; }
+.inv-stat-purple { color: #a080d0; }
+
+.inv-card-qty {
+  font-family: var(--font-ui);
+  font-size: var(--vt-xs);
+  color: var(--color-text-muted);
+}
+
+.inv-card-actions {
+  display: flex;
+  gap: 2px;
+  align-items: center;
+  flex-shrink: 0;
+  opacity: 0.4;
+  transition: opacity var(--transition-fast);
+}
+.inv-card:hover .inv-card-actions {
+  opacity: 1;
+}
+.inv-action-btn {
+  font-size: 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 6px;
+  line-height: 1;
+  color: var(--color-text-muted);
+  transition: color var(--transition-fast);
+  border-radius: 2px;
+}
+.inv-action-btn:hover {
+  color: var(--color-text-bright);
+  background: rgba(60,90,170,0.2);
+}
+.inv-action-btn--danger:hover {
+  color: #c44;
+  background: rgba(180,60,60,0.15);
+}
+
+/* ─────────────────────────────────────────────────
+   PONTOS DE FÁBULA — Glowing resource card
+───────────────────────────────────────────────── */
+.fabula-points-card {
+  background: var(--color-panel-bg);
+  border: 2px solid var(--color-gold-dim);
+  padding: var(--sp-3) var(--sp-4);
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: var(--sp-3);
+  box-shadow:
+    0 0 0 1px #0a0e1a,
+    0 0 0 2px var(--color-gold-dim),
+    0 0 12px rgba(240,192,64,0.15);
+}
+.fabula-points-header {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.fabula-points-icon {
+  font-size: 1rem;
+  color: var(--color-gold);
+  text-shadow: 0 0 8px rgba(240,192,64,0.6);
+}
+.fabula-points-title {
+  font-family: var(--font-pixel);
+  font-size: 0.5rem;
+  color: var(--color-gold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.fabula-points-display {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.fabula-points-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--color-gold-dim);
+  background: var(--color-panel-title);
+  color: var(--color-gold);
+  font-family: var(--font-ui);
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.fabula-points-btn:hover {
+  border-color: var(--color-gold);
+  background: rgba(240,192,64,0.15);
+  box-shadow: 0 0 8px rgba(240,192,64,0.3);
+}
+.fabula-points-value {
+  font-family: var(--font-pixel);
+  font-size: 0.85rem;
+  color: var(--color-gold);
+  min-width: 2ch;
+  text-align: center;
+  text-shadow: 0 0 10px rgba(240,192,64,0.5);
+}
+
+/* ─────────────────────────────────────────────────
+   TRAÇOS — Expandable accordion block
+───────────────────────────────────────────────── */
+.tracos-block {
+  position: relative;
+  background: var(--color-panel-bg);
+  border: 2px solid var(--color-panel-border);
+  box-shadow:
+    0 0 0 1px #0a0e1a,
+    0 0 0 2px var(--color-panel-border),
+    3px 3px 0 rgba(0,0,0,0.4);
+}
+.tracos-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--color-panel-title);
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+.tracos-header:hover {
+  background: rgba(58,84,144,0.25);
+}
+.tracos-title {
+  font-family: var(--font-pixel);
+  font-size: 0.5rem;
+  color: var(--color-gold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.tracos-chevron {
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  color: var(--color-text-muted);
+  transition: transform var(--transition-normal);
+}
+.tracos-block.open .tracos-chevron {
+  transform: rotate(90deg);
+}
+.tracos-block.open .tracos-header {
+  border-bottom-color: var(--color-panel-border);
+}
+.tracos-content {
+  display: none;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-4);
+  position: fixed;
+  z-index: 200;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(90vw, 440px);
+  max-height: 70vh;
+  overflow-y: auto;
+  background: var(--color-panel-bg);
+  border: 3px solid var(--color-panel-border);
+  box-shadow:
+    0 0 0 2px #0a0e1a,
+    0 0 0 5px var(--color-panel-border),
+    0 0 0 7px #0a0e1a,
+    12px 12px 0 rgba(0,0,0,0.7),
+    inset 0 0 0 1px rgba(90,127,192,0.2);
+  background-image:
+    linear-gradient(160deg, rgba(40,60,120,0.25) 0%, transparent 50%),
+    linear-gradient(to bottom, rgba(0,0,0,0.0) 0%, rgba(0,0,0,0.15) 100%);
+}
+.tracos-content-title {
+  font-family: var(--font-pixel);
+  font-size: 0.46rem;
+  color: var(--color-gold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding-bottom: var(--sp-2);
+  margin-bottom: var(--sp-2);
+  border-bottom: 2px solid var(--color-panel-border);
+}
+/* Backdrop */
+.tracos-block.open::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 199;
+  background: radial-gradient(circle at center, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.78) 100%);
+  pointer-events: auto;
+}
+.tracos-block.open .tracos-content {
+  display: flex;
+}
+.traco-card {
+  padding: var(--sp-3) var(--sp-4);
+  background: rgba(10,14,26,0.4);
+  border: 1px solid rgba(58,84,144,0.3);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.traco-card:hover {
+  border-color: var(--color-gold-dim);
+  background: rgba(240,192,64,0.05);
+  box-shadow: 0 0 8px rgba(240,192,64,0.1);
+}
+.traco-label {
+  font-family: var(--font-pixel);
+  font-size: 0.4rem;
+  color: var(--color-gold-dim);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: var(--sp-1);
+}
+.traco-value {
+  font-family: var(--font-ui);
+  font-size: var(--vt-base);
+  color: var(--color-text);
+  line-height: 1.4;
+  white-space: pre-wrap;
+}
+
+/* ─────────────────────────────────────────────────
+   LAÇOS — Bond cards with emotion toggles
+───────────────────────────────────────────────── */
+.lacos-block {
+  position: relative;
+  background: var(--color-panel-bg);
+  border: 2px solid var(--color-panel-border);
+  box-shadow:
+    0 0 0 1px #0a0e1a,
+    0 0 0 2px var(--color-panel-border),
+    3px 3px 0 rgba(0,0,0,0.4);
+}
+.lacos-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--color-panel-title);
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+.lacos-header:hover {
+  background: rgba(58,84,144,0.25);
+}
+.lacos-header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+.lacos-chevron {
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  color: var(--color-text-muted);
+  transition: transform var(--transition-normal);
+}
+.lacos-block.open .lacos-chevron {
+  transform: rotate(90deg);
+}
+.lacos-block.open .lacos-header {
+  border-bottom-color: var(--color-panel-border);
+}
+.lacos-title {
+  font-family: var(--font-pixel);
+  font-size: 0.5rem;
+  color: var(--color-gold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.lacos-add-btn {
+  font-family: var(--font-pixel);
+  font-size: 0.65rem;
+  color: var(--color-gold);
+  padding: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--color-gold-dim);
+  background: var(--color-panel-title);
+  text-shadow: 0 0 6px rgba(240,192,64,0.5);
+  transition: all var(--transition-fast);
+}
+.lacos-add-btn:hover {
+  border-color: var(--color-gold);
+  background: rgba(240,192,64,0.15);
+  box-shadow: 0 0 10px rgba(240,192,64,0.4);
+  color: #fff;
+}
+/* Backdrop */
+.lacos-block.open::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 199;
+  background: radial-gradient(circle at center, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.78) 100%);
+  pointer-events: auto;
+}
+.lacos-grid {
+  display: none;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+  position: fixed;
+  z-index: 200;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(90vw, 500px);
+  max-height: 70vh;
+  overflow-y: auto;
+  background: var(--color-panel-bg);
+  border: 3px solid var(--color-panel-border);
+  box-shadow:
+    0 0 0 2px #0a0e1a,
+    0 0 0 5px var(--color-panel-border),
+    0 0 0 7px #0a0e1a,
+    12px 12px 0 rgba(0,0,0,0.7),
+    inset 0 0 0 1px rgba(90,127,192,0.2);
+  background-image:
+    linear-gradient(160deg, rgba(40,60,120,0.25) 0%, transparent 50%),
+    linear-gradient(to bottom, rgba(0,0,0,0.0) 0%, rgba(0,0,0,0.15) 100%);
+}
+.lacos-block.open .lacos-grid {
+  display: flex;
+}
+.lacos-block.open.lacos-has-items .lacos-empty {
+  display: none;
+}
+.lacos-block.open:not(.lacos-has-items) .lacos-empty {
+  display: flex;
+}
+.lacos-block.open:not(.lacos-has-items) .lacos-grid {
+  display: none;
+}
+.lacos-empty {
+  display: none;
+  padding: var(--sp-5);
+  text-align: center;
+  font-family: var(--font-ui);
+  font-size: var(--vt-sm);
+  color: var(--color-text-muted);
+  position: fixed;
+  z-index: 200;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(90vw, 500px);
+  background: var(--color-panel-bg);
+  border: 3px solid var(--color-panel-border);
+  box-shadow:
+    0 0 0 2px #0a0e1a,
+    0 0 0 5px var(--color-panel-border),
+    0 0 0 7px #0a0e1a,
+    12px 12px 0 rgba(0,0,0,0.7),
+    inset 0 0 0 1px rgba(90,127,192,0.2);
+  align-items: center;
+  justify-content: center;
+}
+.lacos-empty p { margin: 0; }
+.lacos-overlay-title {
+  font-family: var(--font-pixel);
+  font-size: 0.46rem;
+  color: var(--color-gold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding-bottom: var(--sp-2);
+  border-bottom: 2px solid var(--color-panel-border);
+}
+
+/* Bond card */
+.laco-card {
+  background: rgba(10,14,26,0.4);
+  border: 1px solid rgba(58,84,144,0.3);
+  padding: var(--sp-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.laco-header {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.laco-nome-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(58,84,144,0.4);
+  color: var(--color-text);
+  font-family: var(--font-ui);
+  font-size: var(--vt-base);
+  padding: var(--sp-1) 0;
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+.laco-nome-input:focus {
+  border-bottom-color: var(--color-gold);
+}
+.laco-nome-input::placeholder {
+  color: var(--color-text-muted);
+}
+.laco-remove-btn {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  padding: var(--sp-1);
+}
+.laco-remove-btn:hover {
+  color: var(--color-danger);
+}
+
+/* Emotion toggles */
+.laco-emocoes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+.emocao-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+}
+.emocao-btn {
+  padding: var(--sp-1) var(--sp-2);
+  font-family: var(--font-ui);
+  font-size: var(--vt-xs);
+  border: 1px solid rgba(58,84,144,0.3);
+  background: rgba(10,14,26,0.3);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-align: center;
+}
+.emocao-btn:hover {
+  border-color: rgba(90,127,192,0.5);
+  background: rgba(58,84,144,0.15);
+}
+.emocao-btn.emocao-pos.active {
+  background: rgba(90,200,120,0.15);
+  border-color: rgba(90,200,120,0.5);
+  color: #70e090;
+  box-shadow: 0 0 6px rgba(90,200,120,0.2);
+}
+.emocao-btn.emocao-neg.active {
+  background: rgba(200,60,80,0.15);
+  border-color: rgba(200,60,80,0.5);
+  color: #f06070;
+  box-shadow: 0 0 6px rgba(200,60,80,0.2);
 }
 
 /* ─────────────────────────────────────────────────
@@ -1243,7 +2169,6 @@
   display: block;
   filter: drop-shadow(0 0 8px rgba(90,127,192,0.6));
 }
-.modal-class-info {}
 .modal-class-name {
   font-family: var(--font-ui);
   font-size: var(--vt-lg);
@@ -1313,6 +2238,207 @@
   font-family: var(--font-ui);
   font-size: var(--vt-xs);
   color: var(--color-text-muted);
+}
+
+/* ─────────────────────────────────────────────────
+   ARCANOS — Grid & Cards (Class Modal)
+───────────────────────────────────────────────── */
+.arcano-rules-brief {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  border-left: 3px solid rgba(138,102,209,0.4);
+  padding-left: var(--sp-3);
+  margin-bottom: var(--sp-4);
+}
+
+.arcano-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-5);
+}
+
+.arcano-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-2);
+  background: rgba(138,102,209,0.08);
+  border: 1px solid rgba(138,102,209,0.35);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+  text-align: center;
+  min-height: 70px;
+}
+.arcano-card:hover {
+  background: rgba(138,102,209,0.2);
+  border-color: rgba(138,102,209,0.6);
+  box-shadow: 0 0 10px rgba(138,102,209,0.25);
+}
+
+.arcano-card-name {
+  font-family: var(--font-ui);
+  font-size: var(--vt-xs);
+  color: #d4b8ff;
+  font-weight: bold;
+  line-height: 1.3;
+}
+
+.arcano-card-domains {
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  line-height: 1.3;
+}
+
+/* ─────────────────────────────────────────────────
+   ARCANO MODAL — Detail View
+───────────────────────────────────────────────── */
+.arcano-modal-header {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-4);
+  padding-bottom: var(--sp-3);
+  border-bottom: 2px solid rgba(138,102,209,0.4);
+}
+.arcano-modal-icon {
+  font-size: 2rem;
+  color: #d4b8ff;
+  text-shadow: 0 0 12px rgba(138,102,209,0.5);
+}
+.arcano-modal-icon-img {
+  width: 48px;
+  height: 48px;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 0 8px rgba(138,102,209,0.5));
+}
+.arcano-modal-title {
+  font-family: var(--font-ui);
+  font-size: var(--vt-lg, 1.6rem);
+  color: #d4b8ff;
+}
+
+/* ─────────────────────────────────────────────────
+   ARCANO SKILL CARDS — Skills Page
+───────────────────────────────────────────────── */
+.arcano-panel-title {
+  color: #d4b8ff;
+  border-bottom-color: rgba(138,102,209,0.5);
+  margin-top: var(--sp-3);
+}
+
+.arcano-skill-card {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  padding: var(--sp-3) var(--sp-4);
+  cursor: pointer;
+  transition: background var(--transition-fast), box-shadow var(--transition-fast);
+  border-bottom: 1px solid rgba(138,102,209,0.2);
+  position: relative;
+  min-height: 56px;
+}
+.arcano-skill-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: rgba(138,102,209,0.6);
+}
+.arcano-skill-card:hover {
+  background: rgba(138,102,209,0.15);
+  box-shadow: inset 0 0 20px rgba(138,102,209,0.08);
+}
+
+.arcano-skill-icon {
+  width: 32px;
+  height: 32px;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 0 4px rgba(138,102,209,0.4));
+  flex-shrink: 0;
+}
+
+.arcano-skill-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.arcano-skill-name {
+  font-family: var(--font-ui);
+  font-size: var(--vt-sm);
+  color: #d4b8ff;
+}
+.arcano-skill-domains {
+  font-family: var(--font-ui);
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.arcano-modal-domains {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-4);
+}
+.arcano-domain-tag {
+  font-family: var(--font-ui);
+  font-size: var(--vt-xs);
+  padding: var(--sp-1) var(--sp-3);
+  background: rgba(138,102,209,0.12);
+  border: 1px solid rgba(138,102,209,0.35);
+  border-radius: 12px;
+  color: #c9b8ff;
+}
+
+.arcano-section-fundir {
+  color: #7fcfff !important;
+}
+.arcano-section-dispensar {
+  color: #ffb87f !important;
+}
+
+.arcano-modal-effect {
+  padding: var(--sp-3) var(--sp-4);
+  margin-bottom: var(--sp-4);
+  border-radius: 4px;
+  line-height: 1.7;
+}
+.arcano-modal-effect p {
+  margin: 0 0 var(--sp-2);
+  font-family: var(--font-ui);
+  font-size: var(--vt-sm, 1.2rem);
+  color: var(--color-text);
+}
+.arcano-modal-effect p:last-child { margin-bottom: 0; }
+
+.arcano-effect-fundir {
+  background: rgba(80,160,220,0.08);
+  border-left: 3px solid rgba(80,160,220,0.5);
+}
+.arcano-effect-dispensar {
+  background: rgba(220,140,60,0.08);
+  border-left: 3px solid rgba(220,140,60,0.5);
+}
+
+.arcano-modal-rules {
+  padding: var(--sp-2) var(--sp-3);
+  margin-bottom: var(--sp-4);
+  background: rgba(138,102,209,0.06);
+  border: 1px solid rgba(138,102,209,0.2);
+  border-radius: 4px;
+}
+.arcano-modal-rules p {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  font-style: italic;
 }
 
 .modal-footer {
@@ -1671,15 +2797,9 @@
     height: 36px;
   }
 
-  /* ── Attribute cards: compact rows ── */
+  /* ── Attribute cards: compact 2x2 ── */
   .attr-card {
     padding: var(--sp-1) var(--sp-2);
-  }
-  .attr-abbreviation {
-    width: 36px;
-  }
-  .attr-dots {
-    width: 36px;
   }
   .attr-die-display {
     min-width: 32px;
@@ -1688,10 +2808,6 @@
   .attr-btn {
     width: 28px;
     height: 28px;
-  }
-  .attr-controls {
-    margin-left: var(--sp-1);
-    gap: 2px;
   }
   .attr-panel-title {
     font-size: 0.42rem;
@@ -1811,16 +2927,26 @@
   }
 
   /* ── Inventory cards: compact ── */
-  .inventory-card {
-    padding: var(--sp-2) var(--sp-3);
+  .inv-card {
+    padding: var(--sp-2);
     gap: var(--sp-2);
   }
-  .inventory-card::before {
-    width: 10px;
+  .inv-card-actions { opacity: 1; }
+  .equip-summary {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--sp-2);
   }
-  .inventory-panel-title {
-    font-size: 0.42rem;
-    padding: var(--sp-1) var(--sp-3);
+  .equip-stats-row { margin-left: 0; }
+  .inv-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .inv-toolbar-left {
+    justify-content: space-between;
+  }
+  .inv-filter-tabs {
+    flex-wrap: wrap;
   }
 
   /* ── Modal: refined for mobile screen ── */

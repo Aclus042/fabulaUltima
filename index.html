@@ -36,7 +36,7 @@
           <div class="summary-stat"><span class="summary-label">Nome:</span><span class="summary-value" id="sumName">—</span></div>
           <div class="summary-stat"><span class="summary-label">Nível:</span><span class="summary-value" id="sumLevel">1</span></div>
           <div class="summary-classes-row" id="sumClassesRow"></div>
-          <div class="summary-stat"><span class="summary-label">Conceito:</span><span class="summary-value" id="sumConceito">—</span></div>
+          <div class="summary-stat"><span class="summary-label">PF:</span><span class="summary-value" id="sumFabula">3</span></div>
         </div>
 
         <div class="sidebar-panel sidebar-nav-panel">
@@ -74,12 +74,12 @@
           </div>
 
           <div class="identity-fields">
-            <div class="field-group">
-              <label class="field-label" for="charName">Nome do Personagem</label>
-              <input type="text" id="charName" class="field-input field-large" placeholder="Ex: Seraphiel Alvarez" />
-            </div>
+            <div class="name-level-row">
+              <div class="field-group">
+                <label class="field-label" for="charName">Nome do Personagem</label>
+                <input type="text" id="charName" class="field-input field-large" placeholder="Ex: Seraphiel Alvarez" />
+              </div>
 
-            <div class="field-row">
               <div class="field-group">
                 <label class="field-label" for="charLevel">Nível</label>
                 <div class="number-control">
@@ -88,26 +88,65 @@
                   <button class="num-btn" data-action="increase" data-target="charLevel" data-min="1" data-max="50">+</button>
                 </div>
               </div>
-              <div class="field-group flex-grow">
-                <label class="field-label" for="charConcept">Conceito</label>
-                <input type="text" id="charConcept" class="field-input" placeholder="Ex: Cavaleiro Errante" />
-              </div>
             </div>
 
-            <div class="field-group">
-              <label class="field-label" for="charOrigin">Origem</label>
-              <input type="text" id="charOrigin" class="field-input" placeholder="Ex: Nômade das Planícies" />
-            </div>
-
-            <div class="field-group">
-              <label class="field-label" for="charBond">Vínculo</label>
-              <textarea id="charBond" class="field-textarea" rows="2" placeholder="Descreva o vínculo do personagem..."></textarea>
-            </div>
-
-            <div class="field-group">
+            <div class="field-group identity-notas">
               <label class="field-label" for="charNotes">Notas</label>
               <textarea id="charNotes" class="field-textarea" rows="3" placeholder="Anotações gerais..."></textarea>
             </div>
+          </div>
+        </div>
+
+        <!-- Pontos de Fábula -->
+        <div class="fabula-points-card" id="fabulaPointsCard">
+          <div class="fabula-points-header">
+            <span class="fabula-points-icon">✦</span>
+            <span class="fabula-points-title">Pontos de Fábula</span>
+          </div>
+          <div class="fabula-points-display">
+            <button class="fabula-points-btn" id="fabulaMinus">−</button>
+            <span class="fabula-points-value" id="fabulaPointsValue">3</span>
+            <button class="fabula-points-btn" id="fabulaPlus">+</button>
+          </div>
+        </div>
+
+        <!-- Traços -->
+        <div class="tracos-block" id="tracosBlock">
+          <button class="tracos-header" id="tracosToggle" type="button">
+            <span class="tracos-title">Traços</span>
+            <span class="tracos-chevron" id="tracosChevron">▸</span>
+          </button>
+          <div class="tracos-content" id="tracosContent">
+            <div class="tracos-content-title">Traços</div>
+            <div class="traco-card" data-traco="identidade">
+              <div class="traco-label">Identidade</div>
+              <div class="traco-value" id="tracoIdentidade">—</div>
+            </div>
+            <div class="traco-card" data-traco="origem">
+              <div class="traco-label">Origem</div>
+              <div class="traco-value" id="tracoOrigem">—</div>
+            </div>
+            <div class="traco-card" data-traco="tema">
+              <div class="traco-label">Tema</div>
+              <div class="traco-value" id="tracoTema">—</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Laços -->
+        <div class="lacos-block" id="lacosBlock">
+          <div class="lacos-header" id="lacosToggle">
+            <span class="lacos-title">Laços</span>
+            <span class="lacos-header-right">
+              <button class="btn-ghost lacos-add-btn" id="addLacoBtn" type="button" title="Adicionar Laço">+</button>
+              <span class="lacos-chevron" id="lacosChevron">▸</span>
+            </span>
+          </div>
+          <div class="lacos-grid" id="lacosGrid">
+            <!-- Renderizado via JS -->
+          </div>
+          <div class="lacos-empty" id="lacosEmpty">
+            <p>Nenhum laço definido.</p>
           </div>
         </div>
 
@@ -127,6 +166,12 @@
           <div class="attr-panel-title" id="attrPanelTitle">Atributos Base</div>
           <div class="attributes-grid" id="attributesGrid">
             <!-- Renderizado via JS -->
+          </div>
+          <div class="conditions-panel">
+            <div class="conditions-title">Condições</div>
+            <div class="conditions-grid" id="conditionsGrid">
+              <!-- Renderizado via JS -->
+            </div>
           </div>
         </div>
         <div class="derived-panel">
@@ -225,32 +270,42 @@
         <p class="section-desc">Gerencie os itens e equipamentos do personagem.</p>
       </div>
 
-      <div class="inventory-layout">
-        <div class="inventory-side-panel">
-          <div class="inventory-toolbar">
-            <button class="btn-primary" id="addItemBtn">
-              <span>+ Adicionar Item</span>
-            </button>
-            <select class="field-select" id="inventoryFilter">
-              <option value="all">Todos os Itens</option>
-              <option value="arma">Armas</option>
-              <option value="armadura">Armaduras</option>
-              <option value="consumivel">Consumíveis</option>
-              <option value="acessorio">Acessórios</option>
-              <option value="misc">Miscelânea</option>
-            </select>
+      <!-- Equipment summary bar -->
+      <div class="equip-summary" id="equipSummary">
+        <!-- Rendered via JS -->
+      </div>
+
+      <!-- Toolbar: zenites + shops + filter tabs -->
+      <div class="inv-toolbar" id="invToolbar">
+        <div class="inv-toolbar-left">
+          <div class="zenites-bar">
+            <img class="zenites-icon" src="assets/icons/inv/z.png" alt="Zênites" />
+            <input type="text" class="zenites-input" id="zenitesValue" value="500" inputmode="numeric" title="Zênites" />
+          </div>
+          <div class="inv-shop-btns">
+            <button class="inv-shop-btn" id="weaponShopBtn" title="Loja de Armas">⚔ Armas</button>
+            <button class="inv-shop-btn" id="armorShopBtn" title="Loja de Armaduras">🛡 Defesas</button>
+            <button class="inv-shop-btn inv-shop-btn--add" id="addItemBtn" title="Adicionar Item">+ Item</button>
           </div>
         </div>
-
-        <div class="inventory-main-panel">
-          <div class="inventory-grid" id="inventoryGrid">
-            <!-- Renderizado via JS -->
-          </div>
+        <div class="inv-filter-tabs" id="invFilterTabs">
+          <button class="inv-filter-tab active" data-inv-filter="all">Todos</button>
+          <button class="inv-filter-tab" data-inv-filter="arma">⚔</button>
+          <button class="inv-filter-tab" data-inv-filter="armadura">🛡</button>
+          <button class="inv-filter-tab" data-inv-filter="escudo">🔰</button>
+          <button class="inv-filter-tab" data-inv-filter="consumivel">🧪</button>
+          <button class="inv-filter-tab" data-inv-filter="acessorio">💍</button>
+          <button class="inv-filter-tab" data-inv-filter="misc">📦</button>
         </div>
       </div>
 
+      <!-- Item list -->
+      <div class="inv-list" id="inventoryGrid">
+        <!-- Renderizado via JS -->
+      </div>
+
       <div class="inventory-empty" id="inventoryEmpty" style="display:none;">
-        <p>Nenhum item no inventário. Adicione itens com o botão acima.</p>
+        <p>Nenhum item no inventário.</p>
       </div>
     </section>
 
@@ -306,6 +361,8 @@
   <script src="js/state.js"></script>
   <script src="js/classes.js"></script>
   <script src="js/skills.js"></script>
+  <script src="js/weapons.js"></script>
+  <script src="js/armor.js"></script>
   <script src="js/renderer.js"></script>
   <script src="js/app.js"></script>
 </body>

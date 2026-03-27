@@ -300,7 +300,7 @@ gap: var(--sp-2);
 .identity-grid {
 display: flex;
 flex-direction: column;
-gap: var(--sp-4);
+gap: var(--sp-3);
 }
 .identity-card {
 display: flex;
@@ -361,10 +361,17 @@ flex-direction: column;
 gap: var(--sp-4);
 min-height: 0;
 }
-.field-row {
+.name-level-row {
 display: flex;
-flex-direction: column;
 gap: var(--sp-3);
+align-items: flex-end;
+}
+.name-level-row > .field-group:first-child {
+flex: 1;
+min-width: 0;
+}
+.name-level-row > .field-group:last-child {
+flex: 0 0 auto;
 }
 .flex-grow { flex: 1; }
 
@@ -457,7 +464,11 @@ box-shadow:
 0 0 0 2px rgba(58,84,144,0.5),
 3px 3px 0 rgba(0,0,0,0.4);
 }
-.attributes-grid   { display: contents; }
+.attributes-grid   {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
 .attributes-derived { display: contents; }
 
 /* -------------------------------------------------
@@ -569,6 +580,40 @@ min-height: 44px;
 
 .class-detail-skill:hover {
 background: rgba(60,90,170,0.25);
+}
+
+/* Arcano list inside class detail panel */
+.class-detail-arcano-label {
+  font-family: var(--font-ui);
+  font-size: var(--vt-sm);
+  color: #d4b8ff;
+  margin-top: var(--sp-4);
+  padding-bottom: var(--sp-2);
+  border-bottom: 1px solid rgba(138,102,209,0.3);
+}
+.class-detail-arcano-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  margin-top: var(--sp-2);
+}
+.class-detail-arcano {
+  display: flex;
+  align-items: center;
+  padding: var(--sp-2) var(--sp-4);
+  border: none;
+  border-bottom: 1px solid rgba(138,102,209,0.2);
+  background: rgba(138,102,209,0.06);
+  font-family: var(--font-ui);
+  font-size: var(--vt-xs);
+  color: #c9b8ff;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+  text-align: left;
+  min-height: 38px;
+}
+.class-detail-arcano:hover {
+  background: rgba(138,102,209,0.18);
 }
 
 /* -------------------------------------------------
@@ -771,7 +816,7 @@ background: rgba(6,10,20,0.5);
   padding-bottom: var(--sp-1);
 }
 
-/* ── Identity: avatar + nível top row, rest below ── */
+/* ── Identity: compact mobile ── */
 .identity-grid {
   gap: var(--sp-2);
 }
@@ -798,29 +843,38 @@ background: rgba(6,10,20,0.5);
   width: 56px;
   height: 56px;
 }
-/* Flatten .identity-fields so its children become grid items */
 .identity-fields {
-  display: contents;
-}
-/* Flatten .field-row so Nível and Conceito become separate grid items */
-.identity-fields > .field-row {
-  display: contents;
-}
-/* Nível field: centered beside avatar, no stretch */
-.identity-fields > .field-row > .field-group:not(.flex-grow) {
   grid-column: 2;
   grid-row: 1;
-  align-self: center;
-  justify-self: center;
 }
-/* All other fields: full width below */
-.identity-fields > .field-group,
-.identity-fields > .field-row > .field-group.flex-grow {
-  grid-column: 1 / -1;
+.fabula-points-card {
+  padding: var(--sp-2) var(--sp-3);
 }
-.field-row {
-  gap: var(--sp-2);
+.fabula-points-title { font-size: 0.42rem; }
+.fabula-points-btn { width: 28px; height: 28px; }
+.fabula-points-value { font-size: 0.7rem; }
+.tracos-block {
+  box-shadow:
+    0 0 0 1px #0a0e1a,
+    0 0 0 2px var(--color-panel-border),
+    2px 2px 0 rgba(0,0,0,0.3);
 }
+.tracos-header { padding: var(--sp-2) var(--sp-3); }
+.tracos-title { font-size: 0.42rem; }
+.tracos-content { padding: var(--sp-2); gap: var(--sp-1); }
+.traco-card { padding: var(--sp-2) var(--sp-3); }
+.traco-label { font-size: 0.35rem; }
+.lacos-block {
+  box-shadow:
+    0 0 0 1px #0a0e1a,
+    0 0 0 2px var(--color-panel-border),
+    2px 2px 0 rgba(0,0,0,0.3);
+}
+.lacos-header { padding: var(--sp-2) var(--sp-3); }
+.lacos-title { font-size: 0.42rem; }
+.lacos-grid { padding: var(--sp-2); gap: var(--sp-2); }
+.laco-card { padding: var(--sp-2); }
+.emocao-btn { font-size: var(--vt-xxs); padding: var(--sp-1); }
 
 /* ── Attributes: compact ── */
 .attributes-layout {
@@ -966,9 +1020,9 @@ flex-direction: column;
 width: 80px;
 height: 80px;
 }
-.field-row {
-flex-direction: row;
-align-items: flex-end;
+/* Laços: wider on tablet */
+.lacos-grid {
+  width: min(90vw, 520px);
 }
 
 /* Attributes: 2 columns */
@@ -1169,12 +1223,10 @@ height: 20px;
   min-height: 0;
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
 }
 .identity-card {
-  flex: 1;
-  min-height: 0;
-  height: auto;
-  overflow-y: auto;
+  flex: 0 0 auto;
   align-items: flex-start;
 }
 .avatar-wrapper {
@@ -1188,9 +1240,9 @@ height: 20px;
 .identity-fields {
   gap: var(--sp-5);
 }
-.identity-fields .field-group:last-child .field-textarea {
-  flex: 1;
-  min-height: 80px;
+/* Laços: wider on desktop */
+.lacos-grid {
+  width: min(90vw, 560px);
 }
 
 /* ── ATTRIBUTES: two panels fill height ── */
